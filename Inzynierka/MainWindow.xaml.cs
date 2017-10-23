@@ -1,28 +1,14 @@
 ﻿using Accord.Imaging.Filters;
 using Accord.Vision.Detection;
 using Accord.Vision.Detection.Cascades;
-using Accord.Math;
 using System.Drawing;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using AForge.Video.DirectShow;
-using Accord.Video;
-using AForge;
 using Microsoft.Win32;
 using System.IO;
-using Accord.Imaging.Formats;
+using Accord.Math.Decompositions;
 
 namespace Inzynierka
 {
@@ -117,23 +103,33 @@ namespace Inzynierka
 
         private void LearingTest()
         {
-            float[,] allVectors = LearningSetLoader.GetImagesAsVectorsFromDirectory(@"C:\Users\mikolaj.ciesielski\Desktop\Studia\Inżynierka\Databases\AT&T");
-            float[] averageVector = LearningSetLoader.GetAverageFaceVector(allVectors);
+            double[,] allVectors = LearningSetLoader.GetImagesAsVectorsFromDirectory(@"C:\Users\mikolaj.ciesielski\Desktop\Studia\Inżynierka\Databases\AT&T");
+            double[] averageVector = LearningSetLoader.GetAverageFaceVector(allVectors);
             Bitmap averageImage = Tools.CreateBitMapFromBytes(averageVector, 92, 112);
-            float[,] diffVectors = LearningSetLoader.GetDifferenceVectors(averageVector, allVectors);
+            double[,] diffVectors = LearningSetLoader.GetDifferenceVectors(averageVector, allVectors);
 
-            float[,]transposedDiffVectors = Accord.Math.Matrix.Transpose(diffVectors);
+            double[,] diffVectorsT = Accord.Math.Matrix.Transpose(diffVectors);
+            double[,] covariation = Accord.Math.Matrix.Dot(diffVectors, diffVectorsT);
 
-        /*
-            Bitmap diffExampleImage = Tools.CreateBitMapFromBytes(Tools.GetVectorFromTable(diffVectors, 0), 92, 112);
+            EigenvalueDecomposition decomposition = new EigenvalueDecomposition(covariation, true, true);
+
+            double[,] eigenVectors = decomposition.Eigenvectors;
+
+            double[,] eigenFaces = Accord.Math.Matrix.Dot(diffVectorsT, eigenVectors);
+            double[,] eigenFacesT = Accord.Math.Matrix.Transpose(eigenFaces);
+
 
             
-            Dispatcher.Invoke(() =>
-            {
-                    image.Source = BitmapToImageSource(diffExampleImage);
-            });
-        */
+                Bitmap diffExampleImage = Tools.CreateBitMapFromBytes(Tools.GetVectorFromTable(eigenFacesT, 100), 92, 112);
+
+
+                Dispatcher.Invoke(() =>
+                {
+                        image.Source = BitmapToImageSource(diffExampleImage);
+                });
             
+            
+            Console.WriteLine("Done" + eigenFaces[0,0]);
         }
 
         /*

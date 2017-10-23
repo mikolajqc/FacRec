@@ -12,17 +12,17 @@ namespace Inzynierka
 {
     public static class LearningSetLoader
     {
-        public static float[] GetAverageFaceVector(float[,] vectors)
+        public static double[] GetAverageFaceVector(double[,] vectors)
         {
-            float[] sumVector = new float[10304];
+            double[] sumVector = new double[10304];
 
             for(int j = 0; j < 10304; ++j)
             {
-                float sumOfPixelOnOnePosition = 0;
+                double sumOfPixelOnOnePosition = 0;
 
                 for (int i = 0; i < 400; ++i)
                 {
-                    sumOfPixelOnOnePosition += (float)vectors[i, j];
+                    sumOfPixelOnOnePosition += (double)vectors[i, j];
                 }
 
                 sumVector[j] = sumOfPixelOnOnePosition / 400f;
@@ -31,9 +31,9 @@ namespace Inzynierka
             return sumVector;
         }
 
-        public static float[,] GetImagesAsVectorsFromDirectory(string directory)
+        public static double[,] GetImagesAsVectorsFromDirectory(string directory)
         {
-            float[,] vectors = new float[400,10304];
+            double[,] vectors = new double[400,10304];
             int i = 0;
 
             foreach(string dir in Directory.GetDirectories(directory))
@@ -57,7 +57,7 @@ namespace Inzynierka
             return vectors;
         }
 
-        public static float[] GetImageVector (string pathToImage)
+        public static double[] GetImageVector (string pathToImage)
         {
             Bitmap bitmap = ImageDecoder.DecodeFromFile(pathToImage);
             HistogramEqualization histogramEqualization = new HistogramEqualization();
@@ -67,18 +67,18 @@ namespace Inzynierka
             int width = bitmap.Size.Width;
             int height = bitmap.Size.Height;
 
-            float[] resultVector = new float[width * height];
+            double[] resultVector = new double[width * height];
 
             for (int y = 0; y < height; ++y)
             {
                 for (int x = 0; x < width; ++x)
                 {
                     Color color = bitmap.GetPixel(x, y);
-                    
-                    float r = color.R;
-                    float g = color.G;
-                    float b = color.B;
-                    float grayscale = (r + g + b) / 3f;
+
+                    double r = color.R;
+                    double g = color.G;
+                    double b = color.B;
+                    double grayscale = (r + g + b) / 3f;
 
                     resultVector[y * width + x] = grayscale;
                     
@@ -89,9 +89,9 @@ namespace Inzynierka
         }
 
 
-        public static float[,] GetDifferenceVectors(float[] averageVector, float[,] vectors)
+        public static double[,] GetDifferenceVectors(double[] averageVector, double[,] vectors)
         {
-            float[,] differenceVectors = new float[400, 10304];
+            double[,] differenceVectors = new double[400, 10304];
 
 
             for (int numberOfVector = 0; numberOfVector < 400; ++numberOfVector)
