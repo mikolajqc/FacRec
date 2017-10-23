@@ -1,6 +1,7 @@
 ﻿using Accord.Imaging.Filters;
 using Accord.Vision.Detection;
 using Accord.Vision.Detection.Cascades;
+using Accord.Math;
 using System.Drawing;
 using System;
 using System.Collections.Generic;
@@ -116,21 +117,26 @@ namespace Inzynierka
 
         private void LearingTest()
         {
-            byte[,] allVectors = LearningSetLoader.GetImagesAsVectorsFromDirectory(@"C:\Users\mikolaj.ciesielski\Desktop\Studia\Inżynierka\Databases\AT&T");
-            byte[] averageVector = LearningSetLoader.GetAverageFaceVector(allVectors);
+            float[,] allVectors = LearningSetLoader.GetImagesAsVectorsFromDirectory(@"C:\Users\mikolaj.ciesielski\Desktop\Studia\Inżynierka\Databases\AT&T");
+            float[] averageVector = LearningSetLoader.GetAverageFaceVector(allVectors);
             Bitmap averageImage = Tools.CreateBitMapFromBytes(averageVector, 92, 112);
-            byte[,] diffVectors = LearningSetLoader.GetDifferenceVectors(averageVector, allVectors);
-            Bitmap diffExampleImage = Tools.CreateBitMapFromBytes(diffVectors[0], 92, 112);
+            float[,] diffVectors = LearningSetLoader.GetDifferenceVectors(averageVector, allVectors);
 
+            float[,]transposedDiffVectors = Accord.Math.Matrix.Transpose(diffVectors);
 
+        /*
+            Bitmap diffExampleImage = Tools.CreateBitMapFromBytes(Tools.GetVectorFromTable(diffVectors, 0), 92, 112);
+
+            
             Dispatcher.Invoke(() =>
             {
-                    image.Source = BitmapToImageSource(averageImage);
+                    image.Source = BitmapToImageSource(diffExampleImage);
             });
-
+        */
+            
         }
 
-
+        /*
         private void WriteAllBytes(Bitmap bitmap)
         {
 
@@ -148,11 +154,11 @@ namespace Inzynierka
                     int grayscale = (r + g + b) / 3;
 
                     imageInVector.Add((byte)grayscale);
-                    //Console.Write(grayscale + " ");
                 }
                 Console.WriteLine(imageInVector.Count);
             }
         }
+        */
 
         private void Button_Click_Equalizer(object sender, RoutedEventArgs e)
         {
