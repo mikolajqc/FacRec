@@ -9,9 +9,9 @@ namespace Inzynierka
 {
     public static class Tools
     {
-        public static Bitmap CreateBitMapFromBytes (double[] data, int width, int height)
+        public static Bitmap CreateBitMapFromBytes (double[] vector, int width, int height)
         {
-            data = Normalize(data, 0, 255);
+            vector = NormalizeVector(vector, 0, 255);
 
             Bitmap bitmap = new Bitmap(width,height);
 
@@ -19,7 +19,7 @@ namespace Inzynierka
             {
                 for (int x = 0; x < width; ++x)
                 {
-                    byte intensityOfColor = (byte)data[y * width + x];
+                    byte intensityOfColor = (byte)vector[y * width + x];
                     bitmap.SetPixel(x, y, Color.FromArgb(intensityOfColor,intensityOfColor,intensityOfColor));
 
                 }
@@ -27,10 +27,25 @@ namespace Inzynierka
 
             return bitmap;
         }
-
-        public static double[] GetVectorFromTable(double[,] vectors, int numberOfVector)
+        
+        public static T[,] GetVectorFromTableInTable<T> (T[,] vectors, int numberOfVector, int positionOfIndex)
         {
-            double[] result = new double[10304];
+            T[,] result = new T[1,vectors.GetLength(positionOfIndex)];
+
+            for (int i = 0; i < 10304; ++i)
+            {
+                if (positionOfIndex == 1) result[0, i] = vectors[numberOfVector, i];
+                else result[0, i] = vectors[i, numberOfVector];
+
+            }
+
+            return result;
+        }
+        
+        public static T[] GetVectorFromTable<T> (T[,] vectors, int numberOfVector)
+        {
+
+            T[] result = new T[10304];
             
             for(int i = 0; i < 10304; ++i)
             {
@@ -40,19 +55,19 @@ namespace Inzynierka
             return result;
         }
 
-        public static double[] Normalize(double[] collection, float newMin, float newMax)
+        public static double[] NormalizeVector(double[] vector, float newMin, float newMax)
         {
-            double[] newCollection = new double[collection.Length];
+            double[] newCollection = new double[vector.Length];
 
-            double oldMax = GetMax(collection);
-            double oldMin = GetMin(collection);
+            double oldMax = GetMax(vector);
+            double oldMin = GetMin(vector);
             double oldDifference = oldMax - oldMin;
             double newDifference = newMax - newMin;
 
-            for (int i = 0; i < collection.Length; ++i)
+            for (int i = 0; i < vector.Length; ++i)
             {
                 double k = newDifference / oldDifference;
-                newCollection[i] = collection[i] * k + (newMin - oldMin*k);
+                newCollection[i] = vector[i] * k + (newMin - oldMin*k);
             }
 
             return newCollection;
@@ -81,5 +96,6 @@ namespace Inzynierka
 
             return min;
         }
+
     }
 }

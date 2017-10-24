@@ -19,7 +19,6 @@ namespace Inzynierka
         VideoCaptureDevice videoSource = null;
         FilterInfoCollection videoDevices = null;
         OpenFileDialog openfiledialog = new OpenFileDialog();
-        Bitmap currentPicture = null;
         int counter = 0;
 
 
@@ -113,14 +112,35 @@ namespace Inzynierka
 
             EigenvalueDecomposition decomposition = new EigenvalueDecomposition(covariation, true, true);
 
-            double[,] eigenVectors = decomposition.Eigenvectors;
+            double[,] eigenVectors = decomposition.Eigenvectors; // 400x400
+            double[,] eigenVectorsT = Accord.Math.Matrix.Transpose(eigenVectors);
 
-            double[,] eigenFaces = Accord.Math.Matrix.Dot(diffVectorsT, eigenVectors);
+            double[,] eigenFaces = Accord.Math.Matrix.Dot(diffVectorsT, eigenVectors); // matrix to calculation 10304x400
             double[,] eigenFacesT = Accord.Math.Matrix.Transpose(eigenFaces);
 
 
+            Console.WriteLine("All: " + allVectors.GetLength(0) + " x " + allVectors.GetLength(1));
+            Console.WriteLine("Diff: " + diffVectors.GetLength(0) + " x " + diffVectors.GetLength(1));
+            Console.WriteLine("Cov: " + covariation.GetLength(0) + " x " + covariation.GetLength(1));
+            Console.WriteLine("EigenVectors: " + eigenVectors.GetLength(0) + " x " + eigenVectors.GetLength(1));
+            Console.WriteLine("EigenFaces: " + eigenFaces.GetLength(0) + " x " + eigenFaces.GetLength(1));
+
+            //   PrincipalComponentAnalysis pca = new PrincipalComponentAnalysis(eigenVectors);
+            //   pca.Compute();
+
+            Console.WriteLine("Done computing");
+            double[,] firstEigenFace = Tools.GetVectorFromTableInTable(eigenFacesT, 0, 1);
+            double[,] firstDiffFace = Tools.GetVectorFromTableInTable(diffVectors, 100, 1);
+            double[,] firstDiffFaceT = Accord.Math.Matrix.Transpose(firstDiffFace);
+
+            double[,] wage = Accord.Math.Matrix.Dot(eigenFacesT, diffVectorsT); // wage[eigenface,image]
+
+            for (int i = 0; i < 400; ++i)
+            {
+                Console.WriteLine(i + ": " + wage[i, 100]);
+            }
             
-                Bitmap diffExampleImage = Tools.CreateBitMapFromBytes(Tools.GetVectorFromTable(eigenFacesT, 100), 92, 112);
+                Bitmap diffExampleImage = Tools.CreateBitMapFromBytes(Tools.GetVectorFromTable(eigenFacesT, 3), 92, 112);
 
 
                 Dispatcher.Invoke(() =>
@@ -128,33 +148,9 @@ namespace Inzynierka
                         image.Source = BitmapToImageSource(diffExampleImage);
                 });
             
-            
-            Console.WriteLine("Done" + eigenFaces[0,0]);
+
+            Console.WriteLine("Done");
         }
-
-        /*
-        private void WriteAllBytes(Bitmap bitmap)
-        {
-
-            List<byte> imageInVector = new List<byte>();
-
-            for (int i = 0; i < bitmap.Size.Width; ++i)
-            {
-                for (int j = 0; j < bitmap.Size.Height; ++j)
-                {
-                    System.Drawing.Color color = bitmap.GetPixel(i, j);
-
-                    int r = color.R;
-                    int g = color.G;
-                    int b = color.B;
-                    int grayscale = (r + g + b) / 3;
-
-                    imageInVector.Add((byte)grayscale);
-                }
-                Console.WriteLine(imageInVector.Count);
-            }
-        }
-        */
 
         private void Button_Click_Equalizer(object sender, RoutedEventArgs e)
         {
