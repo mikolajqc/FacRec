@@ -103,6 +103,8 @@ namespace Inzynierka
         private void LearingTest()
         {
             double[,] allVectors = LearningSetLoader.GetImagesAsVectorsFromDirectory(@"C:\Users\mikolaj.ciesielski\Desktop\Studia\Inżynierka\Databases\AT&T");
+            double[,] allVectorsT = Accord.Math.Matrix.Transpose(allVectors);
+
             double[] averageVector = LearningSetLoader.GetAverageFaceVector(allVectors);
             Bitmap averageImage = Tools.CreateBitMapFromBytes(averageVector, 92, 112);
             double[,] diffVectors = LearningSetLoader.GetDifferenceVectors(averageVector, allVectors);
@@ -135,12 +137,33 @@ namespace Inzynierka
 
             double[,] wage = Accord.Math.Matrix.Dot(eigenFacesT, diffVectorsT); // wage[eigenface,image]
 
-            for (int i = 0; i < 400; ++i)
+            double minDiff = double.MaxValue;
+            int indexOfSimilarFace = 0;
+
+            int j = 0;
+            for(; j < 400; ++j)
             {
-                Console.WriteLine(i + ": " + wage[i, 100]);
+                double difference = 0;
+                for (int i = 0; i < 400; ++i)
+                {
+                    difference += Math.Abs(wage[i, j] - wage[i, 13]);
+                    //Console.WriteLine(i + ": " + Math.Abs(wage[i, 0] - wage[i,2]));
+
+                }
+
+
+                if (minDiff > difference && difference != 0)
+                {
+                    minDiff = difference;
+                    indexOfSimilarFace = j;
+                    
+                }
+               if(difference < 400000000) Console.WriteLine("Difference for:" + j + "=" + difference);
             }
-            
-                Bitmap diffExampleImage = Tools.CreateBitMapFromBytes(Tools.GetVectorFromTable(eigenFacesT, 3), 92, 112);
+            Console.WriteLine("Difference: " + minDiff + " index: " + indexOfSimilarFace);
+
+
+            Bitmap diffExampleImage = Tools.CreateBitMapFromBytes(Tools.GetVectorFromTable(allVectors, indexOfSimilarFace), 92, 112);
 
 
                 Dispatcher.Invoke(() =>
