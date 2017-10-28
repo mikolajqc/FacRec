@@ -95,6 +95,12 @@
   <ItemGroup>
     <Content Include="License-LGPL.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Inzynierka\Inzynierka.csproj">
+      <Project>{1882aa45-1717-43f0-9872-39be37ca3669}</Project>
+      <Name>Inzynierka</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Accord.3.8.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.8.0\build\Accord.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
