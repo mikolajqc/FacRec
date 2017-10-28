@@ -1,4 +1,5 @@
-﻿using Inzynierka;
+﻿using Accord.Math.Decompositions;
+using Inzynierka;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,9 +12,10 @@ namespace FaceRecognition
 {
     public class FaceRecognition
     {
+        private FacesMatrix unprocessedVectors = null;
+
         private List<string> namesOfPeople = null;
 
-        private FacesMatrix unprocessedVectors = null;
         private string pathToLearningSet = null;
         private double[] averageVector = null;
 
@@ -32,8 +34,7 @@ namespace FaceRecognition
 
         public int Recognize(Bitmap bitMapWithFace) // temporary: Bitmap zamienic na wlasny typ FaceImage ktory obsluguje pgm itd
         {
-
-            return 0;
+            throw new NotImplementedException();
         }
 
         public void Learn()
@@ -42,11 +43,20 @@ namespace FaceRecognition
             averageVector = unprocessedVectors.GetAverageVector(1);
             FacesMatrix differenceVectors = unprocessedVectors - new FacesMatrix(400,averageVector);
             FacesMatrix differenceVectorsT = differenceVectors.Transpose();
+            FacesMatrix covariation = differenceVectors * differenceVectorsT;
 
+            EigenvalueDecomposition decomposition = new EigenvalueDecomposition(covariation.Content, true, true); // todo: wlasna dekompozycja
 
+            FacesMatrix eigenVectors = new FacesMatrix(decomposition.Eigenvectors, 1);
+            FacesMatrix eigenVectorsT = eigenVectors.Transpose();
+
+            FacesMatrix eigenFaces = differenceVectorsT * eigenVectors;
+            FacesMatrix eigenFacesT = eigenFaces.Transpose();
+
+            Console.WriteLine("All: " + unprocessedVectors.LenghtOfVector + " x " + unprocessedVectors.NumberOfVectors);
+            Console.WriteLine("EigenFaces: " + eigenFaces.LenghtOfVector + " x " + eigenFaces.NumberOfVectors);
 
             /*
-            
             averageVector = unprocessedVectors.GetAverageVector(1);
             Bitmap averageImage = Tools.CreateBitMapFromBytes(averageVector, 92, 112);
             double[,] diffVectors = LearningSetLoader.GetDifferenceVectors(averageVector, allVectors);

@@ -71,6 +71,23 @@ namespace FaceRecognition
             lenghtOfVector = vector.Length;
         }
 
+        public FacesMatrix(double[,] matrix, int orientation)
+        {
+            content = matrix;
+
+            if(orientation == 0)
+            {
+                numberOfVectors = matrix.GetLength(1);
+                lenghtOfVector = matrix.GetLength(0);
+            }
+            else
+            {
+                numberOfVectors = matrix.GetLength(0);
+                lenghtOfVector = matrix.GetLength(1);
+            }
+
+        }
+
         #endregion
 
         #region properties
@@ -261,6 +278,19 @@ namespace FaceRecognition
             }
 
             return result;
+        }
+
+        public static FacesMatrix operator* (FacesMatrix a, FacesMatrix b)
+        {
+            FacesMatrix result = new FacesMatrix(a.Content.GetLength(1), b.Content.GetLength(0), 1);
+
+            if(a.Content.GetLength(1) != b.Content.GetLength(0))
+            {
+                Console.WriteLine("FaceMatrixes cannot be multiplied!");
+                return null;
+            }
+
+            return new FacesMatrix(Accord.Math.Matrix.Dot(a.Content, b.Content), 1);
         }
 
         #endregion
