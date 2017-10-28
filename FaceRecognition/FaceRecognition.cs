@@ -39,9 +39,9 @@ namespace FaceRecognition
         public void Learn()
         {
             LoadLearningSet();
-
             averageVector = unprocessedVectors.GetAverageVector(1);
             FacesMatrix differenceVectors = unprocessedVectors - new FacesMatrix(400,averageVector);
+            FacesMatrix differenceVectorsT = differenceVectors.Transpose();
 
 
 
@@ -115,7 +115,7 @@ namespace FaceRecognition
 
             */
 
-            
+
             Console.WriteLine("Done");
             Console.ReadKey();
 

@@ -20,8 +20,6 @@ namespace FaceRecognition
         private int lenghtOfVector;
         private int numberOfVectors;
 
-        private List<string> namesOfPeople;
-
         #endregion
 
         #region contructors
@@ -30,16 +28,26 @@ namespace FaceRecognition
         {
             lenghtOfVector = 0;
             numberOfVectors = 0;
-            namesOfPeople = new List<string>();
         }
         /// <summary>
         /// [x,y]
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public FacesMatrix(int x, int y)
+        public FacesMatrix(int x, int y, int orientation)
         {
             content = new double[x,y];
+
+            if (orientation == 0)
+            {
+                numberOfVectors = y;
+                lenghtOfVector = x;
+            }
+            else
+            {
+                numberOfVectors = x;
+                lenghtOfVector = y;
+            }
         }
 
         /// <summary>
@@ -80,14 +88,6 @@ namespace FaceRecognition
             }
         }
 
-        public List<string> PeopleNames
-        {
-            get
-            {
-                return namesOfPeople;
-            }
-        }
-
         public int LenghtOfVector
         {
             get
@@ -107,53 +107,6 @@ namespace FaceRecognition
         #endregion
 
         #region methods
-
-        /// <summary>
-        /// Czy aby na pawno ta funkcja tutaj byc powinna???!!!!
-        /// Moze lepiej ja wyciagnac stad i zostawic tutaj obsluge niskopoziomowa samej macierzy?!!!!!!!!!!!
-        /// Wtedy mozna wywalic calkowicie cos takiego jak orientation i zrobic to wyzej! - hmm ale w sumie orientacja chyba musi byc
-        /// 
-        /// Method loads all .pgm files from given directory. Specified structure of catalogues is required.
-        /// </summary>
-        /// <param name="directory">directory with learning set (.pgm files)</param>
-        /*
-        public void LoadFromDirectory(string directory)
-        {
-            Console.WriteLine("Loading images from: " + directory + "...");
-
-            List<List<double>> temporarySetOfLoadedImages = new List<List<double>>();
-
-            foreach (string dir in Directory.GetDirectories(directory))
-            {
-                foreach (string file in Directory.GetFiles(dir))
-                {
-                    List<double> currentImage = new List<double>();
-
-                    if (Path.GetExtension(file) == ".pgm")
-                    {
-                        var tempVector = Tools.GetImageVectorInList(file);
-                        lenghtOfVector = tempVector.Count;
-
-                        for (int k = 0; k < lenghtOfVector; ++k)
-                        {
-                            currentImage.Add(tempVector.ElementAt(k));
-                        }
-                        ++numberOfVectors;
-
-                        PeopleNames.Add(Path.GetFileName(Path.GetDirectoryName(file)));
-                    }
-
-                    temporarySetOfLoadedImages.Add(currentImage);
-                }
-                
-
-            }
-            lenghtOfVector = temporarySetOfLoadedImages[0].Count;
-            content = Tools.GetContentFromListOfList(temporarySetOfLoadedImages, 1);
-
-        }
-
-        */
 
         public void LoadFromListOfList(List<List<double>> listOfVectors, int orientation)
         {
@@ -267,13 +220,28 @@ namespace FaceRecognition
             return sumVector;
         }
 
+        public FacesMatrix Transpose()
+        {
+            FacesMatrix transposedMatrix = new FacesMatrix(content.GetLength(1), content.GetLength(0), 1);
+
+            for(int i = 0; i < content.GetLength(0); ++i)
+            {
+                for(int j = 0; j < content.GetLength(1); ++j)
+                {
+                    transposedMatrix.Content[j,i] = content[i,j];
+                }
+            }
+
+            return transposedMatrix;
+        }
+
         #endregion
 
         #region operators
 
         public static FacesMatrix operator- (FacesMatrix a, FacesMatrix b)
         {
-            FacesMatrix result = new FacesMatrix(a.content.GetLength(0), a.content.GetLength(1));
+            FacesMatrix result = new FacesMatrix(a.content.GetLength(0), a.content.GetLength(1), 1);
 
             //if jest potrzebny? jak nie spelni to w sumie wywali exception
             if(a.content.GetLength(0) != b.content.GetLength(0) || a.content.GetLength(1) != b.content.GetLength(1))
