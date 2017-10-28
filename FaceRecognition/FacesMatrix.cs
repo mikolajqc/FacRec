@@ -68,14 +68,15 @@ namespace FaceRecognition
 
             foreach (string dir in Directory.GetDirectories(directory))
             {
-                List<double> currentImage = new List<double>();
+                
 
                 foreach (string file in Directory.GetFiles(dir))
                 {
+                    List<double> currentImage = new List<double>();
 
                     if (Path.GetExtension(file) == ".pgm")
                     {
-                        Console.WriteLine("Loading file: " + file + "...");
+                        Console.WriteLine("Loading file: " + numberOfVectors + "...");
 
                         var tempVector = Tools.GetImageVectorInList(file);
                         lenghtOfVector = tempVector.Count;
@@ -86,12 +87,12 @@ namespace FaceRecognition
                         }
                         ++numberOfVectors;
                     }
+
+                    temporarySetOfLoadedImages.Add(currentImage);
                 }
-                temporarySetOfLoadedImages.Add(currentImage);
+                
 
             }
-
-            numberOfVectors = temporarySetOfLoadedImages.Count;
             lenghtOfVector = temporarySetOfLoadedImages[0].Count;
 
             content = Tools.GetContentFromListOfList(temporarySetOfLoadedImages, 1);
@@ -152,8 +153,8 @@ namespace FaceRecognition
 
             for (int i = 0; i < lenghtOfVector; ++i)
             {
-                if (orientation == 0) result[i,1] = content[i, numberOfVector];
-                else result[i,1] = content[numberOfVector, i];
+                if (orientation == 0) result[i,0] = content[i,numberOfVector];
+                else result[i,0] = content[numberOfVector, i];
             }
 
             return result;

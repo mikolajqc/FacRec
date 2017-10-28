@@ -12,13 +12,7 @@ namespace FaceRecognition
         {
             FacesMatrix allImages = new FacesMatrix();
             allImages.LoadFromDirectory(@"C:\Users\mikolaj.ciesielski\Desktop\Studia\Inżynierka\Databases\AT&T");
-
-            List<double> vector =  allImages.GetVectorAsList(0,1);
-
-            foreach(double value in vector)
-            {
-                Console.Write(value + " ");
-            }
         }
+
     }
 }
