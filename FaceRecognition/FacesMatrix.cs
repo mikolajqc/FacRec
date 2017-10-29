@@ -58,20 +58,20 @@ namespace FaceRecognition
         /// </summary>
         /// <param name="numberOfCopies"></param>
         /// <param name="vector"></param>
-        public FacesMatrix(int numberOfCopies, double[] vector)
+        public FacesMatrix(int numberOfCopies, FacesMatrix vector)
         {
-            content = new double[numberOfCopies, vector.Length];
+            content = new double[numberOfCopies, vector.Content.Length];
 
             for(int i = 0; i < numberOfCopies; ++i)
             {
-                for(int j = 0; j < vector.Length; ++j)
+                for(int j = 0; j < vector.Content.Length; ++j)
                 {
-                    content[i, j] = vector[j];
+                    content[i, j] = vector.Content[0,j];
                 }
             }
 
             numberOfVectors = numberOfCopies;
-            lenghtOfVector = vector.Length;
+            lenghtOfVector = vector.Content.Length;
         }
 
         public FacesMatrix(double[,] matrix, int orientation)
@@ -87,6 +87,19 @@ namespace FaceRecognition
             {
                 numberOfVectors = matrix.GetLength(0);
                 lenghtOfVector = matrix.GetLength(1);
+            }
+
+        }
+
+        public FacesMatrix(double[] vector, int orientation)
+        {
+            if(orientation == 0) content = new double[vector.GetLength(0), 1];
+            else content = new double[1, vector.GetLength(0)];
+
+            for (int i = 0; i < vector.GetLength(0); ++i)
+            {
+                if (orientation == 0) content[i, 0] = vector[i];
+                else content[0, i] = vector[i];
             }
 
         }
@@ -220,7 +233,7 @@ namespace FaceRecognition
             return result;
         }
 
-        public double[] GetAverageVector(int orientation)
+        public FacesMatrix GetAverageVector(int orientation)
         {
             double[] sumVector = new double[lenghtOfVector];
 
@@ -237,7 +250,7 @@ namespace FaceRecognition
                 sumVector[j] = sumOfPixelOnOnePosition / numberOfVectors;
             }
 
-            return sumVector;
+            return new FacesMatrix(sumVector,1);
         }
 
         public FacesMatrix Transpose()

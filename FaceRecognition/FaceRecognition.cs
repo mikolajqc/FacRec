@@ -16,13 +16,14 @@ namespace FaceRecognition
         #region fields
 
         private FacesMatrix unprocessedVectors = null;
+        private FacesMatrix averageVector = null; //zmienic typ na FacesMatrix !!!
         private FacesMatrix wages = null; // [eigenface,image]
         private FacesMatrix eigenFacesT = null;
 
         private List<string> namesOfPeople = null;
 
         private string pathToLearningSet = null;
-        private double[] averageVector = null; //zmienic typ na FacesMatrix !!!
+        
 
         #endregion
 
@@ -120,7 +121,6 @@ namespace FaceRecognition
         private void LoadLearningSet()
         {
             Console.WriteLine("Loading images from: " + pathToLearningSet + "...");
-
             List<List<double>> temporarySetOfLoadedImages = new List<List<double>>();
 
             foreach (string dir in Directory.GetDirectories(pathToLearningSet))
@@ -128,7 +128,6 @@ namespace FaceRecognition
                 foreach (string file in Directory.GetFiles(dir))
                 {
                     List<double> currentImage = new List<double>();
-
                     if (Path.GetExtension(file) == ".pgm")
                     {
                         var tempVector = Tools.GetImageVectorInList(file);
@@ -140,7 +139,6 @@ namespace FaceRecognition
 
                         namesOfPeople.Add(Path.GetFileName(Path.GetDirectoryName(file)));
                     }
-
                     temporarySetOfLoadedImages.Add(currentImage);
                 }
             }
