@@ -22,7 +22,6 @@ namespace FaceRecognition
             throw new NotImplementedException();
         }
 
-
         /// <summary>
         /// Temporary - to delete on release
         /// </summary>
@@ -65,7 +64,6 @@ namespace FaceRecognition
             HistogramEqualization histogramEqualization = new HistogramEqualization();
             bitmap = histogramEqualization.Apply(bitmap);
 
-
             int width = bitmap.Size.Width;
             int height = bitmap.Size.Height;
 
@@ -76,14 +74,8 @@ namespace FaceRecognition
                 for (int x = 0; x < width; ++x)
                 {
                     Color color = bitmap.GetPixel(x, y);
-
-                    double r = color.R;
-                    double g = color.G;
-                    double b = color.B;
-                    double grayscale = (r + g + b) / 3f;
-
+                    double grayscale = (color.R + color.G + color.B) / 3f;
                     resultVector.Add(grayscale);
-
                 }
             }
 

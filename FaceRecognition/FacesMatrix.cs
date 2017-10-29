@@ -10,13 +10,16 @@ namespace FaceRecognition
     class FacesMatrix
     {
         ///TODO:
-        ///Jak mapowac obraz na czlowieka i gdzie to reprezentowac?
-        ///dodac obsluge innych rozszerzen niz .pgm
+        /// Jak mapowac obraz na czlowieka i gdzie to reprezentowac?
+        /// dodac obsluge innych rozszerzen niz .pgm
         /// - ogarnac jak pobierac nazwe osoby poprzez nazwe folderu w katalogu zbioru uczacego
+        /// - Czy pola o dlugosci wektora oraz liczby wektorow maja jakis sens?? czy ta klasa nie powinna byc niezalezna od tego co posiada?
 
         #region fields
         //matrix of values that represent bytes that can represents bytes in pgm file
         private double[,] content;
+
+        //to delete?
         private int lenghtOfVector;
         private int numberOfVectors;
 
