@@ -14,14 +14,10 @@ namespace FaceRecognition
         /// dodac obsluge innych rozszerzen niz .pgm
         /// - ogarnac jak pobierac nazwe osoby poprzez nazwe folderu w katalogu zbioru uczacego
         /// - Czy pola o dlugosci wektora oraz liczby wektorow maja jakis sens?? czy ta klasa nie powinna byc niezalezna od tego co posiada?
+        /// Orientation - 0 wektory polozone poziomo, 1 - wektory polozone pionowo
 
         #region fields
-        //matrix of values that represent bytes that can represents bytes in pgm file
         private double[,] content;
-
-        //to delete?
-        private int lenghtOfVector;
-        private int numberOfVectors;
 
         #endregion
 
@@ -29,28 +25,15 @@ namespace FaceRecognition
 
         public FacesMatrix()
         {
-            lenghtOfVector = 0;
-            numberOfVectors = 0;
         }
         /// <summary>
         /// [x,y]
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public FacesMatrix(int x, int y, int orientation)
+        public FacesMatrix(int x, int y)
         {
             content = new double[x,y];
-
-            if (orientation == 0)
-            {
-                numberOfVectors = y;
-                lenghtOfVector = x;
-            }
-            else
-            {
-                numberOfVectors = x;
-                lenghtOfVector = y;
-            }
         }
 
         /// <summary>
@@ -60,35 +43,20 @@ namespace FaceRecognition
         /// <param name="vector"></param>
         public FacesMatrix(int numberOfCopies, FacesMatrix vector)
         {
-            content = new double[numberOfCopies, vector.Content.Length];
+            content = new double[numberOfCopies, vector.Length];
 
             for(int i = 0; i < numberOfCopies; ++i)
             {
-                for(int j = 0; j < vector.Content.Length; ++j)
+                for(int j = 0; j < vector.Length; ++j)
                 {
                     content[i, j] = vector.Content[0,j];
                 }
             }
-
-            numberOfVectors = numberOfCopies;
-            lenghtOfVector = vector.Content.Length;
         }
 
-        public FacesMatrix(double[,] matrix, int orientation)
+        public FacesMatrix(double[,] matrix)
         {
             content = matrix;
-
-            if(orientation == 0)
-            {
-                numberOfVectors = matrix.GetLength(1);
-                lenghtOfVector = matrix.GetLength(0);
-            }
-            else
-            {
-                numberOfVectors = matrix.GetLength(0);
-                lenghtOfVector = matrix.GetLength(1);
-            }
-
         }
 
         public FacesMatrix(double[] vector, int orientation)
@@ -121,19 +89,27 @@ namespace FaceRecognition
             }
         }
 
-        public int LenghtOfVector
+        public int X
         {
             get
             {
-                return lenghtOfVector;
+                return content.GetLength(0);
             }
         }
 
-        public int NumberOfVectors
+        public int Y
         {
             get
             {
-                return numberOfVectors;
+                return content.GetLength(1);
+            }
+        }
+
+        public int Length
+        {
+            get
+            {
+                return content.Length;
             }
         }
 
@@ -167,77 +143,26 @@ namespace FaceRecognition
                 }
             }
 
-            lenghtOfVector = listOfVectors[0].Count;
-            numberOfVectors = listOfVectors.Count;
-
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="numberOfVector"></param>
-        /// <param name="orientation">
-        /// 0: vector1
-        ///    vector2
-        ///    vector3
-        ///    .
-        ///    .
-        ///    .
-        ///    
-        ///!0: vvvvv
-        ///    eeeee
-        ///    ccccc
-        ///    ttttt
-        ///    ooooo
-        ///    rrrrr
-        ///    12345
-        /// </param>
-        /// <returns></returns>
-
-        public double[] GetVector(uint numberOfVector, int orientation) // 0 - [_, index], 0 !=  [index, _]
-        {
-            double[] result = new double[lenghtOfVector];
-
-            for(uint i = 0; i < lenghtOfVector; ++i)
-            {
-                if (orientation == 0) result[i] = content[i, numberOfVector];
-                else result[i] = content[numberOfVector, i];
-            }
-
-            return result;
-        }
-
-        public List<double> GetVectorAsList(uint numberOfVector, int orientation) // 0 - [_, index], 0 !=  [index, _]
-        {
-            List<double> result = new List<double>();
-
-            for (uint i = 0; i < lenghtOfVector; ++i)
-            {
-                if (orientation == 0) result.Add(content[i, numberOfVector]);
-                else result.Add(content[numberOfVector, i]);
-            }
-
-            return result;
-        }
-
-        public double[,] GetVectorInTable(int numberOfVector, int orientation)
-        {
-            double[,] result = new double[lenghtOfVector, 1];
-
-            for (int i = 0; i < lenghtOfVector; ++i)
-            {
-                if (orientation == 0) result[i,0] = content[i,numberOfVector];
-                else result[i,0] = content[numberOfVector, i];
-            }
-
-            return result;
         }
 
         public FacesMatrix GetAverageVector(int orientation)
         {
-            double[] sumVector = new double[lenghtOfVector];
+            int lengthOfVector, numberOfVectors;
 
-            for (int j = 0; j < lenghtOfVector; ++j)
+            if (orientation == 0)
+            {
+                lengthOfVector = X;
+                numberOfVectors = Y;
+            }
+            else
+            {
+                lengthOfVector = Y;
+                numberOfVectors = X;
+            }
+
+            double[] sumVector = new double[lengthOfVector];
+
+            for (int j = 0; j < lengthOfVector; ++j)
             {
                 double sumOfPixelOnOnePosition = 0;
 
@@ -255,11 +180,11 @@ namespace FaceRecognition
 
         public FacesMatrix Transpose()
         {
-            FacesMatrix transposedMatrix = new FacesMatrix(content.GetLength(1), content.GetLength(0), 1);
+            FacesMatrix transposedMatrix = new FacesMatrix(Y, X);
 
-            for(int i = 0; i < content.GetLength(0); ++i)
+            for(int i = 0; i < X; ++i)
             {
-                for(int j = 0; j < content.GetLength(1); ++j)
+                for(int j = 0; j < Y; ++j)
                 {
                     transposedMatrix.Content[j,i] = content[i,j];
                 }
@@ -274,19 +199,19 @@ namespace FaceRecognition
 
         public static FacesMatrix operator- (FacesMatrix a, FacesMatrix b)
         {
-            FacesMatrix result = new FacesMatrix(a.content.GetLength(0), a.content.GetLength(1), 1);
+            FacesMatrix result = new FacesMatrix(a.X, a.Y);
 
             //if jest potrzebny? jak nie spelni to w sumie wywali exception
-            if(a.content.GetLength(0) != b.content.GetLength(0) || a.content.GetLength(1) != b.content.GetLength(1))
+            if(a.X != b.X || a.Y != b.Y)
             {
                 Console.WriteLine("FacesMatrixes must have the same sizes!");
                 return null;
             }
             else
             {
-                for(int i = 0; i < a.content.GetLength(0); ++i)
+                for(int i = 0; i < a.X; ++i)
                 {
-                    for (int j = 0; j < a.content.GetLength(1); ++j)
+                    for (int j = 0; j < a.Y; ++j)
                     {
                         result.content[i, j] = a.content[i, j] - b.content[i, j];
                     }
@@ -298,15 +223,13 @@ namespace FaceRecognition
 
         public static FacesMatrix operator* (FacesMatrix a, FacesMatrix b)
         {
-            FacesMatrix result = new FacesMatrix(a.Content.GetLength(1), b.Content.GetLength(0), 1);
-
-            if(a.Content.GetLength(1) != b.Content.GetLength(0))
+            if(a.Y != b.X)
             {
                 Console.WriteLine("FaceMatrixes cannot be multiplied!");
                 return null;
             }
 
-            return new FacesMatrix(Accord.Math.Matrix.Dot(a.Content, b.Content), 1);
+            return new FacesMatrix(Accord.Math.Matrix.Dot(a.Content, b.Content));
         }
 
         #endregion

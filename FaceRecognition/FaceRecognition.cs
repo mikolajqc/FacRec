@@ -21,9 +21,7 @@ namespace FaceRecognition
         private FacesMatrix eigenFacesT = null;
 
         private List<string> namesOfPeople = null;
-
         private string pathToLearningSet = null;
-        
 
         #endregion
 
@@ -50,17 +48,17 @@ namespace FaceRecognition
         {
             Console.WriteLine("Recognizing...");
             FacesMatrix vectorOfFaceInMatrix = GetFaceMatrixFromBitmap(bitMapWithFace);
-            FacesMatrix diff =  vectorOfFaceInMatrix - new FacesMatrix(1, averageVector);
+            FacesMatrix diff =  vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, averageVector);
 
             FacesMatrix currentImageWages = eigenFacesT * diff.Transpose();
 
             double minSumOfDifferenceOfWages = double.MaxValue;
             int numberOfString = 0;
 
-            for (int numberOfKnownImage = 0; numberOfKnownImage < wages.Content.GetLength(1); ++numberOfKnownImage)
+            for (int numberOfKnownImage = 0; numberOfKnownImage < wages.Y; ++numberOfKnownImage)
             {
                 double currentSumOfDifferenceOfWages = 0;
-                for (int numbeOfEigenFace = 0; numbeOfEigenFace < wages.Content.GetLength(0); ++numbeOfEigenFace)
+                for (int numbeOfEigenFace = 0; numbeOfEigenFace < wages.X; ++numbeOfEigenFace)
                 {
                     currentSumOfDifferenceOfWages += Math.Abs(wages.Content[numbeOfEigenFace, numberOfKnownImage] - currentImageWages.Content[numbeOfEigenFace, 0]);
                 }
@@ -70,9 +68,7 @@ namespace FaceRecognition
                     minSumOfDifferenceOfWages = currentSumOfDifferenceOfWages;
                     numberOfString = numberOfKnownImage;
                 }
-
             }
-
 
             ///do ogarniecia jakis zakres bledu, np mniejsze niz jakas liczba w odleglosci euklidesowej
             ///poniżej tylko dla testow - do usuniecia
@@ -98,14 +94,11 @@ namespace FaceRecognition
 
             EigenvalueDecomposition decomposition = new EigenvalueDecomposition(covariation.Content, true, true); // todo: wlasna dekompozycja
 
-            FacesMatrix eigenVectors = new FacesMatrix(decomposition.Eigenvectors, 1);
+            FacesMatrix eigenVectors = new FacesMatrix(decomposition.Eigenvectors);
             FacesMatrix eigenVectorsT = eigenVectors.Transpose();
 
             FacesMatrix eigenFaces = differenceVectorsT * eigenVectors;
             eigenFacesT = eigenFaces.Transpose();
-
-            Console.WriteLine("All: " + unprocessedVectors.LenghtOfVector + " x " + unprocessedVectors.NumberOfVectors);
-            Console.WriteLine("EigenFaces: " + eigenFaces.LenghtOfVector + " x " + eigenFaces.NumberOfVectors);
 
             wages = eigenFacesT * differenceVectorsT;
 
@@ -127,19 +120,10 @@ namespace FaceRecognition
             {
                 foreach (string file in Directory.GetFiles(dir))
                 {
-                    List<double> currentImage = new List<double>();
                     if (Path.GetExtension(file) == ".pgm")
                     {
-                        var tempVector = Tools.GetImageVectorInList(file);
-
-                        for (int k = 0; k < tempVector.Count; ++k)
-                        {
-                            currentImage.Add(tempVector.ElementAt(k));
-                        }
-
-                        namesOfPeople.Add(Path.GetFileName(Path.GetDirectoryName(file)));
+                        temporarySetOfLoadedImages.Add(Tools.GetImageVectorInList(file));
                     }
-                    temporarySetOfLoadedImages.Add(currentImage);
                 }
             }
 
@@ -166,7 +150,7 @@ namespace FaceRecognition
                 }
             }
 
-            return new FacesMatrix(content, 1);
+            return new FacesMatrix(content);
         }
 
         #endregion
