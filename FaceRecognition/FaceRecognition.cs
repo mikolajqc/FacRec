@@ -84,7 +84,7 @@ namespace FaceRecognition
 
         public void Learn()
         {
-            Console.WriteLine("Learnign...");
+            Console.WriteLine("Learning...");
 
             LoadLearningSet();
             averageVector = unprocessedVectors.GetAverageVector(1);
@@ -103,7 +103,6 @@ namespace FaceRecognition
             wages = eigenFacesT * differenceVectorsT;
 
             Console.WriteLine("Done");
-            Console.ReadKey();
 
         }
 
@@ -123,6 +122,8 @@ namespace FaceRecognition
                     if (Path.GetExtension(file) == ".pgm")
                     {
                         temporarySetOfLoadedImages.Add(Tools.GetImageVectorInList(file));
+                        namesOfPeople.Add(Path.GetFileName(Path.GetDirectoryName(file)));
+
                     }
                 }
             }
