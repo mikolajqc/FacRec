@@ -1,4 +1,5 @@
 ﻿using Accord.Imaging.Filters;
+using Accord.Imaging.Formats;
 using Accord.Math.Decompositions;
 using Inzynierka;
 using System;
@@ -13,7 +14,13 @@ namespace FaceRecognition
 {
     public class FaceRecognition
     {
+        ///TODO:
+        ///1. wykluczyc mozliwosc ze jedna twarz ma wiecej przykladow - exception przy mnozeniu macierzy lub rozwiazac to jakos
+
         #region fields
+
+        const int WIDTH = 92;
+        const int HEIGHT = 112;
 
         private FacesMatrix unprocessedVectors = null;
         private FacesMatrix averageVector = null; //zmienic typ na FacesMatrix !!!
@@ -47,6 +54,10 @@ namespace FaceRecognition
         public string Recognize(Bitmap bitMapWithFace) // temporary: Bitmap zamienic na wlasny typ FaceImage ktory obsluguje pgm itd
         {
             Console.WriteLine("Recognizing...");
+
+            //scalling
+            bitMapWithFace = ScaleBitmapToRequredSize(bitMapWithFace);
+
             FacesMatrix vectorOfFaceInMatrix = GetFaceMatrixFromBitmap(bitMapWithFace);
             FacesMatrix diff =  vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, averageVector);
 
@@ -58,12 +69,12 @@ namespace FaceRecognition
             for (int numberOfKnownImage = 0; numberOfKnownImage < wages.Y; ++numberOfKnownImage)
             {
                 double currentSumOfDifferenceOfWages = 0;
-                for (int numbeOfEigenFace = 0; numbeOfEigenFace < wages.X; ++numbeOfEigenFace)
+                for (int numberOfEigenFace = 0; numberOfEigenFace < wages.X; ++numberOfEigenFace)
                 {
-                    currentSumOfDifferenceOfWages += Math.Abs(wages.Content[numbeOfEigenFace, numberOfKnownImage] - currentImageWages.Content[numbeOfEigenFace, 0]);
+                    currentSumOfDifferenceOfWages += Math.Abs(wages.Content[numberOfEigenFace, numberOfKnownImage] - currentImageWages.Content[numberOfEigenFace, 0]);
                 }
 
-                if (minSumOfDifferenceOfWages > currentSumOfDifferenceOfWages && currentSumOfDifferenceOfWages != 0) //!= 0 do usuniecia - tylko dla testow
+                if (minSumOfDifferenceOfWages > currentSumOfDifferenceOfWages /*&& currentSumOfDifferenceOfWages != 0*/) //!= 0 do usuniecia - tylko dla testow
                 {
                     minSumOfDifferenceOfWages = currentSumOfDifferenceOfWages;
                     numberOfString = numberOfKnownImage;
@@ -74,10 +85,6 @@ namespace FaceRecognition
             ///poniżej tylko dla testow - do usuniecia
 
             Console.WriteLine("Wage: " + minSumOfDifferenceOfWages);
-            if (minSumOfDifferenceOfWages > 350000000)
-            {
-                return "uknown";
-            }
             
             return namesOfPeople.ElementAt(numberOfString);
         }
@@ -88,7 +95,7 @@ namespace FaceRecognition
 
             LoadLearningSet();
             averageVector = unprocessedVectors.GetAverageVector(1);
-            FacesMatrix differenceVectors = unprocessedVectors - new FacesMatrix(400,averageVector);
+            FacesMatrix differenceVectors = unprocessedVectors - new FacesMatrix(unprocessedVectors.X, averageVector);
             FacesMatrix differenceVectorsT = differenceVectors.Transpose();
             FacesMatrix covariation = differenceVectors * differenceVectorsT;
 
@@ -119,9 +126,9 @@ namespace FaceRecognition
             {
                 foreach (string file in Directory.GetFiles(dir))
                 {
-                    if (Path.GetExtension(file) == ".pgm")
+                    if (Path.GetExtension(file) == ".pgm" || Path.GetExtension(file) == ".jpg")
                     {
-                        temporarySetOfLoadedImages.Add(Tools.GetImageVectorInList(file));
+                        temporarySetOfLoadedImages.Add(GetImageVectorInList(file));
                         namesOfPeople.Add(Path.GetFileName(Path.GetDirectoryName(file)));
 
                     }
@@ -152,6 +159,37 @@ namespace FaceRecognition
             }
 
             return new FacesMatrix(content);
+        }
+
+        private Bitmap ScaleBitmapToRequredSize(Bitmap bitMap)
+        {
+            Console.WriteLine("Scalling image to" + WIDTH + "x" + HEIGHT);
+            return new Bitmap(bitMap, new Size(WIDTH, HEIGHT));
+        }
+
+        private List<double> GetImageVectorInList(string pathToImage)
+        {
+            Bitmap bitmap = ScaleBitmapToRequredSize(ImageDecoder.DecodeFromFile(pathToImage));
+            //bitmap.Save(pathToImage);
+            HistogramEqualization histogramEqualization = new HistogramEqualization();
+            bitmap = histogramEqualization.Apply(bitmap);
+
+            int width = bitmap.Size.Width;
+            int height = bitmap.Size.Height;
+
+            List<double> resultVector = new List<double>();
+
+            for (int y = 0; y < height; ++y)
+            {
+                for (int x = 0; x < width; ++x)
+                {
+                    Color color = bitmap.GetPixel(x, y);
+                    double grayscale = (color.R + color.G + color.B) / 3f;
+                    resultVector.Add(grayscale);
+                }
+            }
+
+            return resultVector;
         }
 
         #endregion

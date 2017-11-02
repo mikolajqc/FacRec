@@ -15,7 +15,7 @@ namespace FaceRecognition
             FaceRecognition fR = new FaceRecognition(@"C:\Users\mikolaj.ciesielski\Desktop\Studia\Inżynierka\Databases\AT&T");
             fR.Learn();
 
-            Bitmap testBitMap = ImageDecoder.DecodeFromFile(@"C:\Users\mikolaj.ciesielski\Desktop\Studia\Inżynierka\Databases\AT&T\s1\3.pgm");
+            Bitmap testBitMap = ImageDecoder.DecodeFromFile(@"C:\Users\mikolaj.ciesielski\Desktop\Studia\Inżynierka\Databases\nonface.jpg");
             Console.WriteLine("String: " + fR.Recognize(testBitMap));
             Console.WriteLine("END");
             Console.ReadKey();
