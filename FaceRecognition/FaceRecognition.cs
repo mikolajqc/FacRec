@@ -1,7 +1,6 @@
 ﻿using Accord.Imaging.Filters;
 using Accord.Imaging.Formats;
 using Accord.Math.Decompositions;
-using Inzynierka;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,12 +17,13 @@ namespace FaceRecognition
         ///1. wykluczyc mozliwosc ze jedna twarz ma wiecej przykladow - exception przy mnozeniu macierzy lub rozwiazac to jakos
 
         #region fields
-
+        
+        ///czy tutaj koniecznie consty?
         const int WIDTH = 92;
         const int HEIGHT = 112;
 
         private FacesMatrix unprocessedVectors = null;
-        private FacesMatrix averageVector = null; //zmienic typ na FacesMatrix !!!
+        private FacesMatrix averageVector = null;
         private FacesMatrix wages = null; // [eigenface,image]
         private FacesMatrix eigenFacesT = null;
 
@@ -71,10 +71,12 @@ namespace FaceRecognition
                 double currentSumOfDifferenceOfWages = 0;
                 for (int numberOfEigenFace = 0; numberOfEigenFace < wages.X; ++numberOfEigenFace)
                 {
+                   // Console.WriteLine("diff: " + (wages.Content[numberOfEigenFace, numberOfKnownImage] - currentImageWages.Content[numberOfEigenFace, 0]));
+
                     currentSumOfDifferenceOfWages += Math.Abs(wages.Content[numberOfEigenFace, numberOfKnownImage] - currentImageWages.Content[numberOfEigenFace, 0]);
                 }
 
-                if (minSumOfDifferenceOfWages > currentSumOfDifferenceOfWages /*&& currentSumOfDifferenceOfWages != 0*/) //!= 0 do usuniecia - tylko dla testow
+                if (minSumOfDifferenceOfWages > currentSumOfDifferenceOfWages && currentSumOfDifferenceOfWages != 0) //!= 0 do usuniecia - tylko dla testow
                 {
                     minSumOfDifferenceOfWages = currentSumOfDifferenceOfWages;
                     numberOfString = numberOfKnownImage;

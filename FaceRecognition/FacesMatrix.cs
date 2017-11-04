@@ -13,7 +13,7 @@ namespace FaceRecognition
         /// Jak mapowac obraz na czlowieka i gdzie to reprezentowac?
         /// dodac obsluge innych rozszerzen niz .pgm
         /// - ogarnac jak pobierac nazwe osoby poprzez nazwe folderu w katalogu zbioru uczacego
-        /// - Czy pola o dlugosci wektora oraz liczby wektorow maja jakis sens?? czy ta klasa nie powinna byc niezalezna od tego co posiada?
+        /// - czy ta klasa nie powinna byc niezalezna od tego co posiada?
         /// Orientation - 0 wektory polozone poziomo, 1 - wektory polozone pionowo
 
         #region fields
@@ -201,7 +201,7 @@ namespace FaceRecognition
         {
             FacesMatrix result = new FacesMatrix(a.X, a.Y);
 
-            //if jest potrzebny? jak nie spelni to w sumie wywali exception
+            //if for DEBUG time only
             if(a.X != b.X || a.Y != b.Y)
             {
                 Console.WriteLine("FacesMatrixes must have the same sizes!");
@@ -223,6 +223,7 @@ namespace FaceRecognition
 
         public static FacesMatrix operator* (FacesMatrix a, FacesMatrix b)
         {
+            //if for DEBUG time only
             if(a.Y != b.X)
             {
                 Console.WriteLine("FaceMatrixes cannot be multiplied!");

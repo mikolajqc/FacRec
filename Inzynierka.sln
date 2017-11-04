@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inzynierka", "Inzynierka\Inzynierka.csproj", "{1882AA45-1717-43F0-9872-39BE37CA3669}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaceRecognition", "FaceRecognition\FaceRecognition.csproj", "{8580FDB1-BE35-42F9-93E6-180005CAF906}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1882AA45-1717-43F0-9872-39BE37CA3669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1882AA45-1717-43F0-9872-39BE37CA3669}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1882AA45-1717-43F0-9872-39BE37CA3669}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1882AA45-1717-43F0-9872-39BE37CA3669}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8580FDB1-BE35-42F9-93E6-180005CAF906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8580FDB1-BE35-42F9-93E6-180005CAF906}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8580FDB1-BE35-42F9-93E6-180005CAF906}.Release|Any CPU.ActiveCfg = Release|Any CPU
