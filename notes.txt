@@ -1,0 +1,6 @@
+CLIENT:
+V0.0: Stworzyc klienta, który jest klientem WPFowym I przedstawia w czasie rzeczywistym obraz z kamery.
+V0.1: przycisk ktory powoduje zrobienie zdjecia ktore wyswietla sie gdzies obok w kliencie lub poczatkowo w messageBox.
+V0.2: dodanie obszaru na obrazie z kamery który jest wymiarow lub proporcjonalny do obrazu uczacego, jakis prostokat czy cos i tak zeby po nacisnieciu przycisku wycinalo ten fragment obrazu.
+V0.3: dodanie komunikacji miedzy projektami (narazie niesieciowej) przesylanie zdjecia do recognize. Dodanie przycisku learn – na podstaiwe nazy AT&T
+V0.4 dodanie mozliwosci dodania nowej twarzy do bazy – jakis buton
