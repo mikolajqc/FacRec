@@ -9,6 +9,7 @@ namespace Client
     class MainWindowViewModel : Screen
     {
         #region fields
+
         private BitmapImage imageWebcam = null;
         private BitmapImage imageSnapshot = null;
         private CameraManager cameraManager = null;
@@ -51,6 +52,12 @@ namespace Client
 
         public void Recognize()
         {
+            Application.Current.Dispatcher.BeginInvoke(
+            new System.Action(
+                () => {
+                    imageSnapshot = ImageWebcam;
+                    NotifyOfPropertyChange(() => ImageSnapshot);
+                }));
         }
         public void Learn()
         {
@@ -58,6 +65,10 @@ namespace Client
         public void AddFace()
         {
         }
+
+        #endregion
+
+        #region ovverriddenmethods
 
         protected override void OnActivate()
         {
@@ -81,6 +92,7 @@ namespace Client
         }
 
         #endregion
+
 
         #region privatemethods
 
@@ -120,5 +132,6 @@ namespace Client
         }
 
         #endregion
+
     }
 }
