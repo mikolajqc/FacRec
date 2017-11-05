@@ -4,17 +4,22 @@ using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using FaceRecognition;
+using System.Threading.Tasks;
 
 namespace Client
 {
     class MainWindowViewModel : Screen
     {
+        ///Dodaj lustrzane odbicie
         #region fields
         ///Sprawdzic czy tutaj musi byc BitmapImage czy moze byc Bitmap
         private BitmapImage imageWebcam = null;
         private BitmapImage imageSnapshot = null;
         private CameraManager cameraManager = null;
         private System.Timers.Timer timer = null;
+
+        private FaceRecognition.FaceRecognition faceRecognition = null; //temporary - before communication
 
         #endregion
 
@@ -51,7 +56,7 @@ namespace Client
 
         #region publicmethods
 
-        public void Recognize()
+        public void Snapshot()
         {
             Application.Current.Dispatcher.BeginInvoke(
             new System.Action(
@@ -60,11 +65,14 @@ namespace Client
                     NotifyOfPropertyChange(() => ImageSnapshot);
                 }));
         }
-        public void Learn()
+        public async void Learn()
         {
+            await Task.Run(() => faceRecognition.Learn());
+            MessageBox.Show("Learnt!");
         }
-        public void AddFace()
+        public void Send()
         {
+            MessageBox.Show(faceRecognition.Recognize(BitmapImage2Bitmap(ImageSnapshot)));
         }
 
         #endregion
@@ -74,6 +82,7 @@ namespace Client
         protected override void OnActivate()
         {
             cameraManager = new CameraManager();
+            faceRecognition = new FaceRecognition.FaceRecognition(@"C:\Users\mikolaj.ciesielski\Desktop\Studia\Inżynierka\Databases\AT&T");
             timer = new System.Timers.Timer();
             timer.AutoReset = true;
             timer.Interval = 20; // ogarnac to inaczej
