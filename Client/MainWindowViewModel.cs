@@ -1,16 +1,8 @@
 ﻿using Caliburn.Micro;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 namespace Client
 {
@@ -53,7 +45,7 @@ namespace Client
             cameraManager = new CameraManager();
             timer = new System.Timers.Timer();
             timer.AutoReset = true;
-            timer.Interval = 20;
+            timer.Interval = 20; // ogarnac to inaczej
             timer.Elapsed += (sender, e) =>
             {
                    UpdateImage();
@@ -67,9 +59,7 @@ namespace Client
                     () => {
                         imageWebcam = BitmapToImageSource(new Bitmap(cameraManager.GetFrame()));
                         NotifyOfPropertyChange(() => ImageWebcam);
-                    }
-                    )
-                );   
+                    }));   
         }
 
 
