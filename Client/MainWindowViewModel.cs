@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace Client
 {
@@ -17,7 +18,7 @@ namespace Client
     {
         private BitmapImage imageWebcam = null;
         private CameraManager cameraManager = null;
-        private System.Timers.Timer timer = null;//to do
+        private System.Timers.Timer timer = null;
 
         public void Recognize()
         {
@@ -26,10 +27,11 @@ namespace Client
         public void Learn()
         {
             cameraManager.Stop();
+            timer.Stop();
         }
         public void AddFace()
         {
-            UpdateImage();
+            timer.Start();
         }
 
         public BitmapImage ImageWebcam
@@ -45,19 +47,29 @@ namespace Client
             }
         }
 
-        
+
         public MainWindowViewModel()
         {
             cameraManager = new CameraManager();
             timer = new System.Timers.Timer();
             timer.AutoReset = true;
-            timer.Interval = 100;
-            timer.Elapsed += (sender, e) => { UpdateImage(); };
+            timer.Interval = 20;
+            timer.Elapsed += (sender, e) =>
+            {
+                   UpdateImage();
+            };
         }
         
         private void UpdateImage()
         {
-            ImageWebcam = BitmapToImageSource(cameraManager.GetFrame());
+            Application.Current.Dispatcher.BeginInvoke(
+                new System.Action(
+                    () => {
+                        imageWebcam = BitmapToImageSource(new Bitmap(cameraManager.GetFrame()));
+                        NotifyOfPropertyChange(() => ImageWebcam);
+                    }
+                    )
+                );   
         }
 
 
