@@ -1,4 +1,5 @@
-﻿using Caliburn.Micro;
+﻿using Accord.Imaging.Filters;
+using Caliburn.Micro;
 using System.Drawing;
 using System.IO;
 using System.Windows;
@@ -9,7 +10,7 @@ namespace Client
     class MainWindowViewModel : Screen
     {
         #region fields
-
+        ///Sprawdzic czy tutaj musi byc BitmapImage czy moze byc Bitmap
         private BitmapImage imageWebcam = null;
         private BitmapImage imageSnapshot = null;
         private CameraManager cameraManager = null;
@@ -55,7 +56,7 @@ namespace Client
             Application.Current.Dispatcher.BeginInvoke(
             new System.Action(
                 () => {
-                    imageSnapshot = ImageWebcam;
+                    imageSnapshot = BitmapToImageSource(CropImage(BitmapImage2Bitmap(ImageWebcam), CreateRectangleForFace((int)ImageWebcam.Width, (int)ImageWebcam.Height))); //sprawdz to castowanie i czy da sie to zmienic
                     NotifyOfPropertyChange(() => ImageSnapshot);
                 }));
         }
@@ -92,7 +93,7 @@ namespace Client
         }
 
         #endregion
-
+        
 
         #region privatemethods
 
@@ -103,12 +104,17 @@ namespace Client
                 Application.Current.Dispatcher.BeginInvoke(
                 new System.Action(
                     () => {
-                        imageWebcam = BitmapToImageSource(new Bitmap(cameraManager.GetFrame()));
+                        imageWebcam = BitmapToImageSource(
+                            ApplyRectangleToBitmap(
+                                cameraManager.GetFrame()
+                            ));
                         NotifyOfPropertyChange(() => ImageWebcam);
                     }));
             }
         }
 
+
+        ///Funkcje externalowe przerobic na swoj kod i moze przenisc do jakichs tools? jako static
 
         /// <summary>
         /// External code!!!
@@ -130,7 +136,63 @@ namespace Client
                 return bitmapimage;
             }
         }
+        
+        /// <summary>
+        /// External
+        /// </summary>
+        /// <param name="bitmapImage"></param>
+        /// <returns></returns>
+        private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
+        {
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
+                enc.Save(outStream);
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
 
+                return new Bitmap(bitmap);
+            }
+        }
+
+        private Bitmap ApplyRectangleToBitmap(Bitmap source)
+        {
+            Rectangle rectangle = CreateRectangleForFace(source.Width, source.Height);
+            RectanglesMarker marker = new RectanglesMarker(rectangle);
+
+            return marker.Apply(source);
+        }
+
+        /// <summary>
+        /// External!!!
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="section"></param>
+        /// <returns></returns>
+        private Bitmap CropImage(Bitmap source, Rectangle section)
+        {
+            // An empty bitmap which will hold the cropped image
+            Bitmap bmp = new Bitmap(section.Width, section.Height);
+
+            Graphics g = Graphics.FromImage(bmp);
+
+            // Draw the given area (section) of the source image
+            // at location 0,0 on the empty bitmap (bmp)
+            g.DrawImage(source, 0, 0, section, GraphicsUnit.Pixel);
+
+            return bmp;
+        }
+
+        private Rectangle CreateRectangleForFace(int bitmapWidth, int bitmapHeight)
+        {
+            const int WIDTHOFIMAGETOSENT = 92 * 4;
+            const int HEIGHTOFIMAGETOSENT = 112 * 4;
+
+            int x = (bitmapWidth - WIDTHOFIMAGETOSENT) / 2;
+            int y = (bitmapHeight - HEIGHTOFIMAGETOSENT) / 2;
+
+            return new Rectangle(x, y, WIDTHOFIMAGETOSENT, HEIGHTOFIMAGETOSENT);
+        }
         #endregion
 
     }
