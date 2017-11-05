@@ -6,41 +6,60 @@ using System.Windows.Media.Imaging;
 
 namespace Client
 {
-    class MainWindowViewModel : PropertyChangedBase
+    class MainWindowViewModel : Screen
     {
+        #region fields
         private BitmapImage imageWebcam = null;
+        private BitmapImage imageSnapshot = null;
         private CameraManager cameraManager = null;
         private System.Timers.Timer timer = null;
 
-        public void Recognize()
-        {
-            cameraManager.Start();
-        }
-        public void Learn()
-        {
-            cameraManager.Stop();
-            timer.Stop();
-        }
-        public void AddFace()
-        {
-            timer.Start();
-        }
+        #endregion
+
+        #region properties
 
         public BitmapImage ImageWebcam
         {
             get
             {
-                return this.imageWebcam;
+                return imageWebcam;
             }
             set
             {
-                this.imageWebcam = value;
-                this.NotifyOfPropertyChange(() => this.ImageWebcam);
+                imageWebcam = value;
+                NotifyOfPropertyChange(() => ImageWebcam);
             }
         }
 
+        public BitmapImage ImageSnapshot
+        {
+            get
+            {
+                return imageSnapshot;
+            }
 
-        public MainWindowViewModel()
+            set
+            {
+                imageSnapshot = value;
+                NotifyOfPropertyChange(() => ImageSnapshot);
+            }
+        }
+
+        #endregion
+
+        #region publicmethods
+
+        public void Recognize()
+        {
+        }
+        public void Learn()
+        {
+        }
+        public void AddFace()
+        {
+        }
+
+        protected override void OnActivate()
         {
             cameraManager = new CameraManager();
             timer = new System.Timers.Timer();
@@ -48,18 +67,34 @@ namespace Client
             timer.Interval = 20; // ogarnac to inaczej
             timer.Elapsed += (sender, e) =>
             {
-                   UpdateImage();
+                UpdateImage();
             };
+            cameraManager.Start();
+            timer.Start();
         }
-        
+
+        protected override void OnDeactivate(bool close)
+        {
+            timer.Stop();
+            cameraManager.Stop();
+            base.OnDeactivate(close);
+        }
+
+        #endregion
+
+        #region privatemethods
+
         private void UpdateImage()
         {
-            Application.Current.Dispatcher.BeginInvoke(
+            if(cameraManager.GetFrame() != null)
+            {
+                Application.Current.Dispatcher.BeginInvoke(
                 new System.Action(
                     () => {
                         imageWebcam = BitmapToImageSource(new Bitmap(cameraManager.GetFrame()));
                         NotifyOfPropertyChange(() => ImageWebcam);
-                    }));   
+                    }));
+            }
         }
 
 
@@ -83,5 +118,7 @@ namespace Client
                 return bitmapimage;
             }
         }
+
+        #endregion
     }
 }
