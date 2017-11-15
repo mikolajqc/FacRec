@@ -70,9 +70,15 @@ namespace Client
             await Task.Run(() => faceRecognition.Learn());
             MessageBox.Show("Learnt!");
         }
-        public void Send()
+        public void Recognize()
         {
             MessageBox.Show(faceRecognition.Recognize(BitmapImage2Bitmap(ImageSnapshot)));
+        }
+
+        public async void AddFace()
+        {
+            await Task.Run(() => faceRecognition.AddNewFace(BitmapImage2Bitmap(ImageSnapshot), "ja"));
+            MessageBox.Show("Added!");
         }
 
         #endregion
