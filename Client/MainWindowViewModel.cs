@@ -82,7 +82,7 @@ namespace Client
         protected override void OnActivate()
         {
             cameraManager = new CameraManager();
-            faceRecognition = new FaceRecognition.FaceRecognition(@"C:\Users\mikolaj.ciesielski\Desktop\Studia\Inżynierka\Databases\AT&T");
+            faceRecognition = new FaceRecognition.FaceRecognition(@"../../../LearningSet_AT&T");
             timer = new System.Timers.Timer();
             timer.AutoReset = true;
             timer.Interval = 20; // ogarnac to inaczej
