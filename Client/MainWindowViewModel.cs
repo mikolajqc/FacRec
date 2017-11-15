@@ -61,7 +61,7 @@ namespace Client
             Application.Current.Dispatcher.BeginInvoke(
             new System.Action(
                 () => {
-                    imageSnapshot = BitmapToImageSource(CropImage(BitmapImage2Bitmap(ImageWebcam), CreateRectangleForFace((int)ImageWebcam.Width, (int)ImageWebcam.Height))); //sprawdz to castowanie i czy da sie to zmienic
+                    imageSnapshot = BitmapToImageSource(CropImage(BitmapImage2Bitmap(ImageWebcam), CreateRectangleForFace(ImageWebcam.PixelWidth, ImageWebcam.PixelHeight)));
                     NotifyOfPropertyChange(() => ImageSnapshot);
                 }));
         }
