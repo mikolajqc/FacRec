@@ -145,6 +145,31 @@ namespace FaceRecognition
 
         }
 
+        public void PushBackVector(double[] newVector, int orientation)
+        {
+            //for tests only:
+            double[,] newContent;
+            if (orientation == 0) newContent = new double[X, Y + 1];
+            else newContent = new double[X + 1, Y];
+
+            for (int i = 0; i < X; ++i)
+            {
+                for (int j = 0; j < Y;++j)
+                {
+                    newContent[i,j] = content[i,j];
+                }
+            }
+
+
+            for (int i = 0; i < newVector.Length; ++i)
+            {
+                if (orientation == 0) newContent[i, Y] = newVector[i];
+                else newContent[X, i] = newVector[i];
+            }
+
+            content = newContent;
+        }
+
         public FacesMatrix GetAverageVector(int orientation)
         {
             int lengthOfVector, numberOfVectors;
@@ -191,6 +216,21 @@ namespace FaceRecognition
             }
 
             return transposedMatrix;
+        }
+
+        public double[] GetVectorAsArray(int numberOfVector,int orientation)
+        {
+            int lengthOfVector = content.GetLength(orientation);
+
+            double[] result = new double[lengthOfVector];
+
+            for(int i = 0; i < lengthOfVector; ++i)
+            {
+                if (orientation == 0) result[i] = content[i, numberOfVector];
+                else result[i] = content[numberOfVector, i];
+            }
+
+            return result;
         }
 
         #endregion

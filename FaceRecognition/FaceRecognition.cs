@@ -28,6 +28,7 @@ namespace FaceRecognition
         private FacesMatrix eigenFacesT = null;
 
         private List<string> namesOfPeople = null;
+
         private string pathToLearningSet = null;
 
         #endregion
@@ -53,42 +54,31 @@ namespace FaceRecognition
         /// <returns></returns>
         public string Recognize(Bitmap bitMapWithFace) // temporary: Bitmap zamienic na wlasny typ FaceImage ktory obsluguje pgm itd
         {
-            Console.WriteLine("Recognizing...");
+            double[] wagesInArray = GetWagesOfImageInEigenFacesSpace(bitMapWithFace);
 
-            //scalling
-            bitMapWithFace = ScaleBitmapToRequredSize(bitMapWithFace);
-
-            FacesMatrix vectorOfFaceInMatrix = GetFaceMatrixFromBitmap(bitMapWithFace);
-            FacesMatrix diff =  vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, averageVector);
-
-            FacesMatrix currentImageWages = eigenFacesT * diff.Transpose();
-
-            double minSumOfDifferenceOfWages = double.MaxValue;
+            double minEuclideanDistance = double.MaxValue;
             int numberOfString = 0;
-
             for (int numberOfKnownImage = 0; numberOfKnownImage < wages.Y; ++numberOfKnownImage)
             {
-                double currentSumOfDifferenceOfWages = 0;
-                for (int numberOfEigenFace = 0; numberOfEigenFace < wages.X; ++numberOfEigenFace)
-                {
-                   // Console.WriteLine("diff: " + (wages.Content[numberOfEigenFace, numberOfKnownImage] - currentImageWages.Content[numberOfEigenFace, 0]));
+                double[] currentImageWagesInArray = wages.GetVectorAsArray(numberOfKnownImage, 0);
+                double currentEuclideanDistance = Accord.Math.Distance.Euclidean(wagesInArray, currentImageWagesInArray);
 
-                    currentSumOfDifferenceOfWages += Math.Abs(wages.Content[numberOfEigenFace, numberOfKnownImage] - currentImageWages.Content[numberOfEigenFace, 0]);
-                }
-
-                if (minSumOfDifferenceOfWages > currentSumOfDifferenceOfWages && currentSumOfDifferenceOfWages != 0) //!= 0 do usuniecia - tylko dla testow
+                if (minEuclideanDistance > currentEuclideanDistance)
                 {
-                    minSumOfDifferenceOfWages = currentSumOfDifferenceOfWages;
+                    minEuclideanDistance = currentEuclideanDistance;
                     numberOfString = numberOfKnownImage;
                 }
             }
+            //treshold trzeba ogarnac
 
-            ///do ogarniecia jakis zakres bledu, np mniejsze niz jakas liczba w odleglosci euklidesowej
-            ///poniżej tylko dla testow - do usuniecia
-
-            Console.WriteLine("Wage: " + minSumOfDifferenceOfWages);
-            
             return namesOfPeople.ElementAt(numberOfString);
+        }
+
+        public void AddNewFace(Bitmap bitmapWithNewFace, string name)
+        {
+            double[] wagesOfNewImage = GetWagesOfImageInEigenFacesSpace(bitmapWithNewFace);
+            wages.PushBackVector(wagesOfNewImage, 0);
+            namesOfPeople.Add(name);
         }
 
         public void Learn()
@@ -118,6 +108,16 @@ namespace FaceRecognition
         #endregion
 
         #region privatemethods
+
+        private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitMap)
+        {
+            Bitmap scaledBitmap = ScaleBitmapToRequredSize(bitMap);
+            FacesMatrix vectorOfFaceInMatrix = GetFaceMatrixFromBitmap(scaledBitmap);
+            FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, averageVector);
+            FacesMatrix currentImageWages = eigenFacesT * diff.Transpose();
+
+            return currentImageWages.GetVectorAsArray(0, 0);
+        }
 
         private void LoadLearningSet()
         {

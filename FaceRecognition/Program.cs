@@ -12,12 +12,14 @@ namespace FaceRecognition
     {
         static void Main(string[] args)
         {
-            FaceRecognition fR = new FaceRecognition(@"C:\Users\mikolaj.ciesielski\Desktop\Studia\Inżynierka\Databases\AT&T");
+            FaceRecognition fR = new FaceRecognition(@"../../../LearningSet_AT&T");
             fR.Learn();
 
-            Bitmap testBitMap = ImageDecoder.DecodeFromFile(@"C:\Users\mikolaj.ciesielski\Desktop\Studia\Inżynierka\Databases\nonface.jpg");
+            Bitmap testBitMap = ImageDecoder.DecodeFromFile(@"../../../LearningSet_AT&T/s1/1.pgm");
             Console.WriteLine("String: " + fR.Recognize(testBitMap));
-            Console.WriteLine("END");
+            Console.WriteLine("Adding new face:");
+            fR.AddNewFace(ImageDecoder.DecodeFromFile(@"C:\Users\Mikolaj\Desktop\Studia\putin.jpg"), "putin");
+            Console.WriteLine("Recognized: " + fR.Recognize(ImageDecoder.DecodeFromFile(@"C:\Users\Mikolaj\Desktop\Studia\putin.jpg")));
             Console.ReadKey();
         }
 
