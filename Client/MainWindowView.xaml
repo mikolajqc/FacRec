@@ -33,7 +33,9 @@
             </Grid.RowDefinitions>
             <Button Height="30"  Grid.Column="0" Grid.Row="0" x:Name="Snapshot" Content="Snapshot" />
             <Button Height="30"  Grid.Column="0" Grid.Row="1" x:Name="Learn" Content="Learn" />
-            <Button Height="30"  Grid.Column="0" Grid.Row="2" x:Name="Send" Content="Send" />
+            <Button Height="30"  Grid.Column="0" Grid.Row="2" x:Name="Recognize" Content="Recognize" />
+            <Button Height="30"  Grid.Column="0" Grid.Row="3" x:Name="AddFace" Content="AddFace" />
+            <TextBox Height="30"  Grid.Column="0" Grid.Row="4" x:Name="NameOfUser"/>
         </Grid>
 
         <Image Grid.Column="1" x:Name="ImageWebcam" />

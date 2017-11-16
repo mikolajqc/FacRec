@@ -17,6 +17,8 @@ namespace Client
         private BitmapImage imageWebcam = null;
         private BitmapImage imageSnapshot = null;
         private CameraManager cameraManager = null;
+        private string nameOfUser = null;
+
         private System.Timers.Timer timer = null;
 
         private FaceRecognition.FaceRecognition faceRecognition = null; //temporary - before communication
@@ -52,6 +54,19 @@ namespace Client
             }
         }
 
+        public string NameOfUser
+        {
+            get
+            {
+                return nameOfUser;
+            }
+            set
+            {
+                nameOfUser = value;
+                NotifyOfPropertyChange(() => NameOfUser);
+            }
+        }
+
         #endregion
 
         #region publicmethods
@@ -70,9 +85,15 @@ namespace Client
             await Task.Run(() => faceRecognition.Learn());
             MessageBox.Show("Learnt!");
         }
-        public void Send()
+        public void Recognize()
         {
             MessageBox.Show(faceRecognition.Recognize(BitmapImage2Bitmap(ImageSnapshot)));
+        }
+
+        public async void AddFace()
+        {
+            await Task.Run(() => faceRecognition.AddNewFace(BitmapImage2Bitmap(ImageSnapshot), nameOfUser));
+            MessageBox.Show("Added!");
         }
 
         #endregion
