@@ -21,6 +21,7 @@ namespace FaceRecognition
         ///czy tutaj koniecznie consty?
         const int WIDTH = 92;
         const int HEIGHT = 112;
+        const int ERROR_TOLERANCE = 70000000;
 
         private FacesMatrix unprocessedVectors = null;
         private FacesMatrix averageVector = null;
@@ -69,8 +70,8 @@ namespace FaceRecognition
                     numberOfString = numberOfKnownImage;
                 }
             }
-            //treshold trzeba ogarnac
 
+            if (minEuclideanDistance > ERROR_TOLERANCE) return "unknown";
             return namesOfPeople.ElementAt(numberOfString);
         }
 
@@ -172,7 +173,7 @@ namespace FaceRecognition
         private List<double> GetImageVectorInList(string pathToImage)
         {
             Bitmap bitmap = ScaleBitmapToRequredSize(ImageDecoder.DecodeFromFile(pathToImage));
-            //bitmap.Save(pathToImage);
+
             HistogramEqualization histogramEqualization = new HistogramEqualization();
             bitmap = histogramEqualization.Apply(bitmap);
 
