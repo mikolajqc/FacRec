@@ -6,6 +6,10 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using FaceRecognition;
 using System.Threading.Tasks;
+using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Formatting;
 
 namespace Client
 {
@@ -85,9 +89,11 @@ namespace Client
             await Task.Run(() => faceRecognition.Learn());
             MessageBox.Show("Learnt!");
         }
-        public void Recognize()
+        public async void Recognize()
         {
-            MessageBox.Show(faceRecognition.Recognize(BitmapImage2Bitmap(ImageSnapshot)));
+            //MessageBox.Show(faceRecognition.Recognize(BitmapImage2Bitmap(ImageSnapshot)));
+            string res = await UploadBitmapAsync(BitmapImage2Bitmap(ImageSnapshot));
+            MessageBox.Show(res);
         }
 
         public async void AddFace()
@@ -224,6 +230,40 @@ namespace Client
             return new Rectangle(x, y, WIDTHOFIMAGETOSENT, HEIGHTOFIMAGETOSENT);
         }
         #endregion
+
+    /// <summary>
+    /// Czesciowo external, upewnic sie czy nie lepiej wysylac w jakims base64
+    /// </summary>
+    /// <param name="bitmap"></param>
+    /// <returns></returns>
+    public async Task<String> UploadBitmapAsync(Bitmap bitmap)
+        {
+            byte[] bitmapData;
+            var stream = new MemoryStream();
+            bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+            bitmapData = stream.ToArray();
+
+            var client = new HttpClient()
+            {
+                BaseAddress = new Uri("http://localhost:15390")
+            };
+            // Set the Accept header for BSON.
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/bson"));
+
+            var request = new Request
+            {
+                Name = "new",
+                BitmapInArray = bitmapData
+            };
+
+            MediaTypeFormatter bsonFormatter = new BsonMediaTypeFormatter();
+            var result = await client.PostAsync("/api/FaceRecognition", request, bsonFormatter);
+
+            result.EnsureSuccessStatusCode();
+            return "ok";
+        }
 
     }
 }
