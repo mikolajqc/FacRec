@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="FaceRecognition.cs" />
     <Compile Include="FacesMatrix.cs" />
+    <Compile Include="IFaceRecognition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

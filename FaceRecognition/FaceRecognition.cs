@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FaceRecognition
 {
-    public class FaceRecognition
+    public class FaceRecognition : IFaceRecognition
     {
         ///TODO:
         ///1. wykluczyc mozliwosc ze jedna twarz ma wiecej przykladow - exception przy mnozeniu macierzy lub rozwiazac to jakos

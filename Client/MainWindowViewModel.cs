@@ -21,7 +21,7 @@ namespace Client
 
         private System.Timers.Timer timer = null;
 
-        private FaceRecognition.FaceRecognition faceRecognition = null; //temporary - before communication
+        private FaceRecognition.IFaceRecognition faceRecognition = null; //temporary - before communication
 
         #endregion
 
