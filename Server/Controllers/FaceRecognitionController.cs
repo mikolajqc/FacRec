@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
+using System.Web.Http.Dependencies;
 
 namespace Server.Controllers
 {
@@ -19,11 +20,17 @@ namespace Server.Controllers
     {
         FaceRecognition.IFaceRecognition fR = new FaceRecognition.FaceRecognition(@"D:\Studia\Inzynierka\LearningSet_AT&T\");
 
-        // GET: api/FaceRecognition
-        public string Get()
+        [Route("api/FaceRecognition/Learn")]
+        public async Task<string> Learn()
         {
-            fR.Learn();
-            return "Learnt!";
+            ///TODO: zrobic zeby ID sie samo generowalo, ogarnac jak wrzucac wages jako JSON, ale czy obchodza nas wagi osob testowych?
+           // List<FacesMatrix> infoFromLearning = fR.Learn();
+
+            //KnownPeoplesController knownPeopleController = new KnownPeoplesController();
+
+            //await knownPeopleController.PostKnownPeople(new Models.KnownPeople { Id = 1, Person = "elo", Wages = "1,2,3,4" });
+
+            return "posted";
         }
 
         [Route("api/FaceRecognition/Recognize")]

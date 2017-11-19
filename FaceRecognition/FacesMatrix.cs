@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FaceRecognition
 {
-    class FacesMatrix
+    public class FacesMatrix
     {
         ///TODO:
         /// Jak mapowac obraz na czlowieka i gdzie to reprezentowac?

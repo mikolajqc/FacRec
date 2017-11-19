@@ -82,10 +82,8 @@ namespace FaceRecognition
             namesOfPeople.Add(name);
         }
 
-        public void Learn()
+        public List<FacesMatrix> Learn()
         {
-            Console.WriteLine("Learning...");
-
             LoadLearningSet();
             averageVector = unprocessedVectors.GetAverageVector(1);
             FacesMatrix differenceVectors = unprocessedVectors - new FacesMatrix(unprocessedVectors.X, averageVector);
@@ -102,7 +100,12 @@ namespace FaceRecognition
 
             wages = eigenFacesT * differenceVectorsT;
 
-            Console.WriteLine("Done");
+            List<FacesMatrix> result = new List<FacesMatrix>();
+            result.Add(averageVector);
+            result.Add(eigenFaces);
+            result.Add(wages);
+
+            return result;
 
         }
 

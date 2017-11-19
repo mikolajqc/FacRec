@@ -11,7 +11,7 @@ namespace FaceRecognition
     {
         string Recognize(Bitmap bitmapWithFace);
         void AddNewFace(Bitmap bitmapWithFace, string name);
-        void Learn();
+        List<FacesMatrix> Learn();
 
     }
 }
