@@ -26,14 +26,8 @@ namespace Server.Controllers
             return "Learnt!";
         }
 
-        // GET: api/FaceRecognition/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST: api/FaceRecognition
-        public HttpResponseMessage Post(Request request)
+        [Route("api/FaceRecognition/Recognize")]
+        public HttpResponseMessage Recognize(Request request)
         {
             fR.Learn();
 
@@ -50,14 +44,11 @@ namespace Server.Controllers
             return response;
         }
 
-        // PUT: api/FaceRecognition/5
-        public void Put(int id, [FromBody]string value)
+        [Route("api/FaceRecognition/AddFace")]
+        public HttpResponseMessage AddFace(Request request)
         {
+            return Request.CreateResponse(HttpStatusCode.OK, "Face added!");
         }
 
-        // DELETE: api/FaceRecognition/5
-        public void Delete(int id)
-        {
-        }
     }
 }
