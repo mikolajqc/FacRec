@@ -13,44 +13,44 @@ using Server.Models;
 
 namespace Server.Controllers
 {
-    public class EigenFacesController : ApiController
+    public class WagesController : ApiController
     {
         private FaceRecognitionDatabaseEntities db = new FaceRecognitionDatabaseEntities();
 
-        // GET: api/EigenFaces
-        public IQueryable<EigenFace> GetEigenFaces()
+        // GET: api/Wages
+        public IQueryable<Wage> GetWages()
         {
-            return db.EigenFaces;
+            return db.Wages;
         }
 
-        // GET: api/EigenFaces/5
-        [ResponseType(typeof(EigenFace))]
-        public async Task<IHttpActionResult> GetEigenFace(int id)
+        // GET: api/Wages/5
+        [ResponseType(typeof(Wage))]
+        public async Task<IHttpActionResult> GetWage(int id)
         {
-            EigenFace eigenFace = await db.EigenFaces.FindAsync(id);
-            if (eigenFace == null)
+            Wage wage = await db.Wages.FindAsync(id);
+            if (wage == null)
             {
                 return NotFound();
             }
 
-            return Ok(eigenFace);
+            return Ok(wage);
         }
 
-        // PUT: api/EigenFaces/5
+        // PUT: api/Wages/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutEigenFace(int id, EigenFace eigenFace)
+        public async Task<IHttpActionResult> PutWage(int id, Wage wage)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != eigenFace.ID)
+            if (id != wage.ID)
             {
                 return BadRequest();
             }
 
-            db.Entry(eigenFace).State = EntityState.Modified;
+            db.Entry(wage).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +58,7 @@ namespace Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!EigenFaceExists(id))
+                if (!WageExists(id))
                 {
                     return NotFound();
                 }
@@ -71,35 +71,35 @@ namespace Server.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/EigenFaces
-        [ResponseType(typeof(EigenFace))]
-        public async Task<IHttpActionResult> PostEigenFace(EigenFace eigenFace)
+        // POST: api/Wages
+        [ResponseType(typeof(Wage))]
+        public async Task<IHttpActionResult> PostWage(Wage wage)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.EigenFaces.Add(eigenFace);
+            db.Wages.Add(wage);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = eigenFace.ID }, eigenFace);
+            return CreatedAtRoute("DefaultApi", new { id = wage.ID }, wage);
         }
 
-        // DELETE: api/EigenFaces/5
-        [ResponseType(typeof(EigenFace))]
-        public async Task<IHttpActionResult> DeleteEigenFace(int id)
+        // DELETE: api/Wages/5
+        [ResponseType(typeof(Wage))]
+        public async Task<IHttpActionResult> DeleteWage(int id)
         {
-            EigenFace eigenFace = await db.EigenFaces.FindAsync(id);
-            if (eigenFace == null)
+            Wage wage = await db.Wages.FindAsync(id);
+            if (wage == null)
             {
                 return NotFound();
             }
 
-            db.EigenFaces.Remove(eigenFace);
+            db.Wages.Remove(wage);
             await db.SaveChangesAsync();
 
-            return Ok(eigenFace);
+            return Ok(wage);
         }
 
         protected override void Dispose(bool disposing)
@@ -111,9 +111,9 @@ namespace Server.Controllers
             base.Dispose(disposing);
         }
 
-        private bool EigenFaceExists(int id)
+        private bool WageExists(int id)
         {
-            return db.EigenFaces.Count(e => e.ID == id) > 0;
+            return db.Wages.Count(e => e.ID == id) > 0;
         }
     }
 }

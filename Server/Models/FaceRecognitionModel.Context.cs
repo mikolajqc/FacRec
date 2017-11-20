@@ -13,10 +13,10 @@ namespace Server.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class FaceRecognitionDatabaseEntities3 : DbContext
+    public partial class FaceRecognitionDatabaseEntities : DbContext
     {
-        public FaceRecognitionDatabaseEntities3()
-            : base("name=FaceRecognitionDatabaseEntities3")
+        public FaceRecognitionDatabaseEntities()
+            : base("name=FaceRecognitionDatabaseEntities")
         {
         }
     
@@ -27,6 +27,6 @@ namespace Server.Models
     
         public virtual DbSet<AverageVector> AverageVectors { get; set; }
         public virtual DbSet<EigenFace> EigenFaces { get; set; }
-        public virtual DbSet<KnownPeople> KnownPeoples { get; set; }
+        public virtual DbSet<Wage> Wages { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace Server.Controllers
 {
     public class AverageVectorsController : ApiController
     {
-        private FaceRecognitionDatabaseEntities3 db = new FaceRecognitionDatabaseEntities3();
+        private FaceRecognitionDatabaseEntities db = new FaceRecognitionDatabaseEntities();
 
         // GET: api/AverageVectors
         public IQueryable<AverageVector> GetAverageVectors()
@@ -45,7 +45,7 @@ namespace Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != averageVector.Id)
+            if (id != averageVector.ID)
             {
                 return BadRequest();
             }
@@ -81,24 +81,9 @@ namespace Server.Controllers
             }
 
             db.AverageVectors.Add(averageVector);
+            await db.SaveChangesAsync();
 
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (AverageVectorExists(averageVector.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtRoute("DefaultApi", new { id = averageVector.Id }, averageVector);
+            return CreatedAtRoute("DefaultApi", new { id = averageVector.ID }, averageVector);
         }
 
         // DELETE: api/AverageVectors/5
@@ -128,7 +113,7 @@ namespace Server.Controllers
 
         private bool AverageVectorExists(int id)
         {
-            return db.AverageVectors.Count(e => e.Id == id) > 0;
+            return db.AverageVectors.Count(e => e.ID == id) > 0;
         }
     }
 }

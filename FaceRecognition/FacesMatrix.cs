@@ -233,6 +233,39 @@ namespace FaceRecognition
             return result;
         }
 
+        public List<double[]> GetMatrixAsListOfArrays(int orientation)
+        {
+            List<double[]> result = new List<double[]>();
+
+            int numbersOfVectors;
+            int lenghtOfVectors;
+
+            if (orientation == 0)
+            {
+                numbersOfVectors = Y;
+                lenghtOfVectors = X;
+            }
+            else
+            {
+                numbersOfVectors = X;
+                lenghtOfVectors = Y;
+            }
+
+            for (int i = 0; i < numbersOfVectors; ++i)
+            {
+                double[] currentVectorInArray = new double[lenghtOfVectors];
+                for(int j = 0; j < lenghtOfVectors; ++j)
+                {
+                    if (orientation == 0) currentVectorInArray[j] = content[j,i];
+                    else currentVectorInArray[j] = content[i, j];
+                }
+
+                result.Add(currentVectorInArray);
+            }
+
+            return result;
+        }
+
         #endregion
 
         #region operators

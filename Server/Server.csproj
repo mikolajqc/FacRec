@@ -139,7 +139,7 @@
     <Compile Include="Controllers\AverageVectorsController.cs" />
     <Compile Include="Controllers\EigenFacesController.cs" />
     <Compile Include="Controllers\FaceRecognitionController.cs" />
-    <Compile Include="Controllers\KnownPeoplesController.cs" />
+    <Compile Include="Controllers\WagesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -164,7 +164,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FaceRecognitionModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\KnownPeople.cs">
+    <Compile Include="Models\Wage.cs">
       <DependentUpon>FaceRecognitionModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

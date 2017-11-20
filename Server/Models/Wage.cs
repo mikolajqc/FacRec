@@ -12,10 +12,10 @@ namespace Server.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class KnownPeople
+    public partial class Wage
     {
-        public int Id { get; set; }
-        public string Person { get; set; }
-        public string Wages { get; set; }
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
 }

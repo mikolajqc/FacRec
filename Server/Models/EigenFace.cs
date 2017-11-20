@@ -14,7 +14,7 @@ namespace Server.Models
     
     public partial class EigenFace
     {
-        public int Id { get; set; }
-        public string EigenFace1 { get; set; }
+        public int ID { get; set; }
+        public string Value { get; set; }
     }
 }
