@@ -15,7 +15,7 @@ namespace FaceRecognition
     {
         ///TODO:
         ///1. wykluczyc mozliwosc ze jedna twarz ma wiecej przykladow - exception przy mnozeniu macierzy lub rozwiazac to jakos
-
+        /// Trzeba ogarnac ten fR, bo czasami go wykorzystujemy do learningu a czasami do recognition, stan jest w DB!!!!!!!!!!!!!!!!!!
         #region fields
         
         ///czy tutaj koniecznie consty?
@@ -35,6 +35,14 @@ namespace FaceRecognition
         #endregion
 
         #region constructors
+        
+        public FaceRecognition(LearningInfo learningInfo)
+        {
+            averageVector = new FacesMatrix(learningInfo.averageVector, 1);
+            eigenFacesT = new FacesMatrix(learningInfo.eigenFaces, 1); //orientacja 1 bo tworzymy EigenFacesT czyli gdzie X jest = 400
+            wages = new FacesMatrix();
+            namesOfPeople = new List<string>();
+        }
 
         public FaceRecognition(string pathToLearningSet)
         {

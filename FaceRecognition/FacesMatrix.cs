@@ -25,6 +25,7 @@ namespace FaceRecognition
 
         public FacesMatrix()
         {
+            content = new double[0,0];
         }
         /// <summary>
         /// [x,y]
@@ -70,6 +71,36 @@ namespace FaceRecognition
                 else content[0, i] = vector[i];
             }
 
+        }
+
+        public FacesMatrix(List<double[]> content, int orientation)
+        {
+            
+            int x, y;
+
+            if (orientation == 0)
+            {
+                x = content[0].Length;
+                y = content.Count;
+            }
+            else
+            {
+                y = content[0].Length;
+                x = content.Count;
+            }
+
+            this.content = new double[x,y];
+
+            for (int i = 0; i < x; ++i)
+            {
+                for (int j = 0; j < y; ++j)
+                {
+                    if (orientation == 0) this.content[i, j] = content[j][i];
+                    else this.content[i, j] = content[i][j];
+
+
+                }
+            }
         }
 
         #endregion

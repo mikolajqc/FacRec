@@ -259,7 +259,7 @@ namespace Client
             };
 
             MediaTypeFormatter bsonFormatter = new BsonMediaTypeFormatter();
-            var response = await client.PostAsync("/api/FaceRecognition", request, bsonFormatter);
+            var response = await client.PostAsync("/api/FaceRecognition/Recognize", request, bsonFormatter);
 
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
