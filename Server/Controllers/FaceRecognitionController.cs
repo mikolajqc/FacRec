@@ -37,13 +37,10 @@ namespace Server.Controllers
             LearningInfo learningInfo = GetLearningInfoFromDatabase();
 
             IFaceRecognition fR = new FaceRecognition.FaceRecognition(learningInfo);
-            
-            //loading configuration
+           
+            byte[] bitmapWithFaceInArray = request.BitmapInArray;
 
-            string req = request.Name;
-            byte[] bitmap = request.BitmapInArray;
-
-            Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmap)));
+            Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
 
             string resultOfRecognition = fR.Recognize(bitmapWithFace);
 
@@ -79,8 +76,6 @@ namespace Server.Controllers
 
         public LearningInfo GetLearningInfoFromDatabase()
         {
-            ///update gdzies sie pojawia
-
             AverageVectorsController averageVectorController = new AverageVectorsController();
             EigenFacesController eigenFacesController = new EigenFacesController();
 

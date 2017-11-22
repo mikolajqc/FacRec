@@ -15,6 +15,9 @@ namespace Client
 {
     class MainWindowViewModel : Screen
     {
+        ///TODO:
+        ///1. requests manager
+        ///
         ///Dodaj lustrzane odbicie
         #region fields
         ///Sprawdzic czy tutaj musi byc BitmapImage czy moze byc Bitmap
@@ -25,7 +28,7 @@ namespace Client
 
         private System.Timers.Timer timer = null;
 
-        private FaceRecognition.IFaceRecognition faceRecognition = null; //temporary - before communication
+        private FaceRecognition.IFaceRecognition faceRecognition = null; //temporary - before communication - DI?????
 
         #endregion
 
