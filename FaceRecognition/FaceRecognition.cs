@@ -51,6 +51,15 @@ namespace FaceRecognition
             wages = new FacesMatrix();
             namesOfPeople = new List<string>();
         }
+        
+
+        public FaceRecognition()
+        {
+            pathToLearningSet = @"D:\Studia\Inzynierka\LearningSet_AT&T\";
+            unprocessedVectors = new FacesMatrix();
+            wages = new FacesMatrix();
+            namesOfPeople = new List<string>();
+        }
 
         #endregion
 
