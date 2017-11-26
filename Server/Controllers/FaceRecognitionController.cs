@@ -14,6 +14,7 @@ using System.IO;
 using System.Text;
 using System.Web.Http.Dependencies;
 using Newtonsoft.Json;
+using Server.Repositories;
 
 namespace Server.Controllers
 {
@@ -77,10 +78,12 @@ namespace Server.Controllers
 
         public LearningInfo GetLearningInfoFromDatabase()
         {
+            GenericUnitOfWork guow = new GenericUnitOfWork();
+
             AverageVectorsController averageVectorController = new AverageVectorsController();
             EigenFacesController eigenFacesController = new EigenFacesController();
 
-            List<Models.AverageVector> listOfAverageVectorModels = averageVectorController.GetAverageVectors().ToList();
+            List<Models.AverageVector> listOfAverageVectorModels = guow.Repository<Models.AverageVector>().GetOverview().ToList();//averageVectorController.GetAverageVectors().ToList();
 
             double[] averageVector = (JsonConvert.DeserializeObject(listOfAverageVectorModels.Last().Value, typeof(double[])) as double[]);
 
