@@ -23,9 +23,9 @@ namespace Server.Controllers
         [Route("api/FaceRecognition/Learn")]
         public async Task<string> Learn()
         {
-            IFaceRecognition fR = new FaceRecognition.FaceRecognition(@"D:\Studia\Inzynierka\LearningSet_AT&T\");
+            IFaceRecognition fR = new FaceRecognition.FaceRecognition();
 
-            LearningInfo learningInfo = fR.Learn();
+            LearningInfo learningInfo = fR.Learn(); // tak byc nie moze niech dane schodza do bazy z serwisu!!!
             await InsertLearningInfoToDatabase(learningInfo);
 
             return "Learnt!";
@@ -36,8 +36,9 @@ namespace Server.Controllers
         {
             LearningInfo learningInfo = GetLearningInfoFromDatabase();
 
-            IFaceRecognition fR = new FaceRecognition.FaceRecognition(learningInfo);
-           
+            IFaceRecognition fR = new FaceRecognition.FaceRecognition();
+            fR.LoadLearningInfo(learningInfo);
+
             byte[] bitmapWithFaceInArray = request.BitmapInArray;
 
             Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));

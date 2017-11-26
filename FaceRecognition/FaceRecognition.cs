@@ -35,23 +35,6 @@ namespace FaceRecognition
         #endregion
 
         #region constructors
-        
-        public FaceRecognition(LearningInfo learningInfo)
-        {
-            averageVector = new FacesMatrix(learningInfo.averageVector, 1);
-            eigenFacesT = new FacesMatrix(learningInfo.eigenFaces, 1); //orientacja 1 bo tworzymy EigenFacesT czyli gdzie X jest = 400
-            wages = new FacesMatrix();
-            namesOfPeople = new List<string>();
-        }
-
-        public FaceRecognition(string pathToLearningSet)
-        {
-            this.pathToLearningSet = pathToLearningSet;
-            unprocessedVectors = new FacesMatrix();
-            wages = new FacesMatrix();
-            namesOfPeople = new List<string>();
-        }
-        
 
         public FaceRecognition()
         {
@@ -126,6 +109,12 @@ namespace FaceRecognition
                         };
         }
 
+        public void LoadLearningInfo(LearningInfo learningInfo )
+        {
+            averageVector = new FacesMatrix(learningInfo.averageVector, 1);
+            eigenFacesT = new FacesMatrix(learningInfo.eigenFaces, 1); //orientacja 1 bo tworzymy EigenFacesT czyli gdzie X jest = 400
+        }
+
         #endregion
 
         #region privatemethods
@@ -186,7 +175,6 @@ namespace FaceRecognition
 
         private Bitmap ScaleBitmapToRequredSize(Bitmap bitMap)
         {
-            Console.WriteLine("Scalling image to" + WIDTH + "x" + HEIGHT);
             return new Bitmap(bitMap, new Size(WIDTH, HEIGHT));
         }
 
