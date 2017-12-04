@@ -15,20 +15,30 @@ using System.Text;
 using System.Web.Http.Dependencies;
 using Newtonsoft.Json;
 using Server.Repositories;
+using Commons.Inferfaces.DAOs;
 
 namespace Server.Controllers
 {
     public class FaceRecognitionController : ApiController
     {
+        private readonly IFaceRecognition fR;
+
+        public FaceRecognitionController(IFaceRecognition fR)
+        {
+            this.fR = fR;
+        }
 
         [Route("api/FaceRecognition/Learn")]
         public async Task<string> Learn()
         {
+            //fR.Learn();
+            //var test = averageVectorDAO.GetOverview();
+            /*
             IFaceRecognition fR = new FaceRecognition.FaceRecognition();
 
             LearningInfo learningInfo = fR.Learn(); // tak byc nie moze niech dane schodza do bazy z serwisu!!!
             await InsertLearningInfoToDatabase(learningInfo);
-
+            */
             return "Learnt!";
         }
 
@@ -37,7 +47,7 @@ namespace Server.Controllers
         {
             LearningInfo learningInfo = GetLearningInfoFromDatabase();
 
-            IFaceRecognition fR = new FaceRecognition.FaceRecognition();
+            //IFaceRecognition fR = new FaceRecognition.FaceRecognition(averageVectorDAO);
             fR.LoadLearningInfo(learningInfo);
 
             byte[] bitmapWithFaceInArray = request.BitmapInArray;

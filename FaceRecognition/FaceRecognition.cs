@@ -1,6 +1,7 @@
 ﻿using Accord.Imaging.Filters;
 using Accord.Imaging.Formats;
 using Accord.Math.Decompositions;
+using Commons.Inferfaces.DAOs;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -32,12 +33,17 @@ namespace FaceRecognition
 
         private string pathToLearningSet = null;
 
+        //readonly for DI
+        private readonly IAverageVectorDAO averageVectorDAO;
+
         #endregion
 
         #region constructors
 
-        public FaceRecognition()
+        public FaceRecognition(IAverageVectorDAO averageVectorDAO)
         {
+            this.averageVectorDAO = averageVectorDAO;
+
             pathToLearningSet = @"D:\Studia\Inzynierka\LearningSet_AT&T\";
             unprocessedVectors = new FacesMatrix();
             wages = new FacesMatrix();

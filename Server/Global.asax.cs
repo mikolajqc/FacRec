@@ -1,4 +1,6 @@
-﻿using FaceRecognition;
+﻿using Commons.Inferfaces.DAOs;
+using FaceRecognition;
+using Server.DAO;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
 using SimpleInjector.Lifestyles;
@@ -18,7 +20,15 @@ namespace Server
             ///SimpleInjector configuration
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
-            container.Register<IFaceRecognition, FaceRecognition.FaceRecognition>(Lifestyle.Scoped);
+
+            //?
+            container.Register<IFaceRecognition, FaceRecognition.FaceRecognition>(Lifestyle.Transient);
+
+            //DAOs
+            container.Register<IAverageVectorDAO, AverageVectorDAO>(Lifestyle.Transient);
+            container.Register<IEigenFaceDAO, EigenFaceDAO>(Lifestyle.Transient);
+            container.Register<IWageDAO, WageDAO>(Lifestyle.Transient);
+
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
             container.Verify();
             GlobalConfiguration.Configuration.DependencyResolver =
