@@ -204,10 +204,6 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Client\Client.csproj">
-      <Project>{D850F835-00ED-43D1-8E83-16E4B260AEA2}</Project>
-      <Name>Client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Commons\Commons.csproj">
       <Project>{B8F33D83-E16C-4081-B0F7-668936059B54}</Project>
       <Name>Commons</Name>
