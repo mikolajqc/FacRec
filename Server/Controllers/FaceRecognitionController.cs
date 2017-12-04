@@ -7,7 +7,6 @@ using System.Web.Http;
 using FaceRecognition;
 using System.Web;
 using System.Threading.Tasks;
-using Client;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -16,6 +15,7 @@ using System.Web.Http.Dependencies;
 using Newtonsoft.Json;
 using Server.Repositories;
 using Commons.Inferfaces.DAOs;
+using Commons;
 
 namespace Server.Controllers
 {

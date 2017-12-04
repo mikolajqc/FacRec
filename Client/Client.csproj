@@ -122,7 +122,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Request.cs" />
     <Page Include="MainWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -168,6 +167,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Commons\Commons.csproj">
+      <Project>{B8F33D83-E16C-4081-B0F7-668936059B54}</Project>
+      <Name>Commons</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FaceRecognition\FaceRecognition.csproj">
       <Project>{8580fdb1-be35-42f9-93e6-180005caf906}</Project>
       <Name>FaceRecognition</Name>
