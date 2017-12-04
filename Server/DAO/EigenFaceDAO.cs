@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Server.DAO
 {
-    public class EigenFaceDAO : IDAO<EigenFace>
+    public class EigenFaceDAO : IEigenFaceDAO
     {
         GenericUnitOfWork guow = new GenericUnitOfWork(); // zastosuj SipleInjector
 

@@ -43,7 +43,9 @@
     <Compile Include="BussinessClasses\AverageVector.cs" />
     <Compile Include="BussinessClasses\EigenFace.cs" />
     <Compile Include="BussinessClasses\Wage.cs" />
-    <Compile Include="Inferfaces\DAOs\IDAO.cs" />
+    <Compile Include="Inferfaces\DAOs\IAverageVectorDAO.cs" />
+    <Compile Include="Inferfaces\DAOs\IEigenFaceDAO.cs" />
+    <Compile Include="Inferfaces\DAOs\IWageDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

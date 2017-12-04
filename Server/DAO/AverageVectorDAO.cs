@@ -8,7 +8,7 @@ using System.Web;
 
 namespace Server.DAO
 {
-    public class AverageVectorDAO : IDAO<AverageVector>
+    public class AverageVectorDAO : IAverageVectorDAO
     {
         GenericUnitOfWork guow = new GenericUnitOfWork(); // zastosuj SipleInjector
 
