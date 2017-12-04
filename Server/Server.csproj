@@ -144,17 +144,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="BussinessClasses\AverageVector.cs" />
-    <Compile Include="BussinessClasses\EigenFace.cs" />
-    <Compile Include="BussinessClasses\Wage.cs" />
     <Compile Include="Controllers\AverageVectorsController.cs" />
     <Compile Include="Controllers\EigenFacesController.cs" />
     <Compile Include="Controllers\FaceRecognitionController.cs" />
     <Compile Include="Controllers\WagesController.cs" />
     <Compile Include="DAO\AverageVectorDAO.cs" />
     <Compile Include="DAO\EigenFaceDAO.cs" />
-    <Compile Include="DAO\Interfaces\IDAO.cs" />
-    <Compile Include="DAO\WageDTO.cs" />
+    <Compile Include="DAO\WageDAO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -211,6 +207,10 @@
     <ProjectReference Include="..\Client\Client.csproj">
       <Project>{D850F835-00ED-43D1-8E83-16E4B260AEA2}</Project>
       <Name>Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Commons\Commons.csproj">
+      <Project>{B8F33D83-E16C-4081-B0F7-668936059B54}</Project>
+      <Name>Commons</Name>
     </ProjectReference>
     <ProjectReference Include="..\FaceRecognition\FaceRecognition.csproj">
       <Project>{8580fdb1-be35-42f9-93e6-180005caf906}</Project>

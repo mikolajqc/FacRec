@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server.DAO.Interfaces
+namespace Commons.Inferfaces.DAOs
 {
     public interface IDAO<T>
     {
         IEnumerable<T> GetOverview();
         T GetDetail();
-        void Add(T eigenFace);
-        void Delete(T eigenFace);
+        void Add(T entity);
+        void Delete(T entity);
     }
 }

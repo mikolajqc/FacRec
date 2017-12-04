@@ -1,5 +1,5 @@
-﻿using Server.BussinessClasses;
-using Server.DAO.Interfaces;
+﻿using Commons.BussinessClasses;
+using Commons.Inferfaces.DAOs;
 using Server.Repositories;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Web;
 
 namespace Server.DAO
 {
-    public class WageDTO : IDAO<Wage>
+    public class WageDAO : IDAO<Wage>
     {
         GenericUnitOfWork guow = new GenericUnitOfWork(); // zastosuj SipleInjector chyba musi byc singleton???? poczytaj jak to powinno wygladac
         public void Add(Wage wage)

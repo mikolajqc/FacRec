@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Server.BussinessClasses
+namespace Commons.BussinessClasses
 {
-    public class AverageVector
+    public class Wage // rename this !!!
     {
         private int id;
         private string value;
+        private string name;
 
         public int Id
         {
@@ -33,6 +34,19 @@ namespace Server.BussinessClasses
             set
             {
                 this.value = value;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+
+            set
+            {
+                name = value;
             }
         }
     }

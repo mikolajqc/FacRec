@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Server.BussinessClasses
+namespace Commons.BussinessClasses
 {
-    public class EigenFace
+    public class AverageVector
     {
         private int id;
         private string value;

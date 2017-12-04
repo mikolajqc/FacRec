@@ -1,5 +1,5 @@
-﻿using Server.BussinessClasses;
-using Server.DAO.Interfaces;
+﻿using Commons.BussinessClasses;
+using Commons.Inferfaces.DAOs;
 using Server.Repositories;
 using System;
 using System.Collections.Generic;

@@ -1,8 +1,8 @@
-﻿using Server.BussinessClasses;
+﻿using Commons.BussinessClasses;
+using Commons.Inferfaces.DAOs;
 using Server.Repositories;
 using System;
 using System.Collections.Generic;
-using Server.DAO.Interfaces;
 
 namespace Server.DAO
 {
