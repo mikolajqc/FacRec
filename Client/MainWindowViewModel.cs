@@ -113,7 +113,7 @@ namespace Client
         protected override void OnActivate()
         {
             cameraManager = new CameraManager();
-            faceRecognition = new FaceRecognition.FaceRecognition();
+            //faceRecognition = new FaceRecognition.FaceRecognition(); - to delete i tak idzie REST
             timer = new System.Timers.Timer();
             timer.AutoReset = true;
             timer.Interval = 20; // ogarnac to inaczej

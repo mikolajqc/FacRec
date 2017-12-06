@@ -249,6 +249,12 @@ namespace FaceRecognition
             return transposedMatrix;
         }
 
+        /// <summary>
+        /// Method returns vector as array. It takes number of vector and orientation (0 or 1)
+        /// </summary>
+        /// <param name="numberOfVector"></param>
+        /// <param name="orientation"></param>
+        /// <returns></returns>
         public double[] GetVectorAsArray(int numberOfVector,int orientation)
         {
             int lengthOfVector = content.GetLength(orientation);

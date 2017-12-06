@@ -1,35 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using FaceRecognition;
-using System.Web;
 using System.Threading.Tasks;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
-using System.Web.Http.Dependencies;
 using Newtonsoft.Json;
 using Server.Repositories;
-using Commons.Inferfaces.DAOs;
 using Commons;
+using FaceRecognition.Interfaces;
 
 namespace Server.Controllers
 {
     public class FaceRecognitionController : ApiController
     {
+        //DI:
         private readonly IFaceRecognition fR;
+        private readonly IRecognitonService recognitionService;
 
-        public FaceRecognitionController(IFaceRecognition fR)
+        public FaceRecognitionController(IFaceRecognition fR, IRecognitonService recognitionService)
         {
             this.fR = fR;
+            this.recognitionService = recognitionService;
         }
 
         [Route("api/FaceRecognition/Learn")]
-        public async Task<string> Learn()
+        public async Task<HttpResponseMessage> Learn()
         {
             //fR.Learn();
             //var test = averageVectorDAO.GetOverview();
@@ -39,22 +38,16 @@ namespace Server.Controllers
             LearningInfo learningInfo = fR.Learn(); // tak byc nie moze niech dane schodza do bazy z serwisu!!!
             await InsertLearningInfoToDatabase(learningInfo);
             */
-            return "Learnt!";
+            return Request.CreateResponse(HttpStatusCode.OK, "Learnt!");
         }
 
         [Route("api/FaceRecognition/Recognize")]
         public HttpResponseMessage Recognize(Request request)
         {
-            LearningInfo learningInfo = GetLearningInfoFromDatabase();
-
-            //IFaceRecognition fR = new FaceRecognition.FaceRecognition(averageVectorDAO);
-            fR.LoadLearningInfo(learningInfo);
-
             byte[] bitmapWithFaceInArray = request.BitmapInArray;
-
             Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
 
-            string resultOfRecognition = fR.Recognize(bitmapWithFace);
+            string resultOfRecognition = recognitionService.Recognize(bitmapWithFace);
 
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, "FaceRecognition response");
             response.Content = new StringContent(JsonConvert.SerializeObject(resultOfRecognition), Encoding.Unicode);
@@ -84,34 +77,6 @@ namespace Server.Controllers
             }
 
             return 0;
-        }
-
-        public LearningInfo GetLearningInfoFromDatabase()
-        {
-            GenericUnitOfWork guow = new GenericUnitOfWork();
-
-            AverageVectorsController averageVectorController = new AverageVectorsController();
-            EigenFacesController eigenFacesController = new EigenFacesController();
-
-            List<Models.AverageVector> listOfAverageVectorModels = guow.Repository<Models.AverageVector>().GetOverview().ToList();//averageVectorController.GetAverageVectors().ToList();
-
-            double[] averageVector = (JsonConvert.DeserializeObject(listOfAverageVectorModels.Last().Value, typeof(double[])) as double[]);
-
-            List<Models.EigenFace> eigenFaceModels = eigenFacesController.GetEigenFaces().ToList();
-
-            List<double[]> eigenFaces = new List<double[]>();
-
-            for(int i = 0; i < eigenFaceModels.Count; ++i)
-            {
-                eigenFaces.Add(JsonConvert.DeserializeObject(eigenFaceModels[i].Value, typeof(double[])) as double[]);
-            }
-
-
-            return new LearningInfo()
-            {
-                averageVector = averageVector,
-                eigenFaces = eigenFaces
-            };
         }
 
     }

@@ -1,15 +1,11 @@
 ﻿using Commons.Inferfaces.DAOs;
 using FaceRecognition;
+using FaceRecognition.Interfaces;
 using Server.DAO;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
 using SimpleInjector.Lifestyles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Http;
-using System.Web.Routing;
 
 namespace Server
 {
@@ -21,8 +17,9 @@ namespace Server
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
-            //?
+            //Services
             container.Register<IFaceRecognition, FaceRecognition.FaceRecognition>(Lifestyle.Transient);
+            container.Register<IRecognitonService, RecognitionService>(Lifestyle.Transient);
 
             //DAOs
             container.Register<IAverageVectorDAO, AverageVectorDAO>(Lifestyle.Transient);

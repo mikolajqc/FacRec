@@ -70,6 +70,10 @@
       <HintPath>..\packages\Accord.Statistics.3.8.0\lib\net45\Accord.Statistics.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -89,6 +93,7 @@
     <Compile Include="FaceRecognition.cs" />
     <Compile Include="FacesMatrix.cs" />
     <Compile Include="Interfaces\IFaceRecognition.cs" />
+    <Compile Include="Interfaces\IRecognitonService.cs" />
     <Compile Include="LearningInfo.cs" />
     <Compile Include="LearningService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
