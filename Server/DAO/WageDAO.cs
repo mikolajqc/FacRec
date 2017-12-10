@@ -17,9 +17,12 @@ namespace Server.DAO
                         new Models.Wage
                         {
                             ID = wage.Id,
+                            Name = wage.Name,
                             Value = wage.Value
                         }
                 );
+
+            guow.SaveChanges();
         }
 
         public void Delete(Wage wage)
@@ -28,9 +31,12 @@ namespace Server.DAO
             new Models.Wage
             {
                         ID = wage.Id,
+                        Name = wage.Name,
                         Value = wage.Value
                     }
                 );
+
+            guow.SaveChanges();
         }
 
         public Wage GetDetail()
@@ -47,6 +53,7 @@ namespace Server.DAO
                     new Wage
                     {
                         Id = wageModel.ID,
+                        Name = wageModel.Name,
                         Value = wageModel.Value
                     }
                 );

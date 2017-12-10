@@ -19,6 +19,8 @@ namespace Server.DAO
                             Value = eigenFace.Value
                         }
                 );
+
+            guow.SaveChanges();
         }
 
         public void Delete(EigenFace eigenFace) ///Upewnic sie czy to napewno usuwa !!!!!
@@ -30,6 +32,8 @@ namespace Server.DAO
                             Value = eigenFace.Value
                         }
                 );
+
+            guow.SaveChanges();
         }
 
         public EigenFace GetDetail()

@@ -21,6 +21,8 @@ namespace Server.DAO
                         Value = averageVector.Value
                     }
                 );
+
+            guow.SaveChanges();
         }
 
         public void Delete(AverageVector averageVector)
@@ -32,6 +34,8 @@ namespace Server.DAO
                         Value = averageVector.Value
                     }
                 );
+
+            guow.SaveChanges();
         }
 
         public AverageVector GetDetail()
