@@ -20,11 +20,13 @@ namespace Server.Controllers
         //DI:
         private readonly IFaceRecognition fR;
         private readonly IRecognitonService recognitionService;
+        private readonly IAddNewFaceService addNewFaceService;
 
-        public FaceRecognitionController(IFaceRecognition fR, IRecognitonService recognitionService)
+        public FaceRecognitionController(IFaceRecognition fR, IRecognitonService recognitionService, IAddNewFaceService addNewFaceService)
         {
             this.fR = fR;
             this.recognitionService = recognitionService;
+            this.addNewFaceService = addNewFaceService;
         }
 
         [Route("api/FaceRecognition/Learn")]
@@ -58,6 +60,10 @@ namespace Server.Controllers
         [Route("api/FaceRecognition/AddFace")]
         public HttpResponseMessage AddFace(Request request)
         {
+            byte[] bitmapWithFaceInArray = request.BitmapInArray;
+            Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
+
+            addNewFaceService.AddNewFace(bitmapWithFace, request.Name);
             return Request.CreateResponse(HttpStatusCode.OK, "Face added!");
         }
 

@@ -28,9 +28,6 @@ namespace Client
         private string nameOfUser = null;
 
         private System.Timers.Timer timer = null;
-
-        private FaceRecognition.IFaceRecognition faceRecognition = null; //temporary - before communication - DI?????
-
         #endregion
 
         #region properties
@@ -90,7 +87,7 @@ namespace Client
         }
         public async void Learn()
         {
-            await Task.Run(() => faceRecognition.Learn());
+            //await Task.Run(() => faceRecognition.Learn());
             MessageBox.Show("Learnt!");
         }
         public async void Recognize()
@@ -102,8 +99,8 @@ namespace Client
 
         public async void AddFace()
         {
-            await Task.Run(() => faceRecognition.AddNewFace(BitmapImage2Bitmap(ImageSnapshot), nameOfUser));
-            MessageBox.Show("Added!");
+            string result = await UploadBitmapAsync(BitmapImage2Bitmap(ImageSnapshot), true, nameOfUser);
+            MessageBox.Show(result);
         }
 
         #endregion
@@ -236,11 +233,11 @@ namespace Client
         #endregion
 
     /// <summary>
-    /// Czesciowo external, upewnic sie czy nie lepiej wysylac w jakims base64
+    /// Czesciowo external, upewnic sie czy nie lepiej wysylac w jakims base64 !!!!!, funkcja do poprawienia i wrzucenia w RequestManager or sth
     /// </summary>
     /// <param name="bitmap"></param>
     /// <returns></returns>
-    public async Task<String> UploadBitmapAsync(Bitmap bitmap)
+    public async Task<String> UploadBitmapAsync(Bitmap bitmap, bool isAddingNewFace = false, string name = null)
         {
             byte[] bitmapData;
             var stream = new MemoryStream();
@@ -258,12 +255,14 @@ namespace Client
 
             var request = new Request
             {
-                Name = "new",
+                Name = name,
                 BitmapInArray = bitmapData
             };
 
             MediaTypeFormatter bsonFormatter = new BsonMediaTypeFormatter();
-            var response = await client.PostAsync("/api/FaceRecognition/Recognize", request, bsonFormatter);
+            HttpResponseMessage response;
+            if (isAddingNewFace) response = await client.PostAsync("/api/FaceRecognition/AddFace", request, bsonFormatter);
+            else response = await client.PostAsync("/api/FaceRecognition/Recognize", request, bsonFormatter);
 
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();

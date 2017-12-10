@@ -89,15 +89,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddingNewFaceService.cs" />
+    <Compile Include="Interfaces\IAddNewFaceService.cs" />
+    <Compile Include="Interfaces\ILearningService.cs" />
+    <Compile Include="Services\AddNewFaceService.cs" />
     <Compile Include="FaceRecognition.cs" />
     <Compile Include="FacesMatrix.cs" />
     <Compile Include="Interfaces\IFaceRecognition.cs" />
     <Compile Include="Interfaces\IRecognitonService.cs" />
     <Compile Include="LearningInfo.cs" />
-    <Compile Include="LearningService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RecognitionService.cs" />
+    <Compile Include="Services\RecognitionService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

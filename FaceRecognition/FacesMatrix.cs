@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Accord.Imaging.Filters;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -78,6 +80,12 @@ namespace FaceRecognition
             
             int x, y;
 
+            if(content.Count == 0)
+            {
+                this.content = new double[0, 0];
+                return;
+            }
+
             if (orientation == 0)
             {
                 x = content[0].Length;
@@ -101,6 +109,33 @@ namespace FaceRecognition
 
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates FacesMatrix from bitmap. Icludes histogram equalization. Transforms bitmap into grayscaled image and stores it to FacesMatrix
+        /// </summary>
+        /// <param name="bitmap"></param>
+        public FacesMatrix (Bitmap bitmap)
+        {
+            HistogramEqualization histogramEqualization = new HistogramEqualization(); // proces wyrownania histogramow
+            bitmap = histogramEqualization.Apply(bitmap);
+
+            int width = bitmap.Size.Width;
+            int height = bitmap.Size.Height;
+
+            double[,] content = new double[1, width * height];
+
+            for (int y = 0; y < height; ++y)
+            {
+                for (int x = 0; x < width; ++x)
+                {
+                    Color color = bitmap.GetPixel(x, y);
+                    double grayscale = (color.R + color.G + color.B) / 3f;
+                    content[0, y * width + x] = grayscale;
+                }
+            }
+
+            this.content = content;
         }
 
         #endregion

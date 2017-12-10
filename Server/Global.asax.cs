@@ -20,6 +20,7 @@ namespace Server
             //Services
             container.Register<IFaceRecognition, FaceRecognition.FaceRecognition>(Lifestyle.Transient);
             container.Register<IRecognitonService, RecognitionService>(Lifestyle.Transient);
+            container.Register<IAddNewFaceService, AddNewFaceService>(Lifestyle.Transient);
 
             //DAOs
             container.Register<IAverageVectorDAO, AverageVectorDAO>(Lifestyle.Transient);

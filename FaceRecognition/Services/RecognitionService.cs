@@ -64,37 +64,14 @@ namespace FaceRecognition
         }
 
 
-        private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitMap)
+        private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
-            Bitmap scaledBitmap = new Bitmap(bitMap, new Size(WIDTH, HEIGHT));
-            FacesMatrix vectorOfFaceInMatrix = GetFaceMatrixFromBitmap(scaledBitmap);
+            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(WIDTH, HEIGHT));
+            FacesMatrix vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
             FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, averageVector);
             FacesMatrix currentImageWages = eigenFacesT * diff.Transpose();
 
             return currentImageWages.GetVectorAsArray(0, 0);
-        }
-
-        private FacesMatrix GetFaceMatrixFromBitmap(Bitmap bitmap)
-        {
-            HistogramEqualization histogramEqualization = new HistogramEqualization();
-            bitmap = histogramEqualization.Apply(bitmap);
-
-            int width = bitmap.Size.Width;
-            int height = bitmap.Size.Height;
-
-            double[,] content = new double[1, width * height];
-
-            for (int y = 0; y < height; ++y)
-            {
-                for (int x = 0; x < width; ++x)
-                {
-                    Color color = bitmap.GetPixel(x, y);
-                    double grayscale = (color.R + color.G + color.B) / 3f;
-                    content[0, y * width + x] = grayscale;
-                }
-            }
-
-            return new FacesMatrix(content);
         }
 
         private void LoadDataFromDatabase()
@@ -133,6 +110,9 @@ namespace FaceRecognition
             ///zdjecia w matrixie zawierajacym wagi sa trzymane poziomo
             ///czyli jezeli [x,y] zmieniamy y to zmieniamy eigenface czyli jestesmy na jednej twarzy ale przegladamy jej wagi
             ///dlatego orientacja 0
+            ///
+
+            namesOfUsers = new List<string>();
 
             List<double[]> valuesOfWages = new List<double[]>();
             for (int i = 0; i < listOfWages.Count; ++i)
