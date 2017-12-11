@@ -21,25 +21,20 @@ namespace Server.Controllers
         private readonly IFaceRecognition fR;
         private readonly IRecognitonService recognitionService;
         private readonly IAddNewFaceService addNewFaceService;
+        private readonly ILearningService learningService;
 
-        public FaceRecognitionController(IFaceRecognition fR, IRecognitonService recognitionService, IAddNewFaceService addNewFaceService)
+        public FaceRecognitionController(IFaceRecognition fR, IRecognitonService recognitionService, IAddNewFaceService addNewFaceService, ILearningService learningService)
         {
             this.fR = fR;
             this.recognitionService = recognitionService;
             this.addNewFaceService = addNewFaceService;
+            this.learningService = learningService;
         }
 
         [Route("api/FaceRecognition/Learn")]
-        public async Task<HttpResponseMessage> Learn()
+        public HttpResponseMessage Learn()
         {
-            //fR.Learn();
-            //var test = averageVectorDAO.GetOverview();
-            /*
-            IFaceRecognition fR = new FaceRecognition.FaceRecognition();
-
-            LearningInfo learningInfo = fR.Learn(); // tak byc nie moze niech dane schodza do bazy z serwisu!!!
-            await InsertLearningInfoToDatabase(learningInfo);
-            */
+            learningService.Learn();
             return Request.CreateResponse(HttpStatusCode.OK, "Learnt!");
         }
 
@@ -65,24 +60,6 @@ namespace Server.Controllers
 
             addNewFaceService.AddNewFace(bitmapWithFace, request.Name);
             return Request.CreateResponse(HttpStatusCode.OK, "Face added!");
-        }
-
-
-        public async Task<int> InsertLearningInfoToDatabase(LearningInfo learningInfo)
-        {
-            AverageVectorsController averageController = new AverageVectorsController();
-            EigenFacesController eigenFaceController = new EigenFacesController();
-
-            await averageController.PostAverageVector(new Models.AverageVector { Value = JsonConvert.SerializeObject(learningInfo.averageVector) });
-
-            int numberOfEigenFaces = learningInfo.eigenFaces.Count;
-
-            for (int i = 0; i < numberOfEigenFaces; ++i)
-            {
-                await eigenFaceController.PostEigenFace(new Models.EigenFace { Value = JsonConvert.SerializeObject(learningInfo.eigenFaces[i]) });
-            }
-
-            return 0;
         }
 
     }

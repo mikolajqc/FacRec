@@ -7,17 +7,18 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace FaceRecognition
+namespace FaceRecognition.Services
 {
     public class RecognitionService : IRecognitonService
     {
+        #region fields
         //values loaded from DB
         private FacesMatrix averageVector = null;
         private FacesMatrix eigenFacesT = null;
         private FacesMatrix wages = null; // [eigenface,image]
         private List<string> namesOfUsers = null;
 
-        //consts
+        //consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         const int WIDTH = 92;
         const int HEIGHT = 112;
         const int ERROR_TOLERANCE = 70000000;
@@ -26,14 +27,19 @@ namespace FaceRecognition
         private readonly IAverageVectorDAO averageVectorDAO;
         private readonly IEigenFaceDAO eigenFaceDAO;
         private readonly IWageDAO wageDAO;
+        #endregion
 
+        #region contructors
         public RecognitionService(IAverageVectorDAO averageVectorDAO, IEigenFaceDAO eigenFaceDAO, IWageDAO wageDAO)
         {
             this.averageVectorDAO = averageVectorDAO;
             this.eigenFaceDAO = eigenFaceDAO;
             this.wageDAO = wageDAO;
         }
+        #endregion
 
+
+        #region publicmethods
         /// <summary>
         /// Temporarily this returns string that is stored in namesOfPeople List
         /// </summary>
@@ -62,8 +68,9 @@ namespace FaceRecognition
             if (minEuclideanDistance > ERROR_TOLERANCE) return "unknown";
             return namesOfUsers.ElementAt(numberOfString);
         }
+        #endregion
 
-
+        #region privatemethods
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
             Bitmap scaledBitmap = new Bitmap(bitmap, new Size(WIDTH, HEIGHT));
@@ -76,7 +83,6 @@ namespace FaceRecognition
 
         private void LoadDataFromDatabase()
         {
-            //Methods below loads values from database and stores it in local fields of this class
             LoadAverageVectorFromDatabase();
             LoadEigenFacesTFromDatabase();
             LoadWagesAndNamesOfUsersFromDataBase();
@@ -123,7 +129,7 @@ namespace FaceRecognition
 
             wages = new FacesMatrix(valuesOfWages, 0);
         }
-
+        #endregion
     }
 
 }

@@ -1,6 +1,7 @@
 ﻿using Commons.Inferfaces.DAOs;
 using FaceRecognition;
 using FaceRecognition.Interfaces;
+using FaceRecognition.Services;
 using Server.DAO;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
@@ -21,6 +22,7 @@ namespace Server
             container.Register<IFaceRecognition, FaceRecognition.FaceRecognition>(Lifestyle.Transient);
             container.Register<IRecognitonService, RecognitionService>(Lifestyle.Transient);
             container.Register<IAddNewFaceService, AddNewFaceService>(Lifestyle.Transient);
+            container.Register<ILearningService, LearningService>(Lifestyle.Transient);
 
             //DAOs
             container.Register<IAverageVectorDAO, AverageVectorDAO>(Lifestyle.Transient);

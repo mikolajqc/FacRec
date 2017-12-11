@@ -9,7 +9,7 @@ using Commons.Inferfaces.DAOs;
 using Commons.BussinessClasses;
 using Newtonsoft.Json;
 
-namespace FaceRecognition
+namespace FaceRecognition.Services
 {
     public class AddNewFaceService : IAddNewFaceService
     {
@@ -18,7 +18,7 @@ namespace FaceRecognition
         private FacesMatrix averageVector = null;
         private FacesMatrix eigenFacesT = null;
 
-        //consts
+        //consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         const int WIDTH = 92;
         const int HEIGHT = 112;
 
@@ -54,7 +54,6 @@ namespace FaceRecognition
         #region privatemethods
         private void LoadDataFromDatabase()
         {
-            //Methods below loads values from database and stores it in local fields of this class
             LoadAverageVectorFromDatabase();
             LoadEigenFacesTFromDatabase();
         }

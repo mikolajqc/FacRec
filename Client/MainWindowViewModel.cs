@@ -4,7 +4,6 @@ using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using FaceRecognition;
 using System.Threading.Tasks;
 using System;
 using System.Net.Http;
