@@ -48,6 +48,9 @@ namespace FaceRecognition.Services
             FacesMatrix eigenVectors = new FacesMatrix(decomposition.Eigenvectors);
             FacesMatrix eigenFaces = differenceVectorsT * eigenVectors;
 
+            //odcinka 20 najistotniejszych
+            eigenFaces = eigenFaces.GetFirstVectors(20, 0);
+
             List<double[]> eigenFacesAsListOfArrays = eigenFaces.GetMatrixAsListOfArrays(0);
             double[] averageVectorAsArray = averageVector.GetVectorAsArray(0, 1);
 

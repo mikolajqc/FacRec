@@ -333,7 +333,41 @@ namespace FaceRecognition.Utilities
 
             return result;
         }
+        
+        public FacesMatrix GetFirstVectors(int numberOfFirstVectors, int orientation)
+        {
+            double[,] currentContent;
+            int vectorSize;
 
+            if (orientation == 0)
+            {
+                currentContent = new double[X, numberOfFirstVectors];
+                vectorSize = X;
+            }
+            else
+            {
+                currentContent = new double[numberOfFirstVectors, Y];
+                vectorSize = Y;
+            }
+
+            for (int i = 0; i < numberOfFirstVectors; ++i)
+            {
+                for(int j = 0; j < vectorSize; ++j)
+                {
+                    if(orientation == 0)
+                    {
+                        currentContent[j, i] = content[j, i];
+                    }
+                    else
+                    {
+                        currentContent[i, j] = content[i, j];
+                    }
+                }
+            }
+
+            return new FacesMatrix(currentContent);
+        }
+        
         #endregion
 
         #region operators
