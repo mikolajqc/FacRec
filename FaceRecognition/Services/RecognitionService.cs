@@ -2,6 +2,7 @@
 using Commons.BussinessClasses;
 using Commons.Inferfaces.DAOs;
 using FaceRecognition.Interfaces;
+using FaceRecognition.Utilities;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Drawing;
@@ -47,6 +48,9 @@ namespace FaceRecognition.Services
         /// <returns></returns>
         public string Recognize(Bitmap bitMapWithFace) // temporary: Bitmap zamienic na wlasny typ FaceImage ktory obsluguje pgm itd
         {
+            HistogramEqualization histogramEqualization = new HistogramEqualization();
+            bitMapWithFace = histogramEqualization.Apply(bitMapWithFace);
+
             LoadDataFromDatabase();
 
             double[] wagesInArray = GetWagesOfImageInEigenFacesSpace(bitMapWithFace);

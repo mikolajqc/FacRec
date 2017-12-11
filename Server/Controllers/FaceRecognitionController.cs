@@ -1,15 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using FaceRecognition;
-using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
-using Server.Repositories;
 using Commons;
 using FaceRecognition.Interfaces;
 
@@ -18,14 +13,12 @@ namespace Server.Controllers
     public class FaceRecognitionController : ApiController
     {
         //DI:
-        private readonly IFaceRecognition fR;
         private readonly IRecognitonService recognitionService;
         private readonly IAddNewFaceService addNewFaceService;
         private readonly ILearningService learningService;
 
-        public FaceRecognitionController(IFaceRecognition fR, IRecognitonService recognitionService, IAddNewFaceService addNewFaceService, ILearningService learningService)
+        public FaceRecognitionController(IRecognitonService recognitionService, IAddNewFaceService addNewFaceService, ILearningService learningService)
         {
-            this.fR = fR;
             this.recognitionService = recognitionService;
             this.addNewFaceService = addNewFaceService;
             this.learningService = learningService;

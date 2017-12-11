@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Commons.BussinessClasses
+﻿namespace Commons.BussinessClasses
 {
     public class Wage // rename this !!!
     {

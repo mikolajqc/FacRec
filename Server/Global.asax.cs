@@ -19,7 +19,6 @@ namespace Server
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
             //Services
-            container.Register<IFaceRecognition, FaceRecognition.FaceRecognition>(Lifestyle.Transient);
             container.Register<IRecognitonService, RecognitionService>(Lifestyle.Transient);
             container.Register<IAddNewFaceService, AddNewFaceService>(Lifestyle.Transient);
             container.Register<ILearningService, LearningService>(Lifestyle.Transient);

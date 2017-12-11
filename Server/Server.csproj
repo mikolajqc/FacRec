@@ -144,10 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\AverageVectorsController.cs" />
-    <Compile Include="Controllers\EigenFacesController.cs" />
     <Compile Include="Controllers\FaceRecognitionController.cs" />
-    <Compile Include="Controllers\WagesController.cs" />
     <Compile Include="DAO\AverageVectorDAO.cs" />
     <Compile Include="DAO\EigenFaceDAO.cs" />
     <Compile Include="DAO\WageDAO.cs" />

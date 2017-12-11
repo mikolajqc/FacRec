@@ -1,10 +1,9 @@
 ﻿using Accord.Imaging.Filters;
-//using Accord.Imaging.Formats;
 using Accord.Math.Decompositions;
-//using AForge.Imaging.Formats;
 using Commons.BussinessClasses;
 using Commons.Inferfaces.DAOs;
 using FaceRecognition.Interfaces;
+using FaceRecognition.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

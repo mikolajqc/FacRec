@@ -1,13 +1,10 @@
 ﻿using FaceRecognition.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 using Commons.Inferfaces.DAOs;
 using Commons.BussinessClasses;
 using Newtonsoft.Json;
+using FaceRecognition.Utilities;
 
 namespace FaceRecognition.Services
 {

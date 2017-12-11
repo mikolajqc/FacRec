@@ -9,7 +9,6 @@ namespace Client
         {
             Initialize();
         }
-
         
         protected override void OnStartup(object sender, StartupEventArgs e)
         {

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Commons
 {
+    /// <summary>
+    /// Class that is used to send information between client and server
+    /// </summary>
     public class Request
     {
         string name;
