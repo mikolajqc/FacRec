@@ -2,7 +2,7 @@
 using Commons.BussinessClasses;
 using Commons.Inferfaces.DAOs;
 using FaceRecognition.Interfaces;
-using FaceRecognition.Utilities;
+using Commons.Utilities;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Drawing;

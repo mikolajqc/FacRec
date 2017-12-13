@@ -4,7 +4,7 @@ using System.Drawing;
 using Commons.Inferfaces.DAOs;
 using Commons.BussinessClasses;
 using Newtonsoft.Json;
-using FaceRecognition.Utilities;
+using Commons.Utilities;
 
 namespace FaceRecognition.Services
 {

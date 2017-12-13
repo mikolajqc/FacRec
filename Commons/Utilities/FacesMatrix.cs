@@ -1,9 +1,9 @@
-﻿using Accord.Imaging.Filters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Accord.Imaging.Filters;
 
-namespace FaceRecognition.Utilities
+namespace Commons.Utilities
 {
     public class FacesMatrix
     {
