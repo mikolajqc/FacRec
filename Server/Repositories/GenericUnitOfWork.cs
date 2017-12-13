@@ -8,36 +8,36 @@ namespace Server.Repositories
 {
     public class GenericUnitOfWork : IDisposable
     {
-        private FaceRecognitionDatabaseEntities db = null;
+        private FaceRecognitionDatabaseEntities _db = null;
         public GenericUnitOfWork()
         {
-            db = new FaceRecognitionDatabaseEntities();
+            _db = new FaceRecognitionDatabaseEntities();
         }
         // Słownik będzie używany do sprawdzania instancji repozytoriów
-        public Dictionary<Type, object> repositories = new Dictionary<Type, object>();
+        public Dictionary<Type, object> Repositories = new Dictionary<Type, object>();
         public IRepository<T> Repository<T>() where T : class
         {
             // Jeżeli instancja danego repozytorium istnieje - zostanie zwrócona
-            if (repositories.Keys.Contains(typeof(T)) == true)
-                return repositories[typeof(T)] as IRepository<T>;
+            if (Repositories.Keys.Contains(typeof(T)) == true)
+                return Repositories[typeof(T)] as IRepository<T>;
             // Jeżeli nie, zostanie utworzona nowa i dodana do słownika
-            IRepository<T> repo = new GenericRepository<T>(db);
-            repositories.Add(typeof(T), repo);
+            IRepository<T> repo = new GenericRepository<T>(_db);
+            Repositories.Add(typeof(T), repo);
             return repo;
         }
         public void SaveChanges()
         {
-            db.SaveChanges();
+            _db.SaveChanges();
         }
-        private bool disposed = false;
+        private bool _disposed = false;
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            if (!this._disposed)
             {
                 if (disposing)
-                    db.Dispose();
+                    _db.Dispose();
             }
-            this.disposed = true;
+            this._disposed = true;
         }
         public void Dispose()
         {

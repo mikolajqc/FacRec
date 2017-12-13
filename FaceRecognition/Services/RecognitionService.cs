@@ -14,28 +14,28 @@ namespace FaceRecognition.Services
     {
         #region fields
         //values loaded from DB
-        private FacesMatrix averageVector = null;
-        private FacesMatrix eigenFacesT = null;
-        private FacesMatrix wages = null; // [eigenface,image]
-        private List<string> namesOfUsers = null;
+        private FacesMatrix _averageVector;
+        private FacesMatrix _eigenFacesT;
+        private FacesMatrix _wages; // [eigenface,image]
+        private List<string> _namesOfUsers;
 
         //consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        const int WIDTH = 92;
-        const int HEIGHT = 112;
-        const int ERROR_TOLERANCE = 70000000;
+        private const int Width = 92;
+        private const int Height = 112;
+        private const int ErrorTolerance = 70000000;
 
         //For DI:
-        private readonly IAverageVectorDAO averageVectorDAO;
-        private readonly IEigenFaceDAO eigenFaceDAO;
-        private readonly IWageDAO wageDAO;
+        private readonly IAverageVectorDao _averageVectorDao;
+        private readonly IEigenFaceDao _eigenFaceDao;
+        private readonly IWageDao _wageDao;
         #endregion
 
         #region contructors
-        public RecognitionService(IAverageVectorDAO averageVectorDAO, IEigenFaceDAO eigenFaceDAO, IWageDAO wageDAO)
+        public RecognitionService(IAverageVectorDao averageVectorDao, IEigenFaceDao eigenFaceDao, IWageDao wageDao)
         {
-            this.averageVectorDAO = averageVectorDAO;
-            this.eigenFaceDAO = eigenFaceDAO;
-            this.wageDAO = wageDAO;
+            _averageVectorDao = averageVectorDao;
+            _eigenFaceDao = eigenFaceDao;
+            _wageDao = wageDao;
         }
         #endregion
 
@@ -57,9 +57,9 @@ namespace FaceRecognition.Services
 
             double minEuclideanDistance = double.MaxValue;
             int numberOfString = 0;
-            for (int numberOfKnownImage = 0; numberOfKnownImage < wages.Y; ++numberOfKnownImage)
+            for (int numberOfKnownImage = 0; numberOfKnownImage < _wages.Y; ++numberOfKnownImage)
             {
-                double[] currentImageWagesInArray = wages.GetVectorAsArray(numberOfKnownImage, 0);
+                double[] currentImageWagesInArray = _wages.GetVectorAsArray(numberOfKnownImage, 0);
                 double currentEuclideanDistance = Accord.Math.Distance.Euclidean(wagesInArray, currentImageWagesInArray);
 
                 if (minEuclideanDistance > currentEuclideanDistance)
@@ -69,18 +69,18 @@ namespace FaceRecognition.Services
                 }
             }
 
-            if (minEuclideanDistance > ERROR_TOLERANCE) return "unknown";
-            return namesOfUsers.ElementAt(numberOfString);
+            if (minEuclideanDistance > ErrorTolerance) return "unknown";
+            return _namesOfUsers.ElementAt(numberOfString);
         }
         #endregion
 
         #region privatemethods
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
-            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(WIDTH, HEIGHT));
+            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(Width, Height));
             FacesMatrix vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
-            FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, averageVector);
-            FacesMatrix currentImageWages = eigenFacesT * diff.Transpose();
+            FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
+            FacesMatrix currentImageWages = _eigenFacesT * diff.Transpose();
 
             return currentImageWages.GetVectorAsArray(0, 0);
         }
@@ -94,15 +94,15 @@ namespace FaceRecognition.Services
 
         private void LoadAverageVectorFromDatabase()
         {
-            List<AverageVector> listOfAverageVectors = averageVectorDAO.GetOverview() as List<AverageVector>;
+            List<AverageVector> listOfAverageVectors = _averageVectorDao.GetOverview() as List<AverageVector>;
             double[] valueOfAverageVector = (JsonConvert.DeserializeObject(listOfAverageVectors[0].Value, typeof(double[])) as double[]);
 
-            averageVector = new FacesMatrix(valueOfAverageVector, 1);
+            _averageVector = new FacesMatrix(valueOfAverageVector, 1);
         }
 
         private void LoadEigenFacesTFromDatabase()
         {
-            List<EigenFace> listOfEigenFaces = eigenFaceDAO.GetOverview() as List<EigenFace>;
+            List<EigenFace> listOfEigenFaces = _eigenFaceDao.GetOverview() as List<EigenFace>;
             List<double[]> valuesOfEigenFaces = new List<double[]>();
 
             for (int i = 0; i < listOfEigenFaces.Count; ++i)
@@ -110,28 +110,28 @@ namespace FaceRecognition.Services
                 valuesOfEigenFaces.Add(JsonConvert.DeserializeObject(listOfEigenFaces[i].Value, typeof(double[])) as double[]);
             }
 
-            eigenFacesT = new FacesMatrix(valuesOfEigenFaces, 1); //orientacja 1 bo tworzymy EigenFacesT czyli gdzie X jest = 400
+            _eigenFacesT = new FacesMatrix(valuesOfEigenFaces, 1); //orientacja 1 bo tworzymy EigenFacesT czyli gdzie X jest = 400
         }
 
         private void LoadWagesAndNamesOfUsersFromDataBase()
         {
-            List<Wage> listOfWages = wageDAO.GetOverview() as List<Wage>;
+            List<Wage> listOfWages = _wageDao.GetOverview() as List<Wage>;
             ///upewnic sie ale z tego co wiem
             ///zdjecia w matrixie zawierajacym wagi sa trzymane poziomo
             ///czyli jezeli [x,y] zmieniamy y to zmieniamy eigenface czyli jestesmy na jednej twarzy ale przegladamy jej wagi
             ///dlatego orientacja 0
             ///
 
-            namesOfUsers = new List<string>();
+            _namesOfUsers = new List<string>();
 
             List<double[]> valuesOfWages = new List<double[]>();
             for (int i = 0; i < listOfWages.Count; ++i)
             {
                 valuesOfWages.Add(JsonConvert.DeserializeObject(listOfWages[i].Value, typeof(double[])) as double[]);
-                namesOfUsers.Add(listOfWages[0].Name);
+                _namesOfUsers.Add(listOfWages[0].Name);
             }
 
-            wages = new FacesMatrix(valuesOfWages, 0);
+            _wages = new FacesMatrix(valuesOfWages, 0);
         }
         #endregion
     }

@@ -2,20 +2,20 @@
 {
     public class Wage // rename this !!!
     {
-        private int id;
-        private string value;
-        private string name;
+        private int _id;
+        private string _value;
+        private string _name;
 
         public int Id
         {
             get
             {
-                return id;
+                return _id;
             }
 
             set
             {
-                id = value;
+                _id = value;
             }
         }
 
@@ -23,12 +23,12 @@
         {
             get
             {
-                return value;
+                return _value;
             }
 
             set
             {
-                this.value = value;
+                _value = value;
             }
         }
 
@@ -36,12 +36,12 @@
         {
             get
             {
-                return name;
+                return _name;
             }
 
             set
             {
-                name = value;
+                _name = value;
             }
         }
     }

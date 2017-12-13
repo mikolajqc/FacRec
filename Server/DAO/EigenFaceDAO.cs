@@ -6,13 +6,13 @@ using System.Collections.Generic;
 
 namespace Server.DAO
 {
-    public class EigenFaceDAO : IEigenFaceDAO
+    public class EigenFaceDao : IEigenFaceDao
     {
-        GenericUnitOfWork guow = new GenericUnitOfWork(); // zastosuj SipleInjector
+        GenericUnitOfWork _guow = new GenericUnitOfWork(); // zastosuj SipleInjector
 
         public void Add(EigenFace eigenFace)
         {
-            guow.Repository<Models.EigenFace>().Add(
+            _guow.Repository<Models.EigenFace>().Add(
                         new Models.EigenFace
                         {
                             ID = eigenFace.Id,
@@ -20,12 +20,12 @@ namespace Server.DAO
                         }
                 );
 
-            guow.SaveChanges();
+            _guow.SaveChanges();
         }
 
         public void Delete(EigenFace eigenFace) ///Upewnic sie czy to napewno usuwa !!!!!
         {
-            guow.Repository<Models.EigenFace>().Delete(
+            _guow.Repository<Models.EigenFace>().Delete(
                         new Models.EigenFace
                         {
                             ID = eigenFace.Id,
@@ -33,7 +33,7 @@ namespace Server.DAO
                         }
                 );
 
-            guow.SaveChanges();
+            _guow.SaveChanges();
         }
 
         public EigenFace GetDetail()
@@ -44,7 +44,7 @@ namespace Server.DAO
         public IEnumerable<EigenFace> GetOverview()
         {
             List<EigenFace> result = new List<EigenFace>();
-            foreach(Models.EigenFace eigenFaceModel in guow.Repository<Models.EigenFace>().GetOverview())
+            foreach(Models.EigenFace eigenFaceModel in _guow.Repository<Models.EigenFace>().GetOverview())
             {
                 result.Add(
                     new EigenFace

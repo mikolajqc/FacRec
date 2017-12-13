@@ -11,19 +11,19 @@ namespace Commons
     /// </summary>
     public class Request
     {
-        string name;
-        byte[] bitmapInArray;
+        string _name;
+        byte[] _bitmapInArray;
 
         public string Name
         {
             get
             {
-                return name;
+                return _name;
             }
 
             set
             {
-                name = value;
+                _name = value;
             }
         }
 
@@ -31,12 +31,12 @@ namespace Commons
         {
             get
             {
-                return bitmapInArray;
+                return _bitmapInArray;
             }
 
             set
             {
-                bitmapInArray = value;
+                _bitmapInArray = value;
             }
         }
     }

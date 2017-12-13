@@ -5,36 +5,36 @@ namespace Client
 {
     class CameraManager
     {
-        private VideoCaptureDevice videoSource = null;
-        private FilterInfoCollection videoDevices = null;
-        private Bitmap currentBitmap = null;
+        private VideoCaptureDevice _videoSource;
+        private FilterInfoCollection _videoDevices;
+        private Bitmap _currentBitmap;
 
         public CameraManager()
         {
-            videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-            videoSource = new VideoCaptureDevice(videoDevices[0].MonikerString);
-            videoSource.NewFrame += new AForge.Video.NewFrameEventHandler(
+            _videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            _videoSource = new VideoCaptureDevice(_videoDevices[0].MonikerString);
+            _videoSource.NewFrame += new AForge.Video.NewFrameEventHandler(
             (s, eventArgs)
             =>
             {
-                currentBitmap = new Bitmap(eventArgs.Frame);
+                _currentBitmap = new Bitmap(eventArgs.Frame);
             });
             
         }
 
         public void Start()
         {
-            videoSource.Start();
+            _videoSource.Start();
         }
 
         public Bitmap GetFrame()
         {
-            return currentBitmap;
+            return _currentBitmap;
         }
 
         public void Stop()
         {
-            videoSource.Stop();
+            _videoSource.Stop();
         }
     }
 }

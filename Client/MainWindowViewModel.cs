@@ -21,12 +21,12 @@ namespace Client
         ///Dodaj lustrzane odbicie
         #region fields
         ///Sprawdzic czy tutaj musi byc BitmapImage czy moze byc Bitmap
-        private BitmapImage imageWebcam = null;
-        private BitmapImage imageSnapshot = null;
-        private CameraManager cameraManager = null;
-        private string nameOfUser = null;
+        private BitmapImage _imageWebcam = null;
+        private BitmapImage _imageSnapshot = null;
+        private CameraManager _cameraManager = null;
+        private string _nameOfUser = null;
 
-        private System.Timers.Timer timer = null;
+        private System.Timers.Timer _timer = null;
         #endregion
 
         #region properties
@@ -35,11 +35,11 @@ namespace Client
         {
             get
             {
-                return imageWebcam;
+                return _imageWebcam;
             }
             set
             {
-                imageWebcam = value;
+                _imageWebcam = value;
                 NotifyOfPropertyChange(() => ImageWebcam);
             }
         }
@@ -48,12 +48,12 @@ namespace Client
         {
             get
             {
-                return imageSnapshot;
+                return _imageSnapshot;
             }
 
             set
             {
-                imageSnapshot = value;
+                _imageSnapshot = value;
                 NotifyOfPropertyChange(() => ImageSnapshot);
             }
         }
@@ -62,11 +62,11 @@ namespace Client
         {
             get
             {
-                return nameOfUser;
+                return _nameOfUser;
             }
             set
             {
-                nameOfUser = value;
+                _nameOfUser = value;
                 NotifyOfPropertyChange(() => NameOfUser);
             }
         }
@@ -80,7 +80,7 @@ namespace Client
             Application.Current.Dispatcher.BeginInvoke(
             new System.Action(
                 () => {
-                    imageSnapshot = BitmapToImageSource(CropImage(BitmapImage2Bitmap(ImageWebcam), CreateRectangleForFace(ImageWebcam.PixelWidth, ImageWebcam.PixelHeight)));
+                    _imageSnapshot = BitmapToImageSource(CropImage(BitmapImage2Bitmap(ImageWebcam), CreateRectangleForFace(ImageWebcam.PixelWidth, ImageWebcam.PixelHeight)));
                     NotifyOfPropertyChange(() => ImageSnapshot);
                 }));
         }
@@ -98,7 +98,7 @@ namespace Client
 
         public async void AddFace()
         {
-            string result = await UploadBitmapAsync(BitmapImage2Bitmap(ImageSnapshot), true, nameOfUser);
+            string result = await UploadBitmapAsync(BitmapImage2Bitmap(ImageSnapshot), true, _nameOfUser);
             MessageBox.Show(result);
         }
 
@@ -108,22 +108,22 @@ namespace Client
 
         protected override void OnActivate()
         {
-            cameraManager = new CameraManager();
-            timer = new System.Timers.Timer();
-            timer.AutoReset = true;
-            timer.Interval = 20; // ogarnac to inaczej
-            timer.Elapsed += (sender, e) =>
+            _cameraManager = new CameraManager();
+            _timer = new System.Timers.Timer();
+            _timer.AutoReset = true;
+            _timer.Interval = 20; // ogarnac to inaczej
+            _timer.Elapsed += (sender, e) =>
             {
                 UpdateImage();
             };
-            cameraManager.Start();
-            timer.Start();
+            _cameraManager.Start();
+            _timer.Start();
         }
 
         protected override void OnDeactivate(bool close)
         {
-            timer.Stop();
-            cameraManager.Stop();
+            _timer.Stop();
+            _cameraManager.Stop();
             base.OnDeactivate(close);
         }
 
@@ -134,14 +134,14 @@ namespace Client
 
         private void UpdateImage()
         {
-            if(cameraManager.GetFrame() != null)
+            if(_cameraManager.GetFrame() != null)
             {
                 Application.Current.Dispatcher.BeginInvoke(
                 new System.Action(
                     () => {
-                        imageWebcam = BitmapToImageSource(
+                        _imageWebcam = BitmapToImageSource(
                             ApplyRectangleToBitmap(
-                                cameraManager.GetFrame()
+                                _cameraManager.GetFrame()
                             ));
                         NotifyOfPropertyChange(() => ImageWebcam);
                     }));
@@ -220,13 +220,13 @@ namespace Client
 
         private Rectangle CreateRectangleForFace(int bitmapWidth, int bitmapHeight)
         {
-            const int WIDTHOFIMAGETOSENT = 92 * 4;
-            const int HEIGHTOFIMAGETOSENT = 112 * 4;
+            const int widthofimagetosent = 92 * 4;
+            const int heightofimagetosent = 112 * 4;
 
-            int x = (bitmapWidth - WIDTHOFIMAGETOSENT) / 2;
-            int y = (bitmapHeight - HEIGHTOFIMAGETOSENT) / 2;
+            int x = (bitmapWidth - widthofimagetosent) / 2;
+            int y = (bitmapHeight - heightofimagetosent) / 2;
 
-            return new Rectangle(x, y, WIDTHOFIMAGETOSENT, HEIGHTOFIMAGETOSENT);
+            return new Rectangle(x, y, widthofimagetosent, heightofimagetosent);
         }
         #endregion
 

@@ -12,25 +12,25 @@ namespace FaceRecognition.Services
     {
         #region fields
         //values loaded from DB
-        private FacesMatrix averageVector = null;
-        private FacesMatrix eigenFacesT = null;
+        private FacesMatrix _averageVector;
+        private FacesMatrix _eigenFacesT;
 
         //consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        const int WIDTH = 92;
-        const int HEIGHT = 112;
+        private const int Width = 92;
+        private const int Height = 112;
 
         //For DI:
-        private readonly IAverageVectorDAO averageVectorDAO;
-        private readonly IEigenFaceDAO eigenFaceDAO;
-        private readonly IWageDAO wageDAO;
+        private readonly IAverageVectorDao _averageVectorDao;
+        private readonly IEigenFaceDao _eigenFaceDao;
+        private readonly IWageDao _wageDao;
         #endregion
 
         #region contructors
-        public AddNewFaceService(IAverageVectorDAO averageVectorDAO, IEigenFaceDAO eigenFaceDAO, IWageDAO wageDAO)
+        public AddNewFaceService(IAverageVectorDao averageVectorDao, IEigenFaceDao eigenFaceDao, IWageDao wageDao)
         {
-            this.averageVectorDAO = averageVectorDAO;
-            this.eigenFaceDAO = eigenFaceDAO;
-            this.wageDAO = wageDAO;
+            _averageVectorDao = averageVectorDao;
+            _eigenFaceDao = eigenFaceDao;
+            _wageDao = wageDao;
         }
         #endregion
 
@@ -40,7 +40,7 @@ namespace FaceRecognition.Services
             LoadDataFromDatabase();
 
             double[] wagesOfNewImage = GetWagesOfImageInEigenFacesSpace(bitmapWithFace); //new face in face space
-            wageDAO.Add(new Wage()
+            _wageDao.Add(new Wage()
                 {
                     Name = name,
                     Value = JsonConvert.SerializeObject(wagesOfNewImage)
@@ -57,25 +57,28 @@ namespace FaceRecognition.Services
 
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
-            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(WIDTH, HEIGHT));
+            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(Width, Height));
             FacesMatrix vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
-            FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, averageVector);
-            FacesMatrix currentImageWages = eigenFacesT * diff.Transpose();
+            FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
+            FacesMatrix currentImageWages = _eigenFacesT * diff.Transpose();
 
             return currentImageWages.GetVectorAsArray(0, 0);
         }
 
         private void LoadAverageVectorFromDatabase()
         {
-            List<AverageVector> listOfAverageVectors = averageVectorDAO.GetOverview() as List<AverageVector>;
-            double[] valueOfAverageVector = (JsonConvert.DeserializeObject(listOfAverageVectors[0].Value, typeof(double[])) as double[]);
+            List<AverageVector> listOfAverageVectors = _averageVectorDao.GetOverview() as List<AverageVector>;
+            if (listOfAverageVectors != null)
+            {
+                double[] valueOfAverageVector = (JsonConvert.DeserializeObject(listOfAverageVectors[0].Value, typeof(double[])) as double[]);
 
-            averageVector = new FacesMatrix(valueOfAverageVector, 1);
+                _averageVector = new FacesMatrix(valueOfAverageVector, 1);
+            }
         }
 
         private void LoadEigenFacesTFromDatabase()
         {
-            List<EigenFace> listOfEigenFaces = eigenFaceDAO.GetOverview() as List<EigenFace>;
+            List<EigenFace> listOfEigenFaces = _eigenFaceDao.GetOverview() as List<EigenFace>;
             List<double[]> valuesOfEigenFaces = new List<double[]>();
 
             for (int i = 0; i < listOfEigenFaces.Count; ++i)
@@ -83,7 +86,7 @@ namespace FaceRecognition.Services
                 valuesOfEigenFaces.Add(JsonConvert.DeserializeObject(listOfEigenFaces[i].Value, typeof(double[])) as double[]);
             }
 
-            eigenFacesT = new FacesMatrix(valuesOfEigenFaces, 1); //orientacja 1 bo tworzymy EigenFacesT czyli gdzie X jest = 400
+            _eigenFacesT = new FacesMatrix(valuesOfEigenFaces, 1); //orientacja 1 bo tworzymy EigenFacesT czyli gdzie X jest = 400
         }
         #endregion
 

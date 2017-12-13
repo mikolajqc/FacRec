@@ -6,12 +6,12 @@ using System.Collections.Generic;
 
 namespace Server.DAO
 {
-    public class WageDAO : IWageDAO
+    public class WageDao : IWageDao
     {
-        GenericUnitOfWork guow = new GenericUnitOfWork(); // zastosuj SipleInjector chyba musi byc singleton???? poczytaj jak to powinno wygladac
+        GenericUnitOfWork _guow = new GenericUnitOfWork(); // zastosuj SipleInjector chyba musi byc singleton???? poczytaj jak to powinno wygladac
         public void Add(Wage wage)
         {
-            guow.Repository<Models.Wage>().Add(
+            _guow.Repository<Models.Wage>().Add(
                         new Models.Wage
                         {
                             ID = wage.Id,
@@ -20,12 +20,12 @@ namespace Server.DAO
                         }
                 );
 
-            guow.SaveChanges();
+            _guow.SaveChanges();
         }
 
         public void Delete(Wage wage)
         {
-            guow.Repository<Models.Wage>().Delete(
+            _guow.Repository<Models.Wage>().Delete(
             new Models.Wage
             {
                         ID = wage.Id,
@@ -34,7 +34,7 @@ namespace Server.DAO
                     }
                 );
 
-            guow.SaveChanges();
+            _guow.SaveChanges();
         }
 
         public Wage GetDetail()
@@ -45,7 +45,7 @@ namespace Server.DAO
         public IEnumerable<Wage> GetOverview()
         {
             List<Wage> result = new List<Wage>();
-            foreach (Models.Wage wageModel in guow.Repository<Models.Wage>().GetOverview())
+            foreach (Models.Wage wageModel in _guow.Repository<Models.Wage>().GetOverview())
             {
                 result.Add(
                     new Wage

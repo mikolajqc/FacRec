@@ -1,5 +1,4 @@
 ﻿using Commons.Inferfaces.DAOs;
-using FaceRecognition;
 using FaceRecognition.Interfaces;
 using FaceRecognition.Services;
 using Server.DAO;
@@ -24,9 +23,9 @@ namespace Server
             container.Register<ILearningService, LearningService>(Lifestyle.Transient);
 
             //DAOs
-            container.Register<IAverageVectorDAO, AverageVectorDAO>(Lifestyle.Transient);
-            container.Register<IEigenFaceDAO, EigenFaceDAO>(Lifestyle.Transient);
-            container.Register<IWageDAO, WageDAO>(Lifestyle.Transient);
+            container.Register<IAverageVectorDao, AverageVectorDao>(Lifestyle.Transient);
+            container.Register<IEigenFaceDao, EigenFaceDao>(Lifestyle.Transient);
+            container.Register<IWageDao, WageDao>(Lifestyle.Transient);
 
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
             container.Verify();

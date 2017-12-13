@@ -14,24 +14,23 @@ namespace FaceRecognition.Services
 {
     public class LearningService : ILearningService
     {
-        private FacesMatrix unprocessedVectors = null;
-        private string pathToLearningSet = null; /// Ogarnij zeby sciezke pobieralo z jakiegos configa 
+        private FacesMatrix _unprocessedVectors;
+        private string _pathToLearningSet; /// Ogarnij zeby sciezke pobieralo z jakiegos configa 
 
-        const int WIDTH = 92;
-        const int HEIGHT = 112;
-        const int ERROR_TOLERANCE = 70000000;
+        private const int Width = 92;
+        private const int Height = 112;
 
-        private readonly IAverageVectorDAO averageVectorDAO;
-        private readonly IEigenFaceDAO eigenFaceDAO;
+        private readonly IAverageVectorDao _averageVectorDao;
+        private readonly IEigenFaceDao _eigenFaceDao;
 
         #region constructors
-        public LearningService(IAverageVectorDAO averageVectorDAO, IEigenFaceDAO eigenFaceDAO)
+        public LearningService(IAverageVectorDao averageVectorDao, IEigenFaceDao eigenFaceDao)
         {
-            this.averageVectorDAO = averageVectorDAO;
-            this.eigenFaceDAO = eigenFaceDAO;
+            _averageVectorDao = averageVectorDao;
+            _eigenFaceDao = eigenFaceDao;
 
-            this.pathToLearningSet = @"D:\Studia\Inzynierka\LearningSet_AT&T\";
-            this.unprocessedVectors = new FacesMatrix();
+            _pathToLearningSet = @"D:\Studia\Inzynierka\LearningSet_AT&T\";
+            _unprocessedVectors = new FacesMatrix();
 
         }
         #endregion
@@ -40,8 +39,8 @@ namespace FaceRecognition.Services
         {
             LoadLearningSet();
 
-            FacesMatrix averageVector = unprocessedVectors.GetAverageVector(1);
-            FacesMatrix differenceVectors = unprocessedVectors - new FacesMatrix(unprocessedVectors.X, averageVector);
+            FacesMatrix averageVector = _unprocessedVectors.GetAverageVector(1);
+            FacesMatrix differenceVectors = _unprocessedVectors - new FacesMatrix(_unprocessedVectors.X, averageVector);
             FacesMatrix differenceVectorsT = differenceVectors.Transpose();
             FacesMatrix covariation = differenceVectors * differenceVectorsT;
             EigenvalueDecomposition decomposition = new EigenvalueDecomposition(covariation.Content, true, true); // todo: wlasna dekompozycja
@@ -62,7 +61,7 @@ namespace FaceRecognition.Services
         {
             for (int i = 0; i < eigenFaces.Count; ++i)
             {
-                eigenFaceDAO.Add(
+                _eigenFaceDao.Add(
                         new EigenFace()
                         {
                             Value = JsonConvert.SerializeObject(eigenFaces[i])
@@ -73,7 +72,7 @@ namespace FaceRecognition.Services
 
         private void StoreAverageVectorToDatabase(double[] averageVector)
         {
-            averageVectorDAO.Add(
+            _averageVectorDao.Add(
                     new AverageVector()
                     {
                         Value = JsonConvert.SerializeObject(averageVector)
@@ -86,10 +85,10 @@ namespace FaceRecognition.Services
         /// </summary>
         private void LoadLearningSet()
         {
-            Console.WriteLine("Loading images from: " + pathToLearningSet + "...");
+            Console.WriteLine("Loading images from: " + _pathToLearningSet + "...");
             List<List<double>> temporarySetOfLoadedImages = new List<List<double>>();
 
-            foreach (string dir in Directory.GetDirectories(pathToLearningSet))
+            foreach (string dir in Directory.GetDirectories(_pathToLearningSet))
             {
                 foreach (string file in Directory.GetFiles(dir))
                 {
@@ -100,7 +99,7 @@ namespace FaceRecognition.Services
                 }
             }
 
-            unprocessedVectors.LoadFromListOfList(temporarySetOfLoadedImages, 1);
+            _unprocessedVectors.LoadFromListOfList(temporarySetOfLoadedImages, 1);
         }
 
         private List<double> GetImageVectorInList(string pathToImage)
@@ -130,7 +129,7 @@ namespace FaceRecognition.Services
 
         private Bitmap ScaleBitmapToRequredSize(Bitmap bitMap)
         {
-            return new Bitmap(bitMap, new Size(WIDTH, HEIGHT));
+            return new Bitmap(bitMap, new Size(Width, Height));
         }
     }
 }

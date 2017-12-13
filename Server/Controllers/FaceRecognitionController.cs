@@ -13,21 +13,21 @@ namespace Server.Controllers
     public class FaceRecognitionController : ApiController
     {
         //DI:
-        private readonly IRecognitonService recognitionService;
-        private readonly IAddNewFaceService addNewFaceService;
-        private readonly ILearningService learningService;
+        private readonly IRecognitonService _recognitionService;
+        private readonly IAddNewFaceService _addNewFaceService;
+        private readonly ILearningService _learningService;
 
         public FaceRecognitionController(IRecognitonService recognitionService, IAddNewFaceService addNewFaceService, ILearningService learningService)
         {
-            this.recognitionService = recognitionService;
-            this.addNewFaceService = addNewFaceService;
-            this.learningService = learningService;
+            _recognitionService = recognitionService;
+            _addNewFaceService = addNewFaceService;
+            _learningService = learningService;
         }
 
         [Route("api/FaceRecognition/Learn")]
         public HttpResponseMessage Learn()
         {
-            learningService.Learn();
+            _learningService.Learn();
             return Request.CreateResponse(HttpStatusCode.OK, "Learnt!");
         }
 
@@ -37,7 +37,7 @@ namespace Server.Controllers
             byte[] bitmapWithFaceInArray = request.BitmapInArray;
             Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
 
-            string resultOfRecognition = recognitionService.Recognize(bitmapWithFace);
+            string resultOfRecognition = _recognitionService.Recognize(bitmapWithFace);
 
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, "FaceRecognition response");
             response.Content = new StringContent(JsonConvert.SerializeObject(resultOfRecognition), Encoding.Unicode);
@@ -51,7 +51,7 @@ namespace Server.Controllers
             byte[] bitmapWithFaceInArray = request.BitmapInArray;
             Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
 
-            addNewFaceService.AddNewFace(bitmapWithFace, request.Name);
+            _addNewFaceService.AddNewFace(bitmapWithFace, request.Name);
             return Request.CreateResponse(HttpStatusCode.OK, "Face added!");
         }
 

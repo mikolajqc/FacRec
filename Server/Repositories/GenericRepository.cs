@@ -10,13 +10,13 @@ namespace Server.Repositories
 {
     public class GenericRepository<T> : IRepository<T> where T : class
     {
-        private FaceRecognitionDatabaseEntities db = null;
+        private FaceRecognitionDatabaseEntities _db = null;
         // obiekt reprezentuje kolekcję wszystkich encji w danym kontekście
         // lub może być wynikiem zapytania z bazy danych
         IDbSet<T> _objectSet;
         public GenericRepository(FaceRecognitionDatabaseEntities db)
         {
-            this.db = db;
+            this._db = db;
             _objectSet = db.Set<T>();
         }
         public void Add(T entity)

@@ -6,13 +6,13 @@ using System.Collections.Generic;
 
 namespace Server.DAO
 {
-    public class AverageVectorDAO : IAverageVectorDAO
+    public class AverageVectorDao : IAverageVectorDao
     {
-        GenericUnitOfWork guow = new GenericUnitOfWork(); // zastosuj SipleInjector
+        GenericUnitOfWork _guow = new GenericUnitOfWork(); // zastosuj SipleInjector
 
         public void Add(AverageVector averageVector)
         {
-            guow.Repository<Models.AverageVector>().Add(
+            _guow.Repository<Models.AverageVector>().Add(
                     new Models.AverageVector
                     {
                         ID = averageVector.Id,
@@ -20,12 +20,12 @@ namespace Server.DAO
                     }
                 );
 
-            guow.SaveChanges();
+            _guow.SaveChanges();
         }
 
         public void Delete(AverageVector averageVector)
         {
-            guow.Repository<Models.AverageVector>().Delete(
+            _guow.Repository<Models.AverageVector>().Delete(
             new Models.AverageVector
             {
                         ID = averageVector.Id,
@@ -33,7 +33,7 @@ namespace Server.DAO
                     }
                 );
 
-            guow.SaveChanges();
+            _guow.SaveChanges();
         }
 
         public AverageVector GetDetail()
@@ -44,7 +44,7 @@ namespace Server.DAO
         public IEnumerable<AverageVector> GetOverview()
         {
             List<AverageVector> result = new List<AverageVector>();
-            foreach (Models.AverageVector averageVectorModel in guow.Repository<Models.AverageVector>().GetOverview())
+            foreach (Models.AverageVector averageVectorModel in _guow.Repository<Models.AverageVector>().GetOverview())
             {
                 result.Add(
                     new AverageVector

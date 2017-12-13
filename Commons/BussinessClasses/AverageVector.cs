@@ -2,19 +2,19 @@
 {
     public class AverageVector
     {
-        private int id;
-        private string value;
+        private int _id;
+        private string _value;
 
         public int Id
         {
             get
             {
-                return id;
+                return _id;
             }
 
             set
             {
-                id = value;
+                _id = value;
             }
         }
 
@@ -22,12 +22,12 @@
         {
             get
             {
-                return value;
+                return _value;
             }
 
             set
             {
-                this.value = value;
+                _value = value;
             }
         }
     }

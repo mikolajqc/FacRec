@@ -15,7 +15,7 @@ namespace FaceRecognition.Utilities
         /// Orientation - 0 wektory polozone poziomo, 1 - wektory polozone pionowo
 
         #region fields
-        private double[,] content;
+        private double[,] _content;
 
         #endregion
 
@@ -23,7 +23,7 @@ namespace FaceRecognition.Utilities
 
         public FacesMatrix()
         {
-            content = new double[0,0];
+            _content = new double[0,0];
         }
         /// <summary>
         /// [x,y]
@@ -32,7 +32,7 @@ namespace FaceRecognition.Utilities
         /// <param name="y"></param>
         public FacesMatrix(int x, int y)
         {
-            content = new double[x,y];
+            _content = new double[x,y];
         }
 
         /// <summary>
@@ -42,31 +42,31 @@ namespace FaceRecognition.Utilities
         /// <param name="vector"></param>
         public FacesMatrix(int numberOfCopies, FacesMatrix vector)
         {
-            content = new double[numberOfCopies, vector.Length];
+            _content = new double[numberOfCopies, vector.Length];
 
             for(int i = 0; i < numberOfCopies; ++i)
             {
                 for(int j = 0; j < vector.Length; ++j)
                 {
-                    content[i, j] = vector.Content[0,j];
+                    _content[i, j] = vector.Content[0,j];
                 }
             }
         }
 
         public FacesMatrix(double[,] matrix)
         {
-            content = matrix;
+            _content = matrix;
         }
 
         public FacesMatrix(double[] vector, int orientation)
         {
-            if(orientation == 0) content = new double[vector.GetLength(0), 1];
-            else content = new double[1, vector.GetLength(0)];
+            if(orientation == 0) _content = new double[vector.GetLength(0), 1];
+            else _content = new double[1, vector.GetLength(0)];
 
             for (int i = 0; i < vector.GetLength(0); ++i)
             {
-                if (orientation == 0) content[i, 0] = vector[i];
-                else content[0, i] = vector[i];
+                if (orientation == 0) _content[i, 0] = vector[i];
+                else _content[0, i] = vector[i];
             }
 
         }
@@ -78,7 +78,7 @@ namespace FaceRecognition.Utilities
 
             if(content.Count == 0)
             {
-                this.content = new double[0, 0];
+                _content = new double[0, 0];
                 return;
             }
 
@@ -93,14 +93,14 @@ namespace FaceRecognition.Utilities
                 x = content.Count;
             }
 
-            this.content = new double[x,y];
+            _content = new double[x,y];
 
             for (int i = 0; i < x; ++i)
             {
                 for (int j = 0; j < y; ++j)
                 {
-                    if (orientation == 0) this.content[i, j] = content[j][i];
-                    else this.content[i, j] = content[i][j];
+                    if (orientation == 0) _content[i, j] = content[j][i];
+                    else _content[i, j] = content[i][j];
 
 
                 }
@@ -131,7 +131,7 @@ namespace FaceRecognition.Utilities
                 }
             }
 
-            this.content = content;
+            _content = content;
         }
 
         #endregion
@@ -142,12 +142,12 @@ namespace FaceRecognition.Utilities
         {
             get
             {
-                return content;
+                return _content;
             }
 
             set
             {
-                content = value;
+                _content = value;
             }
         }
 
@@ -155,7 +155,7 @@ namespace FaceRecognition.Utilities
         {
             get
             {
-                return content.GetLength(0);
+                return _content.GetLength(0);
             }
         }
 
@@ -163,7 +163,7 @@ namespace FaceRecognition.Utilities
         {
             get
             {
-                return content.GetLength(1);
+                return _content.GetLength(1);
             }
         }
 
@@ -171,7 +171,7 @@ namespace FaceRecognition.Utilities
         {
             get
             {
-                return content.Length;
+                return _content.Length;
             }
         }
 
@@ -183,11 +183,11 @@ namespace FaceRecognition.Utilities
         {
             if (listOfVectors.Count == 0)
             {
-                this.content =  new double[0, 0];
+                _content =  new double[0, 0];
             }
 
-            if (orientation == 0) content = new double[listOfVectors[0].Count, listOfVectors.Count];
-            else content = new double[listOfVectors.Count, listOfVectors[0].Count];
+            if (orientation == 0) _content = new double[listOfVectors[0].Count, listOfVectors.Count];
+            else _content = new double[listOfVectors.Count, listOfVectors[0].Count];
 
 
             for (int x = 0; x < listOfVectors.Count; ++x)
@@ -196,11 +196,11 @@ namespace FaceRecognition.Utilities
                 {
                     if (orientation == 0)
                     {
-                        content[y, x] = listOfVectors[x][y];
+                        _content[y, x] = listOfVectors[x][y];
                     }
                     else
                     {
-                        content[x, y] = listOfVectors[x][y];
+                        _content[x, y] = listOfVectors[x][y];
                     }
                 }
             }
@@ -218,7 +218,7 @@ namespace FaceRecognition.Utilities
             {
                 for (int j = 0; j < Y;++j)
                 {
-                    newContent[i,j] = content[i,j];
+                    newContent[i,j] = _content[i,j];
                 }
             }
 
@@ -229,7 +229,7 @@ namespace FaceRecognition.Utilities
                 else newContent[X, i] = newVector[i];
             }
 
-            content = newContent;
+            _content = newContent;
         }
 
         public FacesMatrix GetAverageVector(int orientation)
@@ -255,8 +255,8 @@ namespace FaceRecognition.Utilities
 
                 for (int i = 0; i < numberOfVectors; ++i)
                 {
-                    if(orientation == 0) sumOfPixelOnOnePosition += content[j, i];
-                    else sumOfPixelOnOnePosition += content[i, j];
+                    if(orientation == 0) sumOfPixelOnOnePosition += _content[j, i];
+                    else sumOfPixelOnOnePosition += _content[i, j];
                 }
 
                 sumVector[j] = sumOfPixelOnOnePosition / numberOfVectors;
@@ -273,7 +273,7 @@ namespace FaceRecognition.Utilities
             {
                 for(int j = 0; j < Y; ++j)
                 {
-                    transposedMatrix.Content[j,i] = content[i,j];
+                    transposedMatrix.Content[j,i] = _content[i,j];
                 }
             }
 
@@ -288,14 +288,14 @@ namespace FaceRecognition.Utilities
         /// <returns></returns>
         public double[] GetVectorAsArray(int numberOfVector,int orientation)
         {
-            int lengthOfVector = content.GetLength(orientation);
+            int lengthOfVector = _content.GetLength(orientation);
 
             double[] result = new double[lengthOfVector];
 
             for(int i = 0; i < lengthOfVector; ++i)
             {
-                if (orientation == 0) result[i] = content[i, numberOfVector];
-                else result[i] = content[numberOfVector, i];
+                if (orientation == 0) result[i] = _content[i, numberOfVector];
+                else result[i] = _content[numberOfVector, i];
             }
 
             return result;
@@ -324,8 +324,8 @@ namespace FaceRecognition.Utilities
                 double[] currentVectorInArray = new double[lenghtOfVectors];
                 for(int j = 0; j < lenghtOfVectors; ++j)
                 {
-                    if (orientation == 0) currentVectorInArray[j] = content[j,i];
-                    else currentVectorInArray[j] = content[i, j];
+                    if (orientation == 0) currentVectorInArray[j] = _content[j,i];
+                    else currentVectorInArray[j] = _content[i, j];
                 }
 
                 result.Add(currentVectorInArray);
@@ -356,11 +356,11 @@ namespace FaceRecognition.Utilities
                 {
                     if(orientation == 0)
                     {
-                        currentContent[j, i] = content[j, i];
+                        currentContent[j, i] = _content[j, i];
                     }
                     else
                     {
-                        currentContent[i, j] = content[i, j];
+                        currentContent[i, j] = _content[i, j];
                     }
                 }
             }
@@ -388,7 +388,7 @@ namespace FaceRecognition.Utilities
                 {
                     for (int j = 0; j < a.Y; ++j)
                     {
-                        result.content[i, j] = a.content[i, j] - b.content[i, j];
+                        result._content[i, j] = a._content[i, j] - b._content[i, j];
                     }
                 }
             }
