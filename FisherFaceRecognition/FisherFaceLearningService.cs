@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using Accord.Imaging.Filters;
+using Accord.Math;
+using Accord.Math.Decompositions;
 using Commons.Utilities;
 
 //todo: moze wrzuc do FacesMatrix takie cos jak numberOfVectors??????
 //todo: wlasna dekompozycja
 //todo: ogarnac LDA z tego linka, chyba daloby sie to zrobic jako gotowiec: http://accord-framework.net/docs/html/T_Accord_Statistics_Analysis_LinearDiscriminantAnalysis.htm
 //todo: jest opcja zeby zrobic po prostu polaczenie PCA + LDA, zeby mozna bylo policzyc te pojebane macierze.
+//todo: a moze jednak EmguCV zastosować ? moze jako testowanie albo nie wiem
+//todo: pomysł: jak juz bedziemy miec zmapowane punkty po LDA bedzie mozna sprawdzać przy procesie recognition czy najbliższe k punktow nalezy do tej samej klasy => nowy punkt tez do niej nalezy
 namespace FisherFaceRecognition
 {
     public class FisherFaceLearningService
@@ -50,28 +54,55 @@ namespace FisherFaceRecognition
         {
             LoadLearningSet();
             CalculateAverageVectors();
-            CalculateDifferences();
-            CalculateScatterMatrices();
-            FacesMatrix odwrot = _withinScatterMatrix.InverseMatrix();
 
-            FacesMatrix Sw1Sb = odwrot * _betweenClassScatterMatrix;
-            /*
-            FacesMatrix differenceVectors = _unprocessedVectors - new FacesMatrix(_unprocessedVectors.X, averageVector);
+            //PCA:
+            FacesMatrix differenceVectors = _unprocessedVectors - new FacesMatrix(_unprocessedVectors.X, _averageVector);
             FacesMatrix differenceVectorsT = differenceVectors.Transpose();
             FacesMatrix covariation = differenceVectors * differenceVectorsT;
             EigenvalueDecomposition decomposition = new EigenvalueDecomposition(covariation.Content, true, true); 
-            FacesMatrix eigenVectors = new FacesMatrix(decomposition.Eigenvectors);
+            FacesMatrix eigenVectors = new FacesMatrix(decomposition.Eigenvectors); //todo: analiza tego, bo akurat decomposition moze zwracac orientation 0!!!
             FacesMatrix eigenFaces = differenceVectorsT * eigenVectors;
+            eigenFaces = eigenFaces.GetFirstVectors(50, 0); //odcinka najistotniejszych
 
-            //odcinka 20 najistotniejszych
-            eigenFaces = eigenFaces.GetFirstVectors(20, 0);
+            FacesMatrix dataAfterPCA = GetDataInNewSpace(_unprocessedVectors, eigenFaces.Transpose());
+            dataAfterPCA = dataAfterPCA.Transpose(); //400 wektorów w 20 wymiarowej przestrzeni, teraz do przetworzenia przez LDA
 
-            List<double[]> eigenFacesAsListOfArrays = eigenFaces.GetMatrixAsListOfArrays(0);
-            double[] averageVectorAsArray = averageVector.GetVectorAsArray(0, 1);
+            _unprocessedVectors = dataAfterPCA;
 
-            StoreEigenFacesToDatabase(eigenFacesAsListOfArrays);
-            StoreAverageVectorToDatabase(averageVectorAsArray);
-            */
+            _averageVectorsForClasses = new FacesMatrix();
+            CalculateAverageVectors();
+
+            CalculateDifferences();
+            CalculateScatterMatrices();
+            FacesMatrix inversedScatterInverseMatrixMatrix = _withinScatterMatrix.InverseMatrix();
+
+            FacesMatrix swSb = inversedScatterInverseMatrixMatrix * _betweenClassScatterMatrix;
+
+            EigenvalueDecomposition sw1SbDecomposition = new EigenvalueDecomposition(swSb.Content, true, true);
+
+            FacesMatrix swSbEigenValues = new FacesMatrix(sw1SbDecomposition.RealEigenvalues, 1);
+            FacesMatrix swSbEigenVectors = new FacesMatrix(sw1SbDecomposition.Eigenvectors);
+
+
+            dataAfterPCA = dataAfterPCA.Transpose();
+
+            FacesMatrix dataInNewSpace = dataAfterPCA.Transpose() * swSbEigenVectors;
+            dataInNewSpace.Transpose(); //niektore wymiary nie praktycznie pokazuja ta sama liczbe dla tej samej osoby!!!
+        }
+
+        private FacesMatrix GetDataInNewSpace(FacesMatrix dataMatrix, FacesMatrix eigenFacesT)
+        {
+            //zalozenie orientation == 1
+
+            FacesMatrix result = new FacesMatrix();
+
+            //for (int i = 0; i < dataMatrix.X; ++i)
+            //{
+                FacesMatrix diff = dataMatrix - new FacesMatrix(dataMatrix.X, _averageVector);
+                result = eigenFacesT * diff.Transpose();
+            //}
+
+            return result;
         }
 
         private void CalculateAverageVectors()
@@ -91,12 +122,12 @@ namespace FisherFaceRecognition
         {
 
             //Sw:
-            FacesMatrix sW = new FacesMatrix(new double[_unprocessedVectors.X, _unprocessedVectors.X]); /// ta macierz ma wymiar nxn gdzie n to liczba pikseli
+            FacesMatrix sW = new FacesMatrix(new double[_unprocessedVectors.Y, _unprocessedVectors.Y]); /// ta macierz ma wymiar nxn gdzie n to liczba pikseli
 
             for (int i = 0; i < NumberOfClasses; ++i)
             {
-                FacesMatrix currentSW = new FacesMatrix(new double[_unprocessedVectors.X, _unprocessedVectors.X]);
-                currentSW = _differecesInClasses[i] * _differecesInClasses[i].Transpose();
+                FacesMatrix currentSW = new FacesMatrix(new double[_unprocessedVectors.Y, _unprocessedVectors.Y]);
+                currentSW = _differecesInClasses[i].Transpose() * _differecesInClasses[i];
                 if (i == 0) sW = currentSW;
                 else sW = sW + currentSW;
             }
@@ -104,8 +135,8 @@ namespace FisherFaceRecognition
 
             //Sb:
             _differencesBetweenAverageVectorsInClassesAndAverageVectorOfTotal = _averageVectorsForClasses - new FacesMatrix(_averageVectorsForClasses.X, _averageVector);
-            _betweenClassScatterMatrix = _differencesBetweenAverageVectorsInClassesAndAverageVectorOfTotal *
-                                         _differencesBetweenAverageVectorsInClassesAndAverageVectorOfTotal.Transpose();
+            _betweenClassScatterMatrix = _differencesBetweenAverageVectorsInClassesAndAverageVectorOfTotal.Transpose() *
+                                         _differencesBetweenAverageVectorsInClassesAndAverageVectorOfTotal;
 
         }
 
