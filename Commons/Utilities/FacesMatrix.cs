@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using Accord.Imaging.Filters;
+using Accord.Math;
 
 namespace Commons.Utilities
 {
@@ -155,6 +156,7 @@ namespace Commons.Utilities
         {
             get
             {
+                if (_content == null) return 0;
                 return _content.GetLength(0);
             }
         }
@@ -163,6 +165,7 @@ namespace Commons.Utilities
         {
             get
             {
+                if (_content == null) return 0;
                 return _content.GetLength(1);
             }
         }
@@ -210,6 +213,14 @@ namespace Commons.Utilities
         public void PushBackVector(double[] newVector, int orientation)
         {
             //for tests only:
+
+            //checks if it was initialized
+            if (_content.Length == 0)
+            {
+                if (orientation == 0) _content = new double[newVector.Length, 1];
+                else _content = new double[1, newVector.Length];
+            }
+
             double[,] newContent;
             if (orientation == 0) newContent = new double[X, Y + 1];
             else newContent = new double[X + 1, Y];
@@ -263,6 +274,45 @@ namespace Commons.Utilities
             }
 
             return new FacesMatrix(sumVector,1);
+        }
+
+        /// <summary>
+        /// Method returns average vector of n vectors. It takes number of first vector and number of vectors to calculate
+        /// </summary>
+        /// <param name="orientation"></param>
+        /// <param name="indexOfFirstVector"></param>
+        /// <param name="numberOfVectors"></param>
+        /// <returns></returns>
+        public FacesMatrix GetAverageVector(int orientation, int indexOfFirstVector, int numberOfVectors)
+        {
+            int lengthOfVector;
+            int maxIndexOfVector = indexOfFirstVector + numberOfVectors;
+
+            if (orientation == 0)
+            {
+                lengthOfVector = X;
+            }
+            else
+            {
+                lengthOfVector = Y;
+            }
+
+            double[] sumVector = new double[lengthOfVector];
+
+            for (int j = 0; j < lengthOfVector; ++j)
+            {
+                double sumOfPixelOnOnePosition = 0;
+
+                for (int i = indexOfFirstVector; i < maxIndexOfVector; ++i)
+                {
+                    if (orientation == 0) sumOfPixelOnOnePosition += _content[j, i];
+                    else sumOfPixelOnOnePosition += _content[i, j];
+                }
+
+                sumVector[j] = sumOfPixelOnOnePosition / maxIndexOfVector;
+            }
+
+            return new FacesMatrix(sumVector, 1);
         }
 
         public FacesMatrix Transpose()
@@ -367,7 +417,79 @@ namespace Commons.Utilities
 
             return new FacesMatrix(currentContent);
         }
-        
+
+        public void Concatenate(FacesMatrix secondMatrix, int orientation)
+        {
+            double[,] newContent;
+            
+            if (_content == null || _content.Length == 0)
+            {
+                _content = secondMatrix.Content.Copy();
+                return;
+            }
+            
+
+            if (orientation == 0) newContent = new double[X,Y+secondMatrix.Y];
+            else newContent = new double[X + secondMatrix.X, Y];
+
+            for (int i = 0; i < X; ++i)
+            {
+                for (int j = 0; j < Y; ++j)
+                {
+                    newContent[i, j] = _content[i, j];
+                }
+            }
+
+            for (int i = X; i < secondMatrix.X; ++i)
+            {
+                for (int j = 0; j < secondMatrix.Y; ++j)
+                {
+                    newContent[i, Y + j] = secondMatrix.Content[i, j];
+                }
+            }
+
+            _content = newContent;
+        }
+
+        public FacesMatrix InverseMatrix()
+        {
+            return new FacesMatrix(_content.Inverse());
+        }
+
+        public FacesMatrix GetPartOfMatrix(int indexOfFirstVector, int numberOfVectors, int orientation)
+        {
+            int lenghtOfVectors;
+            double[,] result;
+
+            if (orientation == 0)
+            {
+                lenghtOfVectors = X;
+                result = new double[X,numberOfVectors];
+            }
+            else
+            {
+                lenghtOfVectors = Y;
+                result = new double[numberOfVectors, Y];
+            }
+
+            for (int i = indexOfFirstVector; i < numberOfVectors; ++i)
+            {
+                for (int j = 0; j < lenghtOfVectors; ++j)
+                {
+                    if (orientation == 0)
+                    {
+                        result[j, i] = _content[j, i];
+                    }
+                    else
+                    {
+                        result[i, j] = _content[i, j];
+                    }
+                }
+            }
+
+            return new FacesMatrix(result);
+        }
+
         #endregion
 
         #region operators
@@ -389,6 +511,29 @@ namespace Commons.Utilities
                     for (int j = 0; j < a.Y; ++j)
                     {
                         result._content[i, j] = a._content[i, j] - b._content[i, j];
+                    }
+                }
+            }
+
+            return result;
+        }
+        public static FacesMatrix operator +(FacesMatrix a, FacesMatrix b)
+        {
+            FacesMatrix result = new FacesMatrix(a.X, a.Y);
+
+            //if for DEBUG time only
+            if (a.X != b.X || a.Y != b.Y)
+            {
+                Console.WriteLine("FacesMatrixes must have the same sizes!");
+                return null;
+            }
+            else
+            {
+                for (int i = 0; i < a.X; ++i)
+                {
+                    for (int j = 0; j < a.Y; ++j)
+                    {
+                        result._content[i, j] = a._content[i, j] + b._content[i, j];
                     }
                 }
             }
