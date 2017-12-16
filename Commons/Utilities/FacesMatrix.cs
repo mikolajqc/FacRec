@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using Accord.Imaging.Filters;
 using Accord.Math;
 
 namespace Commons.Utilities
 {
+    //TODO: Tests as quickly as possible
     public class FacesMatrix
     {
         /// Jak mapowac obraz na czlowieka i gdzie to reprezentowac?
@@ -308,7 +310,7 @@ namespace Commons.Utilities
                     else sumOfPixelOnOnePosition += _content[i, j];
                 }
 
-                sumVector[j] = sumOfPixelOnOnePosition / maxIndexOfVector;
+                sumVector[j] = sumOfPixelOnOnePosition / numberOfVectors;
             }
 
             return new FacesMatrix(sumVector, 1);
@@ -417,6 +419,7 @@ namespace Commons.Utilities
             return new FacesMatrix(currentContent);
         }
 
+        //todo: test of method Concatenate - nie concatenuje sie dla i > 0
         public void Concatenate(FacesMatrix secondMatrix, int orientation)
         {
             double[,] newContent;
@@ -439,11 +442,11 @@ namespace Commons.Utilities
                 }
             }
 
-            for (int i = X; i < secondMatrix.X; ++i)
+            for (int i = X; i < secondMatrix.X + X; ++i)
             {
                 for (int j = 0; j < secondMatrix.Y; ++j)
                 {
-                    newContent[i, Y + j] = secondMatrix.Content[i, j];
+                    newContent[i, j] = secondMatrix.Content[i - X, j];
                 }
             }
 
@@ -455,6 +458,7 @@ namespace Commons.Utilities
             return new FacesMatrix(_content.Inverse());
         }
 
+        //todo: napraw bug w tej funkcji - ona nie dziala poprawnie - dziala 
         public FacesMatrix GetPartOfMatrix(int indexOfFirstVector, int numberOfVectors, int orientation)
         {
             int lenghtOfVectors;
@@ -471,17 +475,17 @@ namespace Commons.Utilities
                 result = new double[numberOfVectors, Y];
             }
 
-            for (int i = indexOfFirstVector; i < numberOfVectors; ++i)
+            for (int i = indexOfFirstVector; i < numberOfVectors + indexOfFirstVector; ++i)
             {
                 for (int j = 0; j < lenghtOfVectors; ++j)
                 {
                     if (orientation == 0)
                     {
-                        result[j, i] = _content[j, i];
+                        result[j, i - indexOfFirstVector] = _content[j, i];
                     }
                     else
                     {
-                        result[i, j] = _content[i, j];
+                        result[i - indexOfFirstVector, j] = _content[i, j];
                     }
                 }
             }
@@ -551,6 +555,22 @@ namespace Commons.Utilities
             }
 
             return new FacesMatrix(Accord.Math.Matrix.Dot(a.Content, b.Content));
+        }
+
+        //todo:test
+        public static FacesMatrix operator *(int a, FacesMatrix b)
+        {
+            FacesMatrix result = new FacesMatrix(b.Content);
+
+            for (int i = 0; i < b.X; ++i)
+            {
+                for (int j = 0; j < b.Y; ++j)
+                {
+                    result.Content[i,j] = result.Content[i,j] * a;
+                }
+            }
+
+            return result;
         }
 
         #endregion

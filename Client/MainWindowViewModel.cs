@@ -16,10 +16,8 @@ namespace Client
 {
     class MainWindowViewModel : Screen
     {
-        ///TODO:
-        ///1. requests manager
-        ///
-        ///Dodaj lustrzane odbicie
+        ///TODO: requests manager
+        ///todo: lustrzane odbicie
         #region fields
         ///Sprawdzic czy tutaj musi byc BitmapImage czy moze byc Bitmap
         private BitmapImage _imageWebcam = null;

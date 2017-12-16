@@ -23,7 +23,7 @@ namespace Server.DAO
             _guow.SaveChanges();
         }
 
-        public void Delete(EigenFace eigenFace) ///Upewnic sie czy to napewno usuwa !!!!!
+        public void Delete(EigenFace eigenFace) ///todo: Upewnic sie czy to napewno usuwa !!!!!
         {
             _guow.Repository<Models.EigenFace>().Delete(
                         new Models.EigenFace
