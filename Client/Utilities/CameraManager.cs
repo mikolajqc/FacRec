@@ -1,12 +1,14 @@
-﻿using AForge.Video.DirectShow;
-using System.Drawing;
+﻿using System.Drawing;
+using Accord.Imaging;
+using Accord.Imaging.Filters;
+using AForge.Video.DirectShow;
 
-namespace Client
+namespace Client.Utilities
 {
     class CameraManager
     {
-        private VideoCaptureDevice _videoSource;
-        private FilterInfoCollection _videoDevices;
+        private readonly VideoCaptureDevice _videoSource;
+        private readonly FilterInfoCollection _videoDevices;
         private Bitmap _currentBitmap;
 
         public CameraManager()
@@ -17,7 +19,14 @@ namespace Client
             (s, eventArgs)
             =>
             {
-                _currentBitmap = new Bitmap(eventArgs.Frame);
+                lock (this)
+                {
+                    ResizeNearestNeighbor resize = new ResizeNearestNeighbor(320,240);
+                    UnmanagedImage im = UnmanagedImage.FromManagedImage(eventArgs.Frame);
+                    UnmanagedImage downsample = resize.Apply(im);
+                    _currentBitmap = downsample.ToManagedImage();
+                }
+
             });
             
         }
