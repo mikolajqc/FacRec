@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Accord.Imaging.Filters;
+using Accord.Statistics;
 using Caliburn.Micro;
 using Client.Utilities;
 using Commons;
@@ -15,6 +16,7 @@ using Commons;
 namespace Client
 {
     //todo: ResizeNearestNeighbor do skalowania? z bilbioteki AForge
+    //todo: usunac requestowanie o learna w zwykly sposob
     class MainWindowViewModel : Screen
     {
         ///TODO: requests manager
@@ -83,8 +85,10 @@ namespace Client
         {
             Application.Current.Dispatcher.BeginInvoke(
             new System.Action(
-                () => {
-                    _imageSnapshot = BitmapToImageSource(CropImage(BitmapImage2Bitmap(ImageWebcam), CreateRectangleForFace(ImageWebcam.PixelWidth, ImageWebcam.PixelHeight)));
+                () =>
+                {
+                    var bitmap = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFramePreview()).Item2;
+                    if (bitmap != null) _imageSnapshot = BitmapToImageSource(bitmap);
                     NotifyOfPropertyChange(() => ImageSnapshot);
                 }));
         }
@@ -149,7 +153,7 @@ namespace Client
                     new System.Action(
                         () => {
                                 _imageWebcam = BitmapToImageSource(
-                                    _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFramePreview())
+                                    _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFramePreview()).Item1
                                 );
                             NotifyOfPropertyChange(() => ImageWebcam);
                         }));
@@ -205,26 +209,6 @@ namespace Client
             RectanglesMarker marker = new RectanglesMarker(rectangle);
 
             return marker.Apply(source);
-        }
-
-        /// <summary>
-        /// External!!!
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="section"></param>
-        /// <returns></returns>
-        private Bitmap CropImage(Bitmap source, Rectangle section)
-        {
-            // An empty bitmap which will hold the cropped image
-            Bitmap bmp = new Bitmap(section.Width, section.Height);
-
-            Graphics g = Graphics.FromImage(bmp);
-
-            // Draw the given area (section) of the source image
-            // at location 0,0 on the empty bitmap (bmp)
-            g.DrawImage(source, 0, 0, section, GraphicsUnit.Pixel);
-
-            return bmp;
         }
 
         private Rectangle CreateRectangleForFace(int bitmapWidth, int bitmapHeight)

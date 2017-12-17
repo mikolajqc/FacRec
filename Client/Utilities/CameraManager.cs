@@ -22,7 +22,7 @@ namespace Client.Utilities
                     lock (this)
                     {
                         _currentBitmap = new Bitmap(eventArgs.Frame);
-                        var resize = new ResizeNearestNeighbor(320,240);
+                        var resize = new ResizeNearestNeighbor(480,320);
                         var im = UnmanagedImage.FromManagedImage(eventArgs.Frame);
                         var downsample = resize.Apply(im);
                         _currentBitmapPreview = downsample.ToManagedImage();

@@ -39,7 +39,6 @@ namespace FaceRecognition.Services
         }
         #endregion
 
-
         #region publicmethods
         /// <summary>
         /// Temporarily this returns string that is stored in namesOfPeople List
