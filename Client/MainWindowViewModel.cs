@@ -116,15 +116,15 @@ namespace Client
             _faceDetector = new FaceDetector();
 
             _timer = new System.Timers.Timer
-            {
-                AutoReset = true,
-                Interval = 50
-            };
+                {
+                    AutoReset = true,
+                    Interval = 50
+                };
             // ogarnac to inaczej
             _timer.Elapsed += (sender, e) =>
-            {
-                UpdateImage();
-            };
+                {
+                    UpdateImage();
+                };
             _cameraManager.Start();
             _timer.Start();
         }
@@ -143,23 +143,22 @@ namespace Client
 
         private void UpdateImage()
         {
-            if(_cameraManager.GetFrame() != null)
+            if(_cameraManager.GetFramePreview() != null)
             {
-                    Application.Current.Dispatcher.BeginInvoke(
-                        new System.Action(
-                            () => {
+                Application.Current.Dispatcher.BeginInvoke(
+                    new System.Action(
+                        () => {
                                 _imageWebcam = BitmapToImageSource(
-                                    ApplyRectangleToBitmap(
-                                        _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame())
-                                    ));
-                                NotifyOfPropertyChange(() => ImageWebcam);
-                            }));
+                                    _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFramePreview())
+                                );
+                            NotifyOfPropertyChange(() => ImageWebcam);
+                        }));
 
             }
         }
 
 
-        ///Funkcje externalowe przerobic na swoj kod i moze przenisc do jakichs tools? jako static
+        ///todo: Funkcje externalowe przerobic na swoj kod i moze przenisc do jakichs tools? jako static
 
         /// <summary>
         /// External code!!!

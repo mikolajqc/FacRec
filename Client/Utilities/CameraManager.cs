@@ -9,31 +9,37 @@ namespace Client.Utilities
     {
         private readonly VideoCaptureDevice _videoSource;
         private readonly FilterInfoCollection _videoDevices;
+        private Bitmap _currentBitmapPreview;
         private Bitmap _currentBitmap;
 
         public CameraManager()
         {
             _videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             _videoSource = new VideoCaptureDevice(_videoDevices[0].MonikerString);
-            _videoSource.NewFrame += new AForge.Video.NewFrameEventHandler(
-            (s, eventArgs)
-            =>
-            {
-                lock (this)
+            _videoSource.NewFrame += (s, eventArgs)
+                =>
                 {
-                    ResizeNearestNeighbor resize = new ResizeNearestNeighbor(320,240);
-                    UnmanagedImage im = UnmanagedImage.FromManagedImage(eventArgs.Frame);
-                    UnmanagedImage downsample = resize.Apply(im);
-                    _currentBitmap = downsample.ToManagedImage();
-                }
+                    lock (this)
+                    {
+                        _currentBitmap = new Bitmap(eventArgs.Frame);
+                        var resize = new ResizeNearestNeighbor(320,240);
+                        var im = UnmanagedImage.FromManagedImage(eventArgs.Frame);
+                        var downsample = resize.Apply(im);
+                        _currentBitmapPreview = downsample.ToManagedImage();
+                    }
 
-            });
+                };
             
         }
 
         public void Start()
         {
             _videoSource.Start();
+        }
+
+        public Bitmap GetFramePreview()
+        {
+            return _currentBitmapPreview;
         }
 
         public Bitmap GetFrame()
