@@ -128,7 +128,7 @@ namespace FaceRecognition.Services
             for (int i = 0; i < listOfWages.Count; ++i)
             {
                 valuesOfWages.Add(JsonConvert.DeserializeObject(listOfWages[i].Value, typeof(double[])) as double[]);
-                _namesOfUsers.Add(listOfWages[0].Name);
+                _namesOfUsers.Add(listOfWages[i].Name);
             }
 
             _wages = new FacesMatrix(valuesOfWages, 0);
