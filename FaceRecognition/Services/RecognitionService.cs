@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-
+//todo: ogarnij przetwarzanie wstepne! masz narazie jedynie wyrownanie histogramow. Dobrze by bylo miec jakies wycinanie zdjecia dodatkowo
 namespace FaceRecognition.Services
 {
     public class RecognitionService : IRecognitonService

@@ -77,8 +77,6 @@ namespace Client.Utilities
                     _intenderRectangle = window[0];
                     _tracker.ProcessFrame(im);
 
-
-
                     _marker = new RectanglesMarker(window);
                     _marker.ApplyInPlace(im);
 

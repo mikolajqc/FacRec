@@ -239,7 +239,7 @@ namespace Client
 
             var client = new HttpClient()
             {
-                BaseAddress = new Uri("http://localhost:15390")
+                BaseAddress = new Uri("http://localhost")
             };
             // Set the Accept header for BSON.
             client.DefaultRequestHeaders.Accept.Clear();
