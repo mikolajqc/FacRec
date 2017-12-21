@@ -384,7 +384,12 @@ namespace Commons.Utilities
 
             return result;
         }
-        
+
+        public double[][] GetMatrixAsArrayOfArray(int orientation)
+        {
+            return GetMatrixAsListOfArrays(orientation).ToArray();
+        }
+
         public FacesMatrix GetFirstVectors(int numberOfFirstVectors, int orientation)
         {
             double[,] currentContent;

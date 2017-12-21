@@ -6,6 +6,7 @@ using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
 using SimpleInjector.Lifestyles;
 using System.Web.Http;
+using FisherFaceRecognition.Interfaces;
 
 namespace Server
 {
@@ -21,6 +22,9 @@ namespace Server
             container.Register<IRecognitonService, RecognitionService>(Lifestyle.Transient);
             container.Register<IAddNewFaceService, AddNewFaceService>(Lifestyle.Transient);
             container.Register<ILearningService, LearningService>(Lifestyle.Transient);
+            container
+                .Register<IFisherFacesRecognitionService, FisherFaceRecognition.Services.FisherFacesRecognitionService>(
+                    Lifestyle.Transient);
 
             //DAOs
             container.Register<IAverageVectorDao, AverageVectorDao>(Lifestyle.Transient);

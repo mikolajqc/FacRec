@@ -8,6 +8,9 @@ using Commons.Utilities;
 using System.Linq;
 using Accord;
 using Accord.Math;
+using Accord.Statistics.Analysis;
+using Accord.Statistics.Models.Fields.Features;
+using Newtonsoft.Json;
 
 //todo: moze wrzuc do FacesMatrix takie cos jak numberOfVectors??????
 //todo: wlasna dekompozycja
@@ -75,6 +78,39 @@ namespace FisherFaceRecognition
 
             _unprocessedVectors = dataAfterPCA;
 
+            var lda = new LinearDiscriminantAnalysis();
+            double[][] dataAfterPcainArray =dataAfterPCA.GetMatrixAsArrayOfArray(1);
+
+            for (int k = 0; k < 40; ++k)
+            {
+                double[] testv = dataAfterPcainArray[k*10];
+
+                int[] output = new int[400];
+                for (int i = 0; i < 400; ++i)
+                {
+                    if (i % 10 == 0)
+                    {
+                        dataAfterPcainArray[i] = dataAfterPcainArray[i + 1];
+                    }
+                    output[i] = i / 10;
+                }
+
+                var classifier = lda.Learn(dataAfterPcainArray, output);
+
+                int results = classifier.Decide(testv);
+
+                Console.WriteLine(results);
+
+             //   lda.
+
+                string testserial = JsonConvert.SerializeObject(classifier);
+                Console.WriteLine(testserial.Length);
+            }
+
+
+
+            //var classifier = lda.Learn(GetMatrixAsArrayOfArray())
+            /*
             _averageVectorsForClasses = new FacesMatrix();
             CalculateAverageVectors(); //tested
             CalculateDifferences(); //tested
@@ -123,7 +159,7 @@ namespace FisherFaceRecognition
 
 
 
-
+            */
 
             //if (minEuclideanDistance > 7000) return "unknown";
             //Console.WriteLine(_userNames.ElementAt(numberOfString));

@@ -10,7 +10,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Formatting;
 using Commons;
-using FisherFaceRecognition;
 
 namespace Client
 {
@@ -87,11 +86,11 @@ namespace Client
         {
             ///Temporary: added reference to FisherFaceRecognition - to DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!
             /// 
-            FisherFaceRecognition.FisherFaceLearningService ffls = new FisherFaceLearningService();
-            ffls.Learn();
+            //FisherFaceRecognition.Services.FisherFacesRecognitionService ffls = new FisherFacesRecognitionService();
+            //ffls.Learn();
 
             //await Task.Run(() => faceRecognition.Learn());
-            //MessageBox.Show("Learnt!");
+            MessageBox.Show("Learnt!");
         }
         public async void Recognize()
         {
