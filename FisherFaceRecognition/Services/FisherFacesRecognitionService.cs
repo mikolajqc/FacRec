@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Accord.Imaging.Filters;
+using Accord.Math;
+using Accord.Math.Decompositions;
 using Accord.Statistics.Analysis;
 using Commons.BussinessClasses;
 using Commons.Utilities;
@@ -45,37 +48,23 @@ namespace FisherFaceRecognition.Services
 
         public string Recognize(Bitmap bitmapWithFace)
         {
-            HistogramEqualization histogramEqualization = new HistogramEqualization();
-            bitmapWithFace = histogramEqualization.Apply(bitmapWithFace);
-
             LoadDataFromDatabase();
+            FacesMatrix dataAfterPCA = _wages; //400 wektorów w 50 wymiarowej przestrzeni, teraz do przetworzenia przez LDA
+            dataAfterPCA = _wages.Transpose();
 
-            double[] wagesInArray = GetWagesOfImageInEigenFacesSpace(bitmapWithFace); ///todo: ogarnac co sie Tu sie cos jebie dane sa inne niz w bazie ! przy takim samym zdj !
-
-            //wagesInArray = JsonConvert.DeserializeObject(_wageDao.GetOverview().Last().Value, typeof(double[])) as double[];
-
-            ///LDA
             var lda = new LinearDiscriminantAnalysis();
+            double[][] dataAfterPcainArray = dataAfterPCA.GetMatrixAsArrayOfArray(1);
+            double[] wagesOfImageInEigenFacesSpace = GetWagesOfImageInEigenFacesSpace(bitmapWithFace);//_wages.GetVectorAsArray(k*10,0);
 
-            double[][] dataAfterPcainArray = _wages.GetMatrixAsArrayOfArray(0);
-
-            int[] output = new int[_namesOfUsers.Count];
-            for (int i = 0; i < _namesOfUsers.Count; ++i)
+            int[] output = new int[410];
+            for (int i = 0; i < 410; ++i)
             {
-                output[i] = namesAndIndex[_namesOfUsers[i]];
+                output[i] = i / 10;
             }
-                
-            ///bug: bug jest w accord.net jezeli mamy tylko jeden output wywala outofrange some shit
+
             var classifier = lda.Learn(dataAfterPcainArray, output);
-
-            int results = classifier.Decide(wagesInArray);
-
-            Console.WriteLine(results);
-
-            string testserial = JsonConvert.SerializeObject(classifier);
-            Console.WriteLine(testserial.Length);
-
-            return results.ToString();
+            int result = classifier.Decide(wagesOfImageInEigenFacesSpace);
+            return result.ToString();
         }
 
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
@@ -131,7 +120,7 @@ namespace FisherFaceRecognition.Services
 
                 if (!namesAndIndex.ContainsKey(listOfWages[i].Name)) //jesli slownik nie zawiera juz taka nazwe to:
                 {
-                    namesAndIndex.Add(listOfWages[i].Name,namesAndIndex.Count + 1);
+                    namesAndIndex.Add(listOfWages[i].Name,namesAndIndex.Count);
                 }
             }
 

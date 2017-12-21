@@ -52,7 +52,7 @@ namespace FaceRecognition.Services
             FacesMatrix eigenFaces = differenceVectorsT * eigenVectors;
 
             //odcinka 20 najistotniejszych
-            //eigenFaces = eigenFaces.GetFirstVectors(20, 0);
+            eigenFaces = eigenFaces.GetFirstVectors(100, 0);
 
             FacesMatrix dataAfterPCA = eigenFaces.Transpose() * differenceVectorsT;
 
