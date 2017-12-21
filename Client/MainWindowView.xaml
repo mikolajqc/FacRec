@@ -8,7 +8,7 @@
         Title="Face Recognition v0.1" Height="480" Width="1200"
         >
     <Window.DataContext>
-        <local:MainWindowViewModel />
+        <local:MainWindowViewModel/>
     </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>

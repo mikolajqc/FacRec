@@ -1,30 +1,37 @@
-﻿using Accord.Imaging.Filters;
-using Caliburn.Micro;
+﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using System.Threading.Tasks;
-using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Http.Formatting;
+using Accord.Imaging.Filters;
+using Accord.Statistics;
+using Caliburn.Micro;
+using Client.Utilities;
 using Commons;
 
 namespace Client
 {
+    //todo: ResizeNearestNeighbor do skalowania? z bilbioteki AForge
+    //todo: usunac requestowanie o learna w zwykly sposob
     class MainWindowViewModel : Screen
     {
         ///TODO: requests manager
-        ///todo: lustrzane odbicie
+        ///TODO: lustrzane odbicie
+        ///TODO: face detection
         #region fields
         ///Sprawdzic czy tutaj musi byc BitmapImage czy moze byc Bitmap
-        private BitmapImage _imageWebcam = null;
-        private BitmapImage _imageSnapshot = null;
-        private CameraManager _cameraManager = null;
-        private string _nameOfUser = null;
+        private BitmapImage _imageWebcam;
+        private BitmapImage _imageSnapshot;
+        private CameraManager _cameraManager;
+        private FaceDetector _faceDetector;
 
-        private System.Timers.Timer _timer = null;
+        private string _nameOfUser;
+
+        private System.Timers.Timer _timer;
         #endregion
 
         #region properties
@@ -77,8 +84,10 @@ namespace Client
         {
             Application.Current.Dispatcher.BeginInvoke(
             new System.Action(
-                () => {
-                    _imageSnapshot = BitmapToImageSource(CropImage(BitmapImage2Bitmap(ImageWebcam), CreateRectangleForFace(ImageWebcam.PixelWidth, ImageWebcam.PixelHeight)));
+                () =>
+                {
+                    var bitmap = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFramePreview()).Item2;
+                    if (bitmap != null) _imageSnapshot = BitmapToImageSource(bitmap);
                     NotifyOfPropertyChange(() => ImageSnapshot);
                 }));
         }
@@ -112,13 +121,18 @@ namespace Client
         protected override void OnActivate()
         {
             _cameraManager = new CameraManager();
-            _timer = new System.Timers.Timer();
-            _timer.AutoReset = true;
-            _timer.Interval = 20; // ogarnac to inaczej
+            _faceDetector = new FaceDetector();
+
+            _timer = new System.Timers.Timer
+                {
+                    AutoReset = true,
+                    Interval = 50
+                };
+            // ogarnac to inaczej
             _timer.Elapsed += (sender, e) =>
-            {
-                UpdateImage();
-            };
+                {
+                    UpdateImage();
+                };
             _cameraManager.Start();
             _timer.Start();
         }
@@ -137,22 +151,22 @@ namespace Client
 
         private void UpdateImage()
         {
-            if(_cameraManager.GetFrame() != null)
+            if(_cameraManager.GetFramePreview() != null)
             {
                 Application.Current.Dispatcher.BeginInvoke(
-                new System.Action(
-                    () => {
-                        _imageWebcam = BitmapToImageSource(
-                            ApplyRectangleToBitmap(
-                                _cameraManager.GetFrame()
-                            ));
-                        NotifyOfPropertyChange(() => ImageWebcam);
-                    }));
+                    new System.Action(
+                        () => {
+                                _imageWebcam = BitmapToImageSource(
+                                    _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFramePreview()).Item1
+                                );
+                            NotifyOfPropertyChange(() => ImageWebcam);
+                        }));
+
             }
         }
 
 
-        ///Funkcje externalowe przerobic na swoj kod i moze przenisc do jakichs tools? jako static
+        ///todo: Funkcje externalowe przerobic na swoj kod i moze przenisc do jakichs tools? jako static
 
         /// <summary>
         /// External code!!!
@@ -201,26 +215,6 @@ namespace Client
             return marker.Apply(source);
         }
 
-        /// <summary>
-        /// External!!!
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="section"></param>
-        /// <returns></returns>
-        private Bitmap CropImage(Bitmap source, Rectangle section)
-        {
-            // An empty bitmap which will hold the cropped image
-            Bitmap bmp = new Bitmap(section.Width, section.Height);
-
-            Graphics g = Graphics.FromImage(bmp);
-
-            // Draw the given area (section) of the source image
-            // at location 0,0 on the empty bitmap (bmp)
-            g.DrawImage(source, 0, 0, section, GraphicsUnit.Pixel);
-
-            return bmp;
-        }
-
         private Rectangle CreateRectangleForFace(int bitmapWidth, int bitmapHeight)
         {
             const int widthofimagetosent = 92 * 4;
@@ -233,12 +227,14 @@ namespace Client
         }
         #endregion
 
-    /// <summary>
-    /// Czesciowo external, upewnic sie czy nie lepiej wysylac w jakims base64 !!!!!, funkcja do poprawienia i wrzucenia w RequestManager or sth
-    /// </summary>
-    /// <param name="bitmap"></param>
-    /// <returns></returns>
-    public async Task<string> UploadBitmapAsync(Bitmap bitmap, bool isAddingNewFace = false, string name = null)
+        /// <summary>
+        /// Czesciowo external, upewnic sie czy nie lepiej wysylac w jakims base64 !!!!!, funkcja do poprawienia i wrzucenia w RequestManager or sth
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <param name="isAddingNewFace"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public async Task<string> UploadBitmapAsync(Bitmap bitmap, bool isAddingNewFace = false, string name = null)
         {
             byte[] bitmapData;
             var stream = new MemoryStream();
@@ -247,7 +243,7 @@ namespace Client
 
             var client = new HttpClient()
             {
-                BaseAddress = new Uri("http://localhost:15390")
+                BaseAddress = new Uri("http://localhost")
             };
             // Set the Accept header for BSON.
             client.DefaultRequestHeaders.Accept.Clear();

@@ -104,7 +104,7 @@ namespace FaceRecognition.Services
 
         private List<double> GetImageVectorInList(string pathToImage)
         {
-            Bitmap bitmap = ScaleBitmapToRequredSize(AForge.Imaging.Formats.ImageDecoder.DecodeFromFile(pathToImage)); /// co to kurwa ???? zamien to na accord wtf!!!
+            Bitmap bitmap = ScaleBitmapToRequredSize(AForge.Imaging.Formats.ImageDecoder.DecodeFromFile(pathToImage));
 
             HistogramEqualization histogramEqualization = new HistogramEqualization();
             bitmap = histogramEqualization.Apply(bitmap);
