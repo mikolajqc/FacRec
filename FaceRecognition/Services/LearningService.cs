@@ -22,15 +22,19 @@ namespace FaceRecognition.Services
 
         private readonly IAverageVectorDao _averageVectorDao;
         private readonly IEigenFaceDao _eigenFaceDao;
+        private readonly IWageDao _wageDao;
+        private List<string> _userNames;
 
         #region constructors
-        public LearningService(IAverageVectorDao averageVectorDao, IEigenFaceDao eigenFaceDao)
+        public LearningService(IAverageVectorDao averageVectorDao, IEigenFaceDao eigenFaceDao, IWageDao wageDao)
         {
             _averageVectorDao = averageVectorDao;
             _eigenFaceDao = eigenFaceDao;
+            _wageDao = wageDao;
 
             _pathToLearningSet = @"D:\Studia\Inzynierka\LearningSet_AT&T\";
             _unprocessedVectors = new FacesMatrix();
+            _userNames = new List<string>();
 
         }
         #endregion
@@ -48,13 +52,30 @@ namespace FaceRecognition.Services
             FacesMatrix eigenFaces = differenceVectorsT * eigenVectors;
 
             //odcinka 20 najistotniejszych
-            eigenFaces = eigenFaces.GetFirstVectors(20, 0);
+            //eigenFaces = eigenFaces.GetFirstVectors(20, 0);
+
+            FacesMatrix dataAfterPCA = eigenFaces.Transpose() * differenceVectorsT;
 
             List<double[]> eigenFacesAsListOfArrays = eigenFaces.GetMatrixAsListOfArrays(0);
             double[] averageVectorAsArray = averageVector.GetVectorAsArray(0, 1);
 
+            StoreDataAfterPcaToDatabase(dataAfterPCA.GetMatrixAsListOfArrays(0), _userNames);
             StoreEigenFacesToDatabase(eigenFacesAsListOfArrays);
             StoreAverageVectorToDatabase(averageVectorAsArray);
+        }
+
+        private void StoreDataAfterPcaToDatabase(List<double[]> wages, List<string> names)
+        {
+            for (int i = 0; i < wages.Count; ++i)
+            {
+                _wageDao.Add(
+                    new Wage()
+                    {
+                        Name = names[i],
+                        Value = JsonConvert.SerializeObject(wages[i])
+                    }
+                );
+            }
         }
 
         private void StoreEigenFacesToDatabase(List<double[]> eigenFaces)
@@ -95,6 +116,7 @@ namespace FaceRecognition.Services
                     if (Path.GetExtension(file) == ".pgm" || Path.GetExtension(file) == ".jpg")
                     {
                         temporarySetOfLoadedImages.Add(GetImageVectorInList(file));
+                        _userNames.Add(Path.GetFileName(dir));
                     }
                 }
             }

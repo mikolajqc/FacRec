@@ -22,6 +22,7 @@ namespace FisherFaceRecognition.Services
         private FacesMatrix _eigenFacesT;
         private FacesMatrix _wages; // [eigenface,image]
         private List<string> _namesOfUsers;
+        private Dictionary<string, int> namesAndIndex;
 
         //consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         private const int Width = 92;
@@ -49,31 +50,30 @@ namespace FisherFaceRecognition.Services
 
             LoadDataFromDatabase();
 
-            double[] wagesInArray = GetWagesOfImageInEigenFacesSpace(bitmapWithFace);
+            double[] wagesInArray = GetWagesOfImageInEigenFacesSpace(bitmapWithFace); ///todo: ogarnac co sie Tu sie cos jebie dane sa inne niz w bazie ! przy takim samym zdj !
+
+            //wagesInArray = JsonConvert.DeserializeObject(_wageDao.GetOverview().Last().Value, typeof(double[])) as double[];
 
             ///LDA
             var lda = new LinearDiscriminantAnalysis();
 
             double[][] dataAfterPcainArray = _wages.GetMatrixAsArrayOfArray(0);
 
-                int[] output = new int[_namesOfUsers.Count];
-                for (int i = 0; i < _namesOfUsers.Count; ++i)
-                {
-                    if (_namesOfUsers[i] == "Mikolaj") output[1] = 0;
-                    else if (_namesOfUsers[i] == "Putin") output[i] = 1;
-                    else if (_namesOfUsers[i] == "Clooney") output[i] = 2;
-                }
+            int[] output = new int[_namesOfUsers.Count];
+            for (int i = 0; i < _namesOfUsers.Count; ++i)
+            {
+                output[i] = namesAndIndex[_namesOfUsers[i]];
+            }
+                
+            ///bug: bug jest w accord.net jezeli mamy tylko jeden output wywala outofrange some shit
+            var classifier = lda.Learn(dataAfterPcainArray, output);
 
-                var classifier = lda.Learn(dataAfterPcainArray, output);
+            int results = classifier.Decide(wagesInArray);
 
-                int results = classifier.Decide(wagesInArray);
+            Console.WriteLine(results);
 
-                Console.WriteLine(results);
-
-                //   lda.
-
-                string testserial = JsonConvert.SerializeObject(classifier);
-                Console.WriteLine(testserial.Length);
+            string testserial = JsonConvert.SerializeObject(classifier);
+            Console.WriteLine(testserial.Length);
 
             return results.ToString();
         }
@@ -98,7 +98,7 @@ namespace FisherFaceRecognition.Services
         private void LoadAverageVectorFromDatabase()
         {
             List<AverageVector> listOfAverageVectors = _averageVectorDao.GetOverview() as List<AverageVector>;
-            double[] valueOfAverageVector = (JsonConvert.DeserializeObject(listOfAverageVectors[0].Value, typeof(double[])) as double[]);
+            double[] valueOfAverageVector = JsonConvert.DeserializeObject(listOfAverageVectors[0].Value, typeof(double[])) as double[];
 
             _averageVector = new FacesMatrix(valueOfAverageVector, 1);
         }
@@ -121,15 +121,22 @@ namespace FisherFaceRecognition.Services
             List<Wage> listOfWages = _wageDao.GetOverview() as List<Wage>;
 
             _namesOfUsers = new List<string>();
+            namesAndIndex = new Dictionary<string, int>();
 
             List<double[]> valuesOfWages = new List<double[]>();
             for (int i = 0; i < listOfWages.Count; ++i)
             {
                 valuesOfWages.Add(JsonConvert.DeserializeObject(listOfWages[i].Value, typeof(double[])) as double[]);
                 _namesOfUsers.Add(listOfWages[i].Name);
+
+                if (!namesAndIndex.ContainsKey(listOfWages[i].Name)) //jesli slownik nie zawiera juz taka nazwe to:
+                {
+                    namesAndIndex.Add(listOfWages[i].Name,namesAndIndex.Count + 1);
+                }
             }
 
             _wages = new FacesMatrix(valuesOfWages, 0);
         }
+
     }
 }
