@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Accord.Imaging.Filters;
-using Accord.Math;
-using Accord.Math.Decompositions;
 using Accord.Statistics.Analysis;
 using Commons.BussinessClasses;
 using Commons.Utilities;
 using Newtonsoft.Json;
 using Commons.Inferfaces.DAOs;
-using FisherFaceRecognition.Interfaces;
+using Commons.Inferfaces.Services;
 
 namespace FisherFaceRecognition.Services
 {
-    public class FisherFacesRecognitionService : IFisherFacesRecognitionService
+    public class FisherFacesRecognitionService : IRecognitonService
     {
         #region fields
         //values loaded from DB

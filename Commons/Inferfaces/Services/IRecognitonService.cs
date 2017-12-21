@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace FaceRecognition.Interfaces
+namespace Commons.Inferfaces.Services
 {
     public interface IRecognitonService
     {

@@ -2,13 +2,13 @@
 using Accord.Math.Decompositions;
 using Commons.BussinessClasses;
 using Commons.Inferfaces.DAOs;
-using FaceRecognition.Interfaces;
 using Commons.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using Commons.Inferfaces.Services;
 
 namespace FaceRecognition.Services
 {

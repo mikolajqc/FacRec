@@ -71,8 +71,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FisherFaceLearningService.cs" />
-    <Compile Include="Interfaces\IFisherFacesRecognitionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FisherFacesRecognitionService.cs" />
   </ItemGroup>

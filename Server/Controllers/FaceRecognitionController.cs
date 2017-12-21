@@ -6,8 +6,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using Commons;
-using FaceRecognition.Interfaces;
-using FisherFaceRecognition.Interfaces;
+using Commons.Inferfaces.Services;
 
 namespace Server.Controllers
 {
@@ -17,14 +16,12 @@ namespace Server.Controllers
         private readonly IRecognitonService _recognitionService;
         private readonly IAddNewFaceService _addNewFaceService;
         private readonly ILearningService _learningService;
-        private readonly IFisherFacesRecognitionService _fisherFacesRecognitionService;
 
-        public FaceRecognitionController(IRecognitonService recognitionService, IAddNewFaceService addNewFaceService, ILearningService learningService, IFisherFacesRecognitionService fisherFacesRecognitionService)
+        public FaceRecognitionController(IRecognitonService recognitionService, IAddNewFaceService addNewFaceService, ILearningService learningService)
         {
             _recognitionService = recognitionService;
             _addNewFaceService = addNewFaceService;
             _learningService = learningService;
-            _fisherFacesRecognitionService = fisherFacesRecognitionService;
         }
 
         [Route("api/FaceRecognition/Learn")]
@@ -39,9 +36,7 @@ namespace Server.Controllers
         {
             byte[] bitmapWithFaceInArray = request.BitmapInArray;
             Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
-
-            //string resultOfRecognition = _recognitionService.Recognize(bitmapWithFace);
-            string resultOfRecognition = _fisherFacesRecognitionService.Recognize(bitmapWithFace);
+            string resultOfRecognition = _recognitionService.Recognize(bitmapWithFace);
 
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, "FaceRecognition response");
             response.Content = new StringContent(JsonConvert.SerializeObject(resultOfRecognition), Encoding.Unicode);

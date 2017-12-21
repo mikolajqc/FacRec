@@ -93,10 +93,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IAddNewFaceService.cs" />
-    <Compile Include="Interfaces\ILearningService.cs" />
     <Compile Include="Services\AddNewFaceService.cs" />
-    <Compile Include="Interfaces\IRecognitonService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\LearningService.cs" />
     <Compile Include="Services\RecognitionService.cs" />
