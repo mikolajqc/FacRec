@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Accord.Statistics.Analysis;
 using Commons.BussinessClasses;
 using Commons.Utilities;
@@ -41,22 +42,30 @@ namespace FisherFaceRecognition.Services
         public string Recognize(Bitmap bitmapWithFace)
         {
             LoadDataFromDatabase();
-            FacesMatrix dataAfterPCA = _wages; //400 wektorów w 50 wymiarowej przestrzeni, teraz do przetworzenia przez LDA
+            FacesMatrix dataAfterPCA = _wages; //400 wektorów dla k wymiarowej przestrzeni, teraz do przetworzenia przez LDA
             dataAfterPCA = _wages.Transpose();
 
             var lda = new LinearDiscriminantAnalysis();
             double[][] dataAfterPcainArray = dataAfterPCA.GetMatrixAsArrayOfArray(1);
-            double[] wagesOfImageInEigenFacesSpace = GetWagesOfImageInEigenFacesSpace(bitmapWithFace);//_wages.GetVectorAsArray(k*10,0);
+            double[] wagesOfImageInEigenFacesSpace = GetWagesOfImageInEigenFacesSpace(bitmapWithFace);
 
-            int[] output = new int[410];
-            for (int i = 0; i < 410; ++i)
-            {
-                output[i] = i / 10;
-            }
+            int[] output = CreateOutputForLda();
 
             var classifier = lda.Learn(dataAfterPcainArray, output);
             int result = classifier.Decide(wagesOfImageInEigenFacesSpace);
-            return result.ToString();
+            return namesAndIndex.FirstOrDefault(x => x.Value == result).Key;
+        }
+
+        private int[] CreateOutputForLda()
+        {
+            int[] result = new int[_namesOfUsers.Count];
+
+            for (int i = 0; i < _namesOfUsers.Count; ++i)
+            {
+                result[i] = namesAndIndex[_namesOfUsers[i]];
+            }
+
+            return result;
         }
 
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
