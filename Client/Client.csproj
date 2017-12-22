@@ -180,10 +180,6 @@
       <Project>{B8F33D83-E16C-4081-B0F7-668936059B54}</Project>
       <Name>Commons</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FisherFaceRecognition\FisherFaceRecognition.csproj">
-      <Project>{dcfa72b5-8f69-4c13-9620-8f1d059e8ee0}</Project>
-      <Name>FisherFaceRecognition</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\" />

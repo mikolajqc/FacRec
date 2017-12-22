@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Accord.Imaging.Filters;
-using Accord.Statistics;
 using Caliburn.Micro;
 using Client.Utilities;
 using Commons;
@@ -93,17 +92,10 @@ namespace Client
         }
         public async void Learn()
         {
-            ///Temporary: added reference to FisherFaceRecognition - to DELETE !!!!!!!!!!!!!!!!!!!!!!!!!!
-            /// 
-            //FisherFaceRecognition.Services.FisherFacesRecognitionService ffls = new FisherFacesRecognitionService();
-            //ffls.Learn();
-
-            //await Task.Run(() => faceRecognition.Learn());
             MessageBox.Show("Learnt!");
         }
         public async void Recognize()
         {
-            //MessageBox.Show(faceRecognition.Recognize(BitmapImage2Bitmap(ImageSnapshot)));
             string result = await UploadBitmapAsync(BitmapImage2Bitmap(ImageSnapshot));
             MessageBox.Show(result);
         }
@@ -243,7 +235,7 @@ namespace Client
 
             var client = new HttpClient()
             {
-                BaseAddress = new Uri("http://localhost:15390/")
+                BaseAddress = new Uri("http://localhost/")
             };
             // Set the Accept header for BSON.
             client.DefaultRequestHeaders.Accept.Clear();
