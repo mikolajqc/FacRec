@@ -23,7 +23,7 @@ namespace Client.Utilities
         private bool _isDetecting;
 
         private const int DetectFaceBreakInFrames = 100;
-        private int _currentNumberOfCalling = 0;
+        private int _currentNumberOfCalling;
 
         public FaceDetector()
         {

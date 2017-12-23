@@ -54,12 +54,12 @@ namespace FaceRecognition.Services
             //odcinka 20 najistotniejszych
             eigenFaces = eigenFaces.GetFirstVectors(100, 0);
 
-            FacesMatrix dataAfterPCA = eigenFaces.Transpose() * differenceVectorsT;
+            FacesMatrix dataAfterPca = eigenFaces.Transpose() * differenceVectorsT;
 
             List<double[]> eigenFacesAsListOfArrays = eigenFaces.GetMatrixAsListOfArrays(0);
             double[] averageVectorAsArray = averageVector.GetVectorAsArray(0, 1);
 
-            StoreDataAfterPcaToDatabase(dataAfterPCA.GetMatrixAsListOfArrays(0), _userNames);
+            StoreDataAfterPcaToDatabase(dataAfterPca.GetMatrixAsListOfArrays(0), _userNames);
             StoreEigenFacesToDatabase(eigenFacesAsListOfArrays);
             StoreAverageVectorToDatabase(averageVectorAsArray);
         }

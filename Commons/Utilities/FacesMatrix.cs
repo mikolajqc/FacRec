@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using Accord.Imaging.Filters;
 using Accord.Math;
 
@@ -211,39 +210,6 @@ namespace Commons.Utilities
 
         }
 
-        public void PushBackVector(double[] newVector, int orientation)
-        {
-            //for tests only:
-
-            //checks if it was initialized
-            if (_content.Length == 0)
-            {
-                if (orientation == 0) _content = new double[newVector.Length, 1];
-                else _content = new double[1, newVector.Length];
-            }
-
-            double[,] newContent;
-            if (orientation == 0) newContent = new double[X, Y + 1];
-            else newContent = new double[X + 1, Y];
-
-            for (int i = 0; i < X; ++i)
-            {
-                for (int j = 0; j < Y;++j)
-                {
-                    newContent[i,j] = _content[i,j];
-                }
-            }
-
-
-            for (int i = 0; i < newVector.Length; ++i)
-            {
-                if (orientation == 0) newContent[i, Y] = newVector[i];
-                else newContent[X, i] = newVector[i];
-            }
-
-            _content = newContent;
-        }
-
         public FacesMatrix GetAverageVector(int orientation)
         {
             int lengthOfVector, numberOfVectors;
@@ -275,45 +241,6 @@ namespace Commons.Utilities
             }
 
             return new FacesMatrix(sumVector,1);
-        }
-
-        /// <summary>
-        /// Method returns average vector of n vectors. It takes number of first vector and number of vectors to calculate
-        /// </summary>
-        /// <param name="orientation"></param>
-        /// <param name="indexOfFirstVector"></param>
-        /// <param name="numberOfVectors"></param>
-        /// <returns></returns>
-        public FacesMatrix GetAverageVector(int orientation, int indexOfFirstVector, int numberOfVectors)
-        {
-            int lengthOfVector;
-            int maxIndexOfVector = indexOfFirstVector + numberOfVectors;
-
-            if (orientation == 0)
-            {
-                lengthOfVector = X;
-            }
-            else
-            {
-                lengthOfVector = Y;
-            }
-
-            double[] sumVector = new double[lengthOfVector];
-
-            for (int j = 0; j < lengthOfVector; ++j)
-            {
-                double sumOfPixelOnOnePosition = 0;
-
-                for (int i = indexOfFirstVector; i < maxIndexOfVector; ++i)
-                {
-                    if (orientation == 0) sumOfPixelOnOnePosition += _content[j, i];
-                    else sumOfPixelOnOnePosition += _content[i, j];
-                }
-
-                sumVector[j] = sumOfPixelOnOnePosition / numberOfVectors;
-            }
-
-            return new FacesMatrix(sumVector, 1);
         }
 
         public FacesMatrix Transpose()
@@ -424,80 +351,6 @@ namespace Commons.Utilities
             return new FacesMatrix(currentContent);
         }
 
-        //todo: test of method Concatenate - nie concatenuje sie dla i > 0
-        public void Concatenate(FacesMatrix secondMatrix, int orientation)
-        {
-            double[,] newContent;
-            
-            if (_content == null || _content.Length == 0)
-            {
-                _content = secondMatrix.Content.Copy();
-                return;
-            }
-            
-
-            if (orientation == 0) newContent = new double[X,Y+secondMatrix.Y];
-            else newContent = new double[X + secondMatrix.X, Y];
-
-            for (int i = 0; i < X; ++i)
-            {
-                for (int j = 0; j < Y; ++j)
-                {
-                    newContent[i, j] = _content[i, j];
-                }
-            }
-
-            for (int i = X; i < secondMatrix.X + X; ++i)
-            {
-                for (int j = 0; j < secondMatrix.Y; ++j)
-                {
-                    newContent[i, j] = secondMatrix.Content[i - X, j];
-                }
-            }
-
-            _content = newContent;
-        }
-
-        public FacesMatrix InverseMatrix()
-        {
-            return new FacesMatrix(_content.Inverse());
-        }
-
-        //todo: napraw bug w tej funkcji - ona nie dziala poprawnie - dziala 
-        public FacesMatrix GetPartOfMatrix(int indexOfFirstVector, int numberOfVectors, int orientation)
-        {
-            int lenghtOfVectors;
-            double[,] result;
-
-            if (orientation == 0)
-            {
-                lenghtOfVectors = X;
-                result = new double[X,numberOfVectors];
-            }
-            else
-            {
-                lenghtOfVectors = Y;
-                result = new double[numberOfVectors, Y];
-            }
-
-            for (int i = indexOfFirstVector; i < numberOfVectors + indexOfFirstVector; ++i)
-            {
-                for (int j = 0; j < lenghtOfVectors; ++j)
-                {
-                    if (orientation == 0)
-                    {
-                        result[j, i - indexOfFirstVector] = _content[j, i];
-                    }
-                    else
-                    {
-                        result[i - indexOfFirstVector, j] = _content[i, j];
-                    }
-                }
-            }
-
-            return new FacesMatrix(result);
-        }
-
         #endregion
 
         #region operators
@@ -512,14 +365,12 @@ namespace Commons.Utilities
                 Console.WriteLine("FacesMatrixes must have the same sizes!");
                 return null;
             }
-            else
+
+            for(int i = 0; i < a.X; ++i)
             {
-                for(int i = 0; i < a.X; ++i)
+                for (int j = 0; j < a.Y; ++j)
                 {
-                    for (int j = 0; j < a.Y; ++j)
-                    {
-                        result._content[i, j] = a._content[i, j] - b._content[i, j];
-                    }
+                    result._content[i, j] = a._content[i, j] - b._content[i, j];
                 }
             }
 
@@ -550,32 +401,16 @@ namespace Commons.Utilities
         }
 
         //todo: zmienić tak, żeby intuicyjnie mnożyło. Aktualnie mnoży w dziwny sposob bo dla Accord.Math.Matrix.Dot .X jest tym czym dla nas .Y
-        public static FacesMatrix operator* (FacesMatrix a, FacesMatrix b)
+        public static FacesMatrix operator *(FacesMatrix a, FacesMatrix b)
         {
             //if for DEBUG time only
-            if(a.Y != b.X)
+            if (a.Y != b.X)
             {
                 Console.WriteLine("FaceMatrixes cannot be multiplied!");
                 return null;
             }
 
-            return new FacesMatrix(Accord.Math.Matrix.Dot(a.Content, b.Content));
-        }
-
-        //todo:test
-        public static FacesMatrix operator *(int a, FacesMatrix b)
-        {
-            FacesMatrix result = new FacesMatrix(b.Content);
-
-            for (int i = 0; i < b.X; ++i)
-            {
-                for (int j = 0; j < b.Y; ++j)
-                {
-                    result.Content[i,j] = result.Content[i,j] * a;
-                }
-            }
-
-            return result;
+            return new FacesMatrix(Matrix.Dot(a.Content, b.Content));
         }
 
         #endregion

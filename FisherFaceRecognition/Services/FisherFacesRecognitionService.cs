@@ -18,7 +18,7 @@ namespace FisherFaceRecognition.Services
         private FacesMatrix _eigenFacesT;
         private FacesMatrix _wages; // [eigenface,image]
         private List<string> _namesOfUsers;
-        private Dictionary<string, int> namesAndIndex;
+        private Dictionary<string, int> _namesAndIndex;
 
         //consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         private const int Width = 92;
@@ -42,18 +42,17 @@ namespace FisherFaceRecognition.Services
         public string Recognize(Bitmap bitmapWithFace)
         {
             LoadDataFromDatabase();
-            FacesMatrix dataAfterPCA = _wages; //400 wektorów dla k wymiarowej przestrzeni, teraz do przetworzenia przez LDA
-            dataAfterPCA = _wages.Transpose();
+            var dataAfterPca = _wages.Transpose();
 
             var lda = new LinearDiscriminantAnalysis();
-            double[][] dataAfterPcainArray = dataAfterPCA.GetMatrixAsArrayOfArray(1);
+            double[][] dataAfterPcainArray = dataAfterPca.GetMatrixAsArrayOfArray(1);
             double[] wagesOfImageInEigenFacesSpace = GetWagesOfImageInEigenFacesSpace(bitmapWithFace);
 
             int[] output = CreateOutputForLda();
 
             var classifier = lda.Learn(dataAfterPcainArray, output);
             int result = classifier.Decide(wagesOfImageInEigenFacesSpace);
-            return namesAndIndex.FirstOrDefault(x => x.Value == result).Key;
+            return _namesAndIndex.FirstOrDefault(x => x.Value == result).Key;
         }
 
         private int[] CreateOutputForLda()
@@ -62,7 +61,7 @@ namespace FisherFaceRecognition.Services
 
             for (int i = 0; i < _namesOfUsers.Count; ++i)
             {
-                result[i] = namesAndIndex[_namesOfUsers[i]];
+                result[i] = _namesAndIndex[_namesOfUsers[i]];
             }
 
             return result;
@@ -111,7 +110,7 @@ namespace FisherFaceRecognition.Services
             List<Wage> listOfWages = _wageDao.GetOverview() as List<Wage>;
 
             _namesOfUsers = new List<string>();
-            namesAndIndex = new Dictionary<string, int>();
+            _namesAndIndex = new Dictionary<string, int>();
 
             List<double[]> valuesOfWages = new List<double[]>();
             for (int i = 0; i < listOfWages.Count; ++i)
@@ -119,9 +118,9 @@ namespace FisherFaceRecognition.Services
                 valuesOfWages.Add(JsonConvert.DeserializeObject(listOfWages[i].Value, typeof(double[])) as double[]);
                 _namesOfUsers.Add(listOfWages[i].Name);
 
-                if (!namesAndIndex.ContainsKey(listOfWages[i].Name)) //jesli slownik nie zawiera juz taka nazwe to:
+                if (!_namesAndIndex.ContainsKey(listOfWages[i].Name)) //jesli slownik nie zawiera juz taka nazwe to:
                 {
-                    namesAndIndex.Add(listOfWages[i].Name,namesAndIndex.Count);
+                    _namesAndIndex.Add(listOfWages[i].Name,_namesAndIndex.Count);
                 }
             }
 

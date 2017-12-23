@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Commons
+﻿namespace Commons
 {
     /// <summary>
     /// Class that is used to send information between client and server
