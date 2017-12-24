@@ -54,11 +54,12 @@ namespace Commons.Utilities
             }
         }
 
-        public FacesMatrix(double[,] matrix)
+        public FacesMatrix(double[,] content)
         {
-            _content = matrix;
+            _content = content;
         }
 
+        //Moze to usunac?
         public FacesMatrix(double[] vector, int orientation)
         {
             if(orientation == 0) _content = new double[vector.GetLength(0), 1];
@@ -182,28 +183,28 @@ namespace Commons.Utilities
 
         #region methods
 
-        public void LoadFromListOfList(List<List<double>> listOfVectors, int orientation)
+        public void LoadFromListOfList(List<List<double>> listOfLists, int orientation)
         {
-            if (listOfVectors.Count == 0)
+            if (listOfLists.Count == 0)
             {
                 _content =  new double[0, 0];
             }
 
-            if (orientation == 0) _content = new double[listOfVectors[0].Count, listOfVectors.Count];
-            else _content = new double[listOfVectors.Count, listOfVectors[0].Count];
+            if (orientation == 0) _content = new double[listOfLists[0].Count, listOfLists.Count];
+            else _content = new double[listOfLists.Count, listOfLists[0].Count];
 
 
-            for (int x = 0; x < listOfVectors.Count; ++x)
+            for (int x = 0; x < listOfLists.Count; ++x)
             {
-                for (int y = 0; y < listOfVectors[0].Count; ++y)
+                for (int y = 0; y < listOfLists[0].Count; ++y)
                 {
                     if (orientation == 0)
                     {
-                        _content[y, x] = listOfVectors[x][y];
+                        _content[y, x] = listOfLists[x][y];
                     }
                     else
                     {
-                        _content[x, y] = listOfVectors[x][y];
+                        _content[x, y] = listOfLists[x][y];
                     }
                 }
             }
