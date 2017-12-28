@@ -6,7 +6,6 @@ using Accord.Math;
 
 namespace Commons.Utilities
 {
-    //TODO: Tests as quickly as possible
     public class FacesMatrix
     {
         /// Jak mapowac obraz na czlowieka i gdzie to reprezentowac?
@@ -401,7 +400,6 @@ namespace Commons.Utilities
             return result;
         }
 
-        //todo: zmienić tak, żeby intuicyjnie mnożyło. Aktualnie mnoży w dziwny sposob bo dla Accord.Math.Matrix.Dot .X jest tym czym dla nas .Y
         public static FacesMatrix operator *(FacesMatrix a, FacesMatrix b)
         {
             //if for DEBUG time only
