@@ -405,13 +405,13 @@ namespace Commons.Utilities
         public static FacesMatrix operator *(FacesMatrix a, FacesMatrix b)
         {
             //if for DEBUG time only
-            if (a.Y != b.X)
+            if (a.X != b.Y)
             {
                 Console.WriteLine("FaceMatrixes cannot be multiplied!");
                 return null;
             }
 
-            return new FacesMatrix(Matrix.Dot(a.Content, b.Content));
+            return new FacesMatrix(Matrix.Dot(b.Content, a.Content));
         }
 
         #endregion

@@ -72,7 +72,7 @@ namespace FisherFaceRecognition.Services
             Bitmap scaledBitmap = new Bitmap(bitmap, new Size(Width, Height));
             FacesMatrix vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
             FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
-            FacesMatrix currentImageWages = _eigenFacesT * diff.Transpose();
+            FacesMatrix currentImageWages = diff.Transpose() * _eigenFacesT;
 
             return currentImageWages.GetVectorAsArray(0, 0);
         }

@@ -46,15 +46,15 @@ namespace FaceRecognition.Services
             FacesMatrix averageVector = _unprocessedVectors.GetAverageVector(1);
             FacesMatrix differenceVectors = _unprocessedVectors - new FacesMatrix(_unprocessedVectors.X, averageVector);
             FacesMatrix differenceVectorsT = differenceVectors.Transpose();
-            FacesMatrix covariation = differenceVectors * differenceVectorsT;
+            FacesMatrix covariation = differenceVectorsT * differenceVectors;
             EigenvalueDecomposition decomposition = new EigenvalueDecomposition(covariation.Content, true, true); // todo: wlasna dekompozycja
             FacesMatrix eigenVectors = new FacesMatrix(decomposition.Eigenvectors);
-            FacesMatrix eigenFaces = differenceVectorsT * eigenVectors;
+            FacesMatrix eigenFaces =  eigenVectors * differenceVectorsT;
 
             //odcinka 20 najistotniejszych
             eigenFaces = eigenFaces.GetFirstVectors(100, 0);
 
-            FacesMatrix dataAfterPca = eigenFaces.Transpose() * differenceVectorsT;
+            FacesMatrix dataAfterPca = differenceVectorsT * eigenFaces.Transpose();
 
             List<double[]> eigenFacesAsListOfArrays = eigenFaces.GetMatrixAsListOfArrays(0);
             double[] averageVectorAsArray = averageVector.GetVectorAsArray(0, 1);
