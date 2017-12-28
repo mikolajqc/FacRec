@@ -139,6 +139,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppBootstraper.cs" />
+    <Compile Include="RequestManager.cs" />
     <Compile Include="Utilities\CameraManager.cs" />
     <Compile Include="Utilities\FaceDetector.cs" />
     <Compile Include="MainWindowView.xaml.cs">
@@ -181,10 +182,7 @@
       <Name>Commons</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Accord.3.8.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.8.0\build\Accord.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

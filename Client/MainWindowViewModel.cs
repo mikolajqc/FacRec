@@ -16,17 +16,18 @@ namespace Client
 {
     //todo: ResizeNearestNeighbor do skalowania? z bilbioteki AForge
     //todo: usunac requestowanie o learna w zwykly sposob
+    //todo: lista dostepnych urzadzen video
     class MainWindowViewModel : Screen
     {
         ///TODO: requests manager
         ///TODO: lustrzane odbicie
-        ///TODO: face detection
         #region fields
         ///Sprawdzic czy tutaj musi byc BitmapImage czy moze byc Bitmap
         private BitmapImage _imageWebcam;
         private BitmapImage _imageSnapshot;
         private CameraManager _cameraManager;
         private FaceDetector _faceDetector;
+        private RequestManager _requestManager;
 
         private string _nameOfUser;
 
@@ -96,13 +97,13 @@ namespace Client
         }
         public async void Recognize()
         {
-            string result = await UploadBitmapAsync(BitmapImage2Bitmap(ImageSnapshot));
+            string result = await _requestManager.Recognize(BitmapImage2Bitmap(ImageSnapshot));
             MessageBox.Show(result);
         }
 
         public async void AddFace()
         {
-            string result = await UploadBitmapAsync(BitmapImage2Bitmap(ImageSnapshot), true, _nameOfUser);
+            string result = await _requestManager.AddFace(BitmapImage2Bitmap(ImageSnapshot), _nameOfUser);
             MessageBox.Show(result);
         }
 
@@ -114,6 +115,7 @@ namespace Client
         {
             _cameraManager = new CameraManager();
             _faceDetector = new FaceDetector();
+            _requestManager = new RequestManager();
 
             _timer = new System.Timers.Timer
                 {
@@ -218,45 +220,6 @@ namespace Client
             return new Rectangle(x, y, widthofimagetosent, heightofimagetosent);
         }
         #endregion
-
-        /// <summary>
-        /// Czesciowo external, upewnic sie czy nie lepiej wysylac w jakims base64 !!!!!, funkcja do poprawienia i wrzucenia w RequestManager or sth
-        /// </summary>
-        /// <param name="bitmap"></param>
-        /// <param name="isAddingNewFace"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public async Task<string> UploadBitmapAsync(Bitmap bitmap, bool isAddingNewFace = false, string name = null)
-        {
-            byte[] bitmapData;
-            var stream = new MemoryStream();
-            bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
-            bitmapData = stream.ToArray();
-
-            var client = new HttpClient()
-            {
-                BaseAddress = new Uri("http://localhost/")
-            };
-            // Set the Accept header for BSON.
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(
-                    new MediaTypeWithQualityHeaderValue("application/bson"));
-
-            var request = new Request
-            {
-                Name = name,
-                BitmapInArray = bitmapData
-            };
-
-            MediaTypeFormatter bsonFormatter = new BsonMediaTypeFormatter();
-            HttpResponseMessage response;
-            if (isAddingNewFace) response = await client.PostAsync("/api/FaceRecognition/AddFace", request, bsonFormatter);
-            else response = await client.PostAsync("/api/FaceRecognition/Recognize", request, bsonFormatter);
-
-            response.EnsureSuccessStatusCode();
-            string result = await response.Content.ReadAsStringAsync();
-            return result;
-        }
 
     }
 }
