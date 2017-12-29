@@ -10,15 +10,15 @@ namespace CommonsTests
         [Test] //FacesMatrix(int x, int y)
         public void CheckConstructorWithSizes()
         {
-            FacesMatrix fM = new FacesMatrix(3,4);
-            Assert.AreEqual(fM.Content.GetLength(0),3);
+            FacesMatrix fM = new FacesMatrix(3, 4);
+            Assert.AreEqual(fM.Content.GetLength(0), 3);
             Assert.AreEqual(fM.Content.GetLength(1), 4);
         }
 
         [Test] //FacesMatrix(int numberOfCopies, FacesMatrix vector)
         public void CheckContructorWithCopyingVector()
         {
-            var facesMatrix = new FacesMatrix(10, new FacesMatrix(new double[,] { { 1, 2, 3 } }));
+            var facesMatrix = new FacesMatrix(10, new FacesMatrix(new double[,] {{1, 2, 3}}));
             for (int i = 0; i < 10; ++i)
             {
                 Assert.AreEqual(facesMatrix.Content[i, 0], 1);
@@ -99,17 +99,17 @@ namespace CommonsTests
         public void GetAverageVectorTest()
         {
             var facesMatrix = new FacesMatrix();
-            facesMatrix.Content = new double[,] { { 1,2}, { 3,4} };
-            Assert.AreEqual(facesMatrix.GetAverageVector(1).GetVectorAsArray(0,1), new double[] {2, 3});
+            facesMatrix.Content = new double[,] {{1, 2}, {3, 4}};
+            Assert.AreEqual(facesMatrix.GetAverageVector(1).GetVectorAsArray(0, 1), new double[] {2, 3});
         }
 
         [Test]
         public void TransposeTest()
         {
-            var facesMatrix = new FacesMatrix(new[,] {{1.0,2.0,3.0}, {4.0,5.0,6.0}, {7.0,8.0,9.0} });
+            var facesMatrix = new FacesMatrix(new[,] {{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}});
             var facesMatrixT = facesMatrix.Transpose();
 
-            Assert.AreEqual(facesMatrixT.Content, new[,] { { 1.0,4.0,7.0}, { 2.0,5.0,8.0}, { 3.0,6.0,9.0} });
+            Assert.AreEqual(facesMatrixT.Content, new[,] {{1.0, 4.0, 7.0}, {2.0, 5.0, 8.0}, {3.0, 6.0, 9.0}});
         }
 
         [Test]
@@ -119,103 +119,103 @@ namespace CommonsTests
 
             for (int i = 0; i < 3; ++i)
             {
-                Assert.AreEqual(facesMatrix.GetVectorAsArray(i, 0), new[] { i, 3.0 + i, 6.0 + i });
-                Assert.AreEqual(facesMatrix.GetVectorAsArray(i, 1), new[] { i * 3.0, i*3.0 + 1.0, i*3.0 + 2.0 });
+                Assert.AreEqual(facesMatrix.GetVectorAsArray(i, 0), new[] {i, 3.0 + i, 6.0 + i});
+                Assert.AreEqual(facesMatrix.GetVectorAsArray(i, 1), new[] {i * 3.0, i * 3.0 + 1.0, i * 3.0 + 2.0});
             }
         }
 
         [Test]
         public void GetMatrixAsListOfArraysTest()
         {
-            var facesMatrix = new FacesMatrix(new[,] { { 0.0, 1.0, 2.0 }, { 3.0, 4.0, 5.0 }, { 6.0, 7.0, 8.0 } });
+            var facesMatrix = new FacesMatrix(new[,] {{0.0, 1.0, 2.0}, {3.0, 4.0, 5.0}, {6.0, 7.0, 8.0}});
             var listOfArrays = facesMatrix.GetMatrixAsListOfArrays(1);
             var listOfArraysOrient0 = facesMatrix.GetMatrixAsListOfArrays(0);
             Assert.AreEqual(listOfArrays, new List<double[]>()
             {
-                new [] { 0.0, 1.0, 2.0 },
-                new [] { 3.0, 4.0, 5.0 },
-                new [] { 6.0, 7.0, 8.0 },
+                new[] {0.0, 1.0, 2.0},
+                new[] {3.0, 4.0, 5.0},
+                new[] {6.0, 7.0, 8.0},
             });
 
             Assert.AreEqual(listOfArraysOrient0, new List<double[]>()
             {
-                new [] { 0.0, 3.0, 6.0 },
-                new [] { 1.0, 4.0, 7.0 },
-                new [] { 2.0, 5.0, 8.0 },
+                new[] {0.0, 3.0, 6.0},
+                new[] {1.0, 4.0, 7.0},
+                new[] {2.0, 5.0, 8.0},
             });
         }
 
         [Test]
         public void GetMatrixAsArrayOfArrayTest()
         {
-            var facesMatrix = new FacesMatrix(new[,] { { 0.0, 1.0, 2.0 }, { 3.0, 4.0, 5.0 }, { 6.0, 7.0, 8.0 } });
+            var facesMatrix = new FacesMatrix(new[,] {{0.0, 1.0, 2.0}, {3.0, 4.0, 5.0}, {6.0, 7.0, 8.0}});
             var arrayOfArrays = facesMatrix.GetMatrixAsListOfArrays(1);
             var arrayOfArraysOrient0 = facesMatrix.GetMatrixAsListOfArrays(0);
-            Assert.AreEqual(arrayOfArrays, new []
+            Assert.AreEqual(arrayOfArrays, new[]
             {
-                new [] { 0.0, 1.0, 2.0 },
-                new [] { 3.0, 4.0, 5.0 },
-                new [] { 6.0, 7.0, 8.0 },
+                new[] {0.0, 1.0, 2.0},
+                new[] {3.0, 4.0, 5.0},
+                new[] {6.0, 7.0, 8.0},
             });
 
             Assert.AreEqual(arrayOfArraysOrient0, new[]
             {
-                new [] { 0.0, 3.0, 6.0 },
-                new [] { 1.0, 4.0, 7.0 },
-                new [] { 2.0, 5.0, 8.0 },
+                new[] {0.0, 3.0, 6.0},
+                new[] {1.0, 4.0, 7.0},
+                new[] {2.0, 5.0, 8.0},
             });
         }
 
         [Test]
         public void GetFirstVectorsTest()
         {
-            var facesMatrix = new FacesMatrix(new[,] { { 0.0, 1.0, 2.0 }, { 3.0, 4.0, 5.0 }, { 6.0, 7.0, 8.0 } });
-            var firstVectors = facesMatrix.GetFirstVectors(1,1);
-            var firstVectorsOrient0 = facesMatrix.GetFirstVectors(2,0);
+            var facesMatrix = new FacesMatrix(new[,] {{0.0, 1.0, 2.0}, {3.0, 4.0, 5.0}, {6.0, 7.0, 8.0}});
+            var firstVectors = facesMatrix.GetFirstVectors(1, 1);
+            var firstVectorsOrient0 = facesMatrix.GetFirstVectors(2, 0);
 
             Assert.AreEqual(firstVectors.Content, new[,]
             {
-                { 0.0, 1.0, 2.0 }
+                {0.0, 1.0, 2.0}
             });
 
-            
+
             Assert.AreEqual(firstVectorsOrient0.Content, new[,]
             {
-                { 0.0, 1.0},
-                { 3.0, 4.0},
-                { 6.0, 7.0}
+                {0.0, 1.0},
+                {3.0, 4.0},
+                {6.0, 7.0}
             });
-            
         }
 
         [Test]
         public void OperatorMinusTest()
         {
-            var facesMatrixA = new FacesMatrix(new[,] { { 0.0, 1.0, 2.0 }, { 3.0, 4.0, 5.0 }, { 6.0, 7.0, 8.0 } });
-            var facesMatrixB = new FacesMatrix(new[,] { { 1.0, 1.0, 10.0 }, { 2.0, 1.0, 0.5 }, { -6.0, -17.0, 58.3 } });
+            var facesMatrixA = new FacesMatrix(new[,] {{0.0, 1.0, 2.0}, {3.0, 4.0, 5.0}, {6.0, 7.0, 8.0}});
+            var facesMatrixB = new FacesMatrix(new[,] {{1.0, 1.0, 10.0}, {2.0, 1.0, 0.5}, {-6.0, -17.0, 58.3}});
             var facesMatrixResult = facesMatrixA - facesMatrixB;
 
-            Assert.AreEqual(facesMatrixResult.Content, new[,] { { -1.0, 0.0, -8.0 }, { 1.0, 3.0, 4.5 }, { 12.0, 24.0, -50.3 } });
+            Assert.AreEqual(facesMatrixResult.Content,
+                new[,] {{-1.0, 0.0, -8.0}, {1.0, 3.0, 4.5}, {12.0, 24.0, -50.3}});
         }
 
         [Test]
         public void OperatorPlusTest()
         {
-            var facesMatrixA = new FacesMatrix(new[,] { { 0.0, 1.0, 2.0 }, { 3.0, 4.0, 5.0 }, { 6.0, 7.0, 8.0 } });
-            var facesMatrixB = new FacesMatrix(new[,] { { 1.0, 1.0, 10.0 }, { 2.0, 1.0, 0.5 }, { -6.0, -17.0, 58.3 } });
+            var facesMatrixA = new FacesMatrix(new[,] {{0.0, 1.0, 2.0}, {3.0, 4.0, 5.0}, {6.0, 7.0, 8.0}});
+            var facesMatrixB = new FacesMatrix(new[,] {{1.0, 1.0, 10.0}, {2.0, 1.0, 0.5}, {-6.0, -17.0, 58.3}});
             var facesMatrixResult = facesMatrixA + facesMatrixB;
 
-            Assert.AreEqual(facesMatrixResult.Content, new[,] { { 1.0, 2.0, 12.0 }, { 5.0, 5.0, 5.5 }, { 0.0, -10.0, 66.3 } });
+            Assert.AreEqual(facesMatrixResult.Content, new[,] {{1.0, 2.0, 12.0}, {5.0, 5.0, 5.5}, {0.0, -10.0, 66.3}});
         }
 
         [Test]
         public void OperatorMultTest()
         {
             var facesMatrixA = new FacesMatrix(new[,] {{1.0, 2.0}, {4.0, 5.0}});
-            var facesMatrixB = new FacesMatrix(new[,] { { 1.0, 4.0 }, { 2.0, 5.0 }, { 3.0, 6.0 } });
+            var facesMatrixB = new FacesMatrix(new[,] {{1.0, 4.0}, {2.0, 5.0}, {3.0, 6.0}});
             var facesMatrixResult = facesMatrixA * facesMatrixB;
 
-            Assert.AreEqual(facesMatrixResult.Content, new[,] { { 17.0, 22.0 }, { 22.0, 29.0 }, { 27.0, 36.0 } });
+            Assert.AreEqual(facesMatrixResult.Content, new[,] {{17.0, 22.0}, {22.0, 29.0}, {27.0, 36.0}});
         }
     }
 }
