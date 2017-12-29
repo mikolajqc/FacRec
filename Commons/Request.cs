@@ -5,8 +5,8 @@
     /// </summary>
     public class Request
     {
-        string _name;
-        byte[] _bitmapInArray;
+        private string _name;
+        private byte[] _bitmapInArray;
 
         public string Name
         {

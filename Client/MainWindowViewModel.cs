@@ -1,23 +1,17 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
-using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Accord.Imaging.Filters;
 using Caliburn.Micro;
 using Client.Utilities;
-using Commons;
 
 namespace Client
 {
     //todo: ResizeNearestNeighbor do skalowania? z bilbioteki AForge
-    //todo: usunac requestowanie o learna w zwykly sposob
     //todo: lista dostepnych urzadzen video
-    class MainWindowViewModel : Screen
+    //todo: Simple IoC Container dla Caliburn.Micro
+    public class MainWindowViewModel : Screen
     {
         ///TODO: requests manager
         ///TODO: lustrzane odbicie
@@ -91,10 +85,7 @@ namespace Client
                     NotifyOfPropertyChange(() => ImageSnapshot);
                 }));
         }
-        public async void Learn()
-        {
-            MessageBox.Show("Learnt!");
-        }
+
         public async void Recognize()
         {
             string result = await _requestManager.Recognize(BitmapImage2Bitmap(ImageSnapshot));

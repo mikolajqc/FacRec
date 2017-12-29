@@ -47,7 +47,7 @@ namespace FaceRecognition.Services
             FacesMatrix differenceVectors = _unprocessedVectors - new FacesMatrix(_unprocessedVectors.X, averageVector);
             FacesMatrix differenceVectorsT = differenceVectors.Transpose();
             FacesMatrix covariation = differenceVectorsT * differenceVectors;
-            EigenvalueDecomposition decomposition = new EigenvalueDecomposition(covariation.Content, true, true); // todo: wlasna dekompozycja
+            EigenvalueDecomposition decomposition = new EigenvalueDecomposition(covariation.Content, true, true);
             FacesMatrix eigenVectors = new FacesMatrix(decomposition.Eigenvectors);
             FacesMatrix eigenFaces =  eigenVectors * differenceVectorsT;
 

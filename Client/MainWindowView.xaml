@@ -3,21 +3,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Client"
+        xmlns:client="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="Face Recognition v0.1" Height="480" Width="1200"
+        Title="Face Recognition v0.2" Height="480" Width="1200"
         >
     <Window.DataContext>
-        <local:MainWindowViewModel/>
+        client:MainWindowViewModel
     </Window.DataContext>
+
+    
     <Grid>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="60" Width="*" MaxWidth="100"/>
             <ColumnDefinition MinWidth="60" Width="*"/>
             <ColumnDefinition MinWidth="60" Width="*"/>
         </Grid.ColumnDefinitions>
-        
-        <Grid Grid.Column="0" Grid.Row="0">
+
+        <Grid Grid.Column="0" Grid.Row="0"> 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="60" Width="*"/>
             </Grid.ColumnDefinitions>
@@ -38,7 +41,7 @@
         </Grid>
 
         <Image Grid.Column="1" x:Name="ImageWebcam" />
-        <Image Grid.Column="2" x:Name="ImageSnapshot" />
+        <Image Grid.Column="2" x:Name="ImageSnapshot"/>
 
     </Grid>
 </Window>
