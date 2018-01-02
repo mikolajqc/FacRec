@@ -32,6 +32,7 @@ namespace Client.Utilities
                 25, ObjectDetectorSearchMode.Single, 1.2f,
                 ObjectDetectorScalingMode.GreaterToSmaller);
             _tracker = new Camshift();
+            _tracker.Mode = CamshiftMode.Mixed; //todo: ogarnij to zeby dobrze wycinalo!
             _isTracking = false;
             _isDetecting = true;
         }

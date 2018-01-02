@@ -36,10 +36,10 @@
             </Grid.RowDefinitions>
             <Button Height="30"  Grid.Column="0" Grid.Row="0" x:Name="Snapshot" Content="Snapshot" />
             <Button Height="30"  Grid.Column="0" Grid.Row="1" x:Name="Recognize" Content="Recognize" />
-            <Button Height="30"  Grid.Column="0" Grid.Row="2" x:Name="AddFace" Content="AddFace" />
-            <TextBox Height="30"  Grid.Column="0" Grid.Row="3" x:Name="NameOfUser" Margin="0,16,0,10"/>
-            <Label x:Name="label" Content="Name:" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="3" VerticalAlignment="Top" Width="62">
-            </Label>
+            <Button Height="30"  Grid.Column="0" Grid.Row="2" x:Name="PhotoOfNewFace" Content="Photo of new face" />
+            <Button Height="30"  Grid.Column="0" Grid.Row="3" x:Name="AddFace" Content="AddFace" />
+            <TextBox Height="30"  Grid.Column="0" Grid.Row="4" x:Name="NameOfUser" Margin="0,16,0,10"/>
+            <TextBox Height="30"  Grid.Column="0" Grid.Row="5" x:Name="NumberOfPhotosToAdd" Margin="0,16,0,10"/>
         </Grid>
 
         <Image Grid.Column="1" x:Name="ImageWebcam" />
@@ -63,14 +63,12 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Image Margin="3" Width="40" Height="60" Source="{Binding ImageSource}" />
+                        <Image Margin="1" Width="80" Height="120" Source="{Binding}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
 
         </Grid>
-
-
 
     </Grid>
 </Window>

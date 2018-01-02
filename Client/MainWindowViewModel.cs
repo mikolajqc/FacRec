@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -11,6 +12,7 @@ namespace Client
     //todo: ResizeNearestNeighbor do skalowania? z bilbioteki AForge
     //todo: lista dostepnych urzadzen video
     //todo: Simple IoC Container dla Caliburn.Micro
+    //todo: zamiast robic kilka requestow na dodanie twarzy, ogarnac jeden
     public class MainWindowViewModel : Screen
     {
         ///TODO: requests manager
@@ -26,9 +28,22 @@ namespace Client
         private string _nameOfUser;
 
         private System.Timers.Timer _timer;
+        
+        //temp
+        private List<BitmapImage> _imagesToAdd = new List<BitmapImage>();
         #endregion
 
         #region properties
+
+        public BitmapImage[] ImagesToAdd
+        {
+            get { return _imagesToAdd.ToArray(); }
+            set
+            {
+                _imagesToAdd = new List<BitmapImage>(value);
+                NotifyOfPropertyChange(() => ImagesToAdd);
+            }
+        }
 
         public BitmapImage ImageWebcam
         {
@@ -74,6 +89,18 @@ namespace Client
 
         #region publicmethods
 
+        public void PhotoOfNewFace()
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                new System.Action(
+                    () =>
+                    {
+                        var bitmap = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFramePreview()).Item2;
+                        if (bitmap != null) _imagesToAdd.Add(BitmapToImageSource(bitmap));
+                        NotifyOfPropertyChange(() => ImagesToAdd);
+                    }));
+        }
+
         public void Snapshot()
         {
             Application.Current.Dispatcher.BeginInvoke(
@@ -94,8 +121,11 @@ namespace Client
 
         public async void AddFace()
         {
-            string result = await _requestManager.AddFace(BitmapImage2Bitmap(ImageSnapshot), _nameOfUser);
-            MessageBox.Show(result);
+            foreach (BitmapImage bitmapImage in _imagesToAdd)
+            {
+                await _requestManager.AddFace(BitmapImage2Bitmap(bitmapImage), _nameOfUser);
+            }
+            MessageBox.Show("Face Added!");
         }
 
         #endregion
@@ -186,30 +216,12 @@ namespace Client
                 BitmapEncoder enc = new BmpBitmapEncoder();
                 enc.Frames.Add(BitmapFrame.Create(bitmapImage));
                 enc.Save(outStream);
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+                var bitmap = new Bitmap(outStream);
 
                 return new Bitmap(bitmap);
             }
         }
 
-        private Bitmap ApplyRectangleToBitmap(Bitmap source)
-        {
-            Rectangle rectangle = CreateRectangleForFace(source.Width, source.Height);
-            RectanglesMarker marker = new RectanglesMarker(rectangle);
-
-            return marker.Apply(source);
-        }
-
-        private Rectangle CreateRectangleForFace(int bitmapWidth, int bitmapHeight)
-        {
-            const int widthofimagetosent = 92 * 4;
-            const int heightofimagetosent = 112 * 4;
-
-            int x = (bitmapWidth - widthofimagetosent) / 2;
-            int y = (bitmapHeight - heightofimagetosent) / 2;
-
-            return new Rectangle(x, y, widthofimagetosent, heightofimagetosent);
-        }
         #endregion
 
     }
