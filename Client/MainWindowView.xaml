@@ -8,10 +8,10 @@
         Title="Face Recognition v0.2" Height="480" Width="1200"
         >
     <Window.DataContext>
-        client:MainWindowViewModel
+        <client:MainWindowViewModel/>
     </Window.DataContext>
 
-    
+
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -20,7 +20,7 @@
             <ColumnDefinition MinWidth="60" Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="0" Grid.Row="0"> 
+        <Grid Grid.Column="0" Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="60" Width="*"/>
             </Grid.ColumnDefinitions>
@@ -37,11 +37,40 @@
             <Button Height="30"  Grid.Column="0" Grid.Row="0" x:Name="Snapshot" Content="Snapshot" />
             <Button Height="30"  Grid.Column="0" Grid.Row="1" x:Name="Recognize" Content="Recognize" />
             <Button Height="30"  Grid.Column="0" Grid.Row="2" x:Name="AddFace" Content="AddFace" />
-            <TextBox Height="30"  Grid.Column="0" Grid.Row="3" x:Name="NameOfUser"/>
+            <TextBox Height="30"  Grid.Column="0" Grid.Row="3" x:Name="NameOfUser" Margin="0,16,0,10"/>
+            <Label x:Name="label" Content="Name:" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="3" VerticalAlignment="Top" Width="62">
+            </Label>
         </Grid>
 
         <Image Grid.Column="1" x:Name="ImageWebcam" />
-        <Image Grid.Column="2" x:Name="ImageSnapshot"/>
+
+        <Grid Grid.Column="2" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="60" Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Image Grid.Column="0" Grid.Row="0"  x:Name="ImageSnapshot"/>
+            <ListBox Grid.Column="0" Grid.Row="1" ItemsSource="{Binding ImagesToAdd }"
+                     Margin="0,0,0,16">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel MaxWidth="{Binding ActualWidth, ElementName=Panel}" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Image Margin="3" Width="40" Height="60" Source="{Binding ImageSource}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+        </Grid>
+
+
 
     </Grid>
 </Window>
