@@ -179,7 +179,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppBootstraper.cs" />
-    <Compile Include="RequestManager.cs" />
+    <Compile Include="Utilities\RequestManager.cs" />
     <Compile Include="Utilities\CameraManager.cs" />
     <Compile Include="Utilities\FaceDetector.cs" />
     <Compile Include="MainWindowView.xaml.cs">

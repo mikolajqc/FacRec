@@ -15,7 +15,7 @@ namespace FaceRecognition.Services
         private FacesMatrix _averageVector;
         private FacesMatrix _eigenFacesT;
 
-        //consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //todo:consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         private const int Width = 92;
         private const int Height = 112;
 

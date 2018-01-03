@@ -3,7 +3,6 @@ using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using Accord.Imaging.Filters;
 using Caliburn.Micro;
 using Client.Utilities;
 
@@ -13,27 +12,34 @@ namespace Client
     //todo: lista dostepnych urzadzen video
     //todo: Simple IoC Container dla Caliburn.Micro
     //todo: zamiast robic kilka requestow na dodanie twarzy, ogarnac jeden
+    //todo: lustrzane odbicie
     public class MainWindowViewModel : Screen
     {
-        ///TODO: requests manager
-        ///TODO: lustrzane odbicie
         #region fields
         ///Sprawdzic czy tutaj musi byc BitmapImage czy moze byc Bitmap
         private BitmapImage _imageWebcam;
         private BitmapImage _imageSnapshot;
+        private string _nameOfUser;
+        private string _resultOfRecognition;
+        private System.Timers.Timer _timer;
+        private List<BitmapImage> _imagesToAdd = new List<BitmapImage>();
+
         private CameraManager _cameraManager;
         private FaceDetector _faceDetector;
         private RequestManager _requestManager;
-
-        private string _nameOfUser;
-
-        private System.Timers.Timer _timer;
-        
-        //temp
-        private List<BitmapImage> _imagesToAdd = new List<BitmapImage>();
         #endregion
 
         #region properties
+
+        public string ResultOfRecognition
+        {
+            get { return _resultOfRecognition; }
+            set
+            {
+                _resultOfRecognition = value;
+                NotifyOfPropertyChange(() => ResultOfRecognition);
+            }
+        }
 
         public BitmapImage[] ImagesToAdd
         {
@@ -89,6 +95,17 @@ namespace Client
 
         #region publicmethods
 
+        public void Clear()
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                new System.Action(
+                    () =>
+                    {
+                        _imagesToAdd.Clear();
+                        NotifyOfPropertyChange(() => ImagesToAdd);
+                    }));
+        }
+
         public void PhotoOfNewFace()
         {
             Application.Current.Dispatcher.BeginInvoke(
@@ -115,8 +132,15 @@ namespace Client
 
         public async void Recognize()
         {
-            string result = await _requestManager.Recognize(BitmapImage2Bitmap(ImageSnapshot));
-            MessageBox.Show(result);
+            if (ImageSnapshot != null)
+            {
+                string result = await _requestManager.Recognize(BitmapImage2Bitmap(ImageSnapshot));
+                ResultOfRecognition = result;
+            }
+            else
+            {
+                MessageBox.Show("You need to take a photo first!");
+            }
         }
 
         public async void AddFace()
