@@ -109,7 +109,7 @@
     <Compile Include="Inferfaces\Services\ILearningService.cs" />
     <Compile Include="Inferfaces\Services\IRecognitonService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Request.cs" />
+    <Compile Include="Utilities\Request.cs" />
     <Compile Include="Utilities\FacesMatrix.cs" />
   </ItemGroup>
   <ItemGroup>

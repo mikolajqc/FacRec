@@ -8,6 +8,7 @@ using Client.Utilities;
 
 namespace Client
 {
+    //todo: Zrobic architekture MVVM!!!!
     //todo: ResizeNearestNeighbor do skalowania? z bilbioteki AForge
     //todo: lista dostepnych urzadzen video
     //todo: Simple IoC Container dla Caliburn.Micro
@@ -212,7 +213,7 @@ namespace Client
         /// </summary>
         /// <param name="bitmap"></param>
         /// <returns></returns>
-        private BitmapImage BitmapToImageSource(Bitmap bitmap)
+        private static BitmapImage BitmapToImageSource(Bitmap bitmap)
         {
             using (MemoryStream memory = new MemoryStream())
             {
@@ -233,7 +234,7 @@ namespace Client
         /// </summary>
         /// <param name="bitmapImage"></param>
         /// <returns></returns>
-        private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
+        private static Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
         {
             using (MemoryStream outStream = new MemoryStream())
             {

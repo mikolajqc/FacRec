@@ -7,7 +7,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Commons;
 
-namespace Client
+namespace Client.Utilities
 {
     public class RequestManager
     {
