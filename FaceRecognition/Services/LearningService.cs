@@ -19,6 +19,7 @@ namespace FaceRecognition.Services
 
         private const int Width = 92;
         private const int Height = 112;
+        private const int RequiredNumberOfImagesPerPerson = 10;
 
         private readonly IAverageVectorDao _averageVectorDao;
         private readonly IEigenFaceDao _eigenFaceDao;
@@ -111,12 +112,15 @@ namespace FaceRecognition.Services
 
             foreach (string dir in Directory.GetDirectories(_pathToLearningSet))
             {
-                foreach (string file in Directory.GetFiles(dir))
+                if (Directory.GetFiles(dir).Length == RequiredNumberOfImagesPerPerson)
                 {
-                    if (Path.GetExtension(file) == ".pgm" || Path.GetExtension(file) == ".jpg")
+                    foreach (string file in Directory.GetFiles(dir))
                     {
-                        temporarySetOfLoadedImages.Add(GetImageVectorInList(file));
-                        _userNames.Add(Path.GetFileName(dir));
+                        if (Path.GetExtension(file) == ".pgm" || Path.GetExtension(file) == ".jpg")
+                        {
+                            temporarySetOfLoadedImages.Add(GetImageVectorInList(file));
+                            _userNames.Add(Path.GetFileName(dir));
+                        }
                     }
                 }
             }

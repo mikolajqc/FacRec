@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using Commons.Inferfaces.DAOs;
 using Commons.BussinessClasses;
 using Commons.Inferfaces.Services;
@@ -18,6 +19,8 @@ namespace FaceRecognition.Services
         //todo:consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         private const int Width = 92;
         private const int Height = 112;
+        private const string _pathToLearningSet = @"D:\Studia\Inzynierka\LearningSet_AT&T\";
+        private const int RequiredNumberOfImagesPerPerson = 10;
 
         //For DI:
         private readonly IAverageVectorDao _averageVectorDao;
@@ -45,6 +48,8 @@ namespace FaceRecognition.Services
                     Name = name,
                     Value = JsonConvert.SerializeObject(wagesOfNewImage)
                 });
+
+            AddFaceImageToLearningSet(bitmapWithFace, name);
         }
         #endregion
 
@@ -87,6 +92,26 @@ namespace FaceRecognition.Services
             }
 
             _eigenFacesT = new FacesMatrix(valuesOfEigenFaces, 1); //orientacja 1 bo tworzymy EigenFacesT czyli gdzie X jest = 400
+        }
+
+        private void AddFaceImageToLearningSet(Bitmap bitmapWithFace, string name)
+        {
+            string currentDirectory = Path.Combine(_pathToLearningSet, name);
+            string nameOfFile;
+
+            if (Directory.Exists(currentDirectory))
+            {
+                int index = Directory.GetFiles(currentDirectory).Length;
+                if (index == RequiredNumberOfImagesPerPerson) return;
+                nameOfFile = index + ".jpg";
+            }
+            else
+            {
+                Directory.CreateDirectory(currentDirectory);
+                nameOfFile = "0.jpg";
+            }
+
+            bitmapWithFace.Save(Path.Combine(currentDirectory, nameOfFile), System.Drawing.Imaging.ImageFormat.Jpeg);
         }
         #endregion
 
