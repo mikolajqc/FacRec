@@ -13,8 +13,8 @@ namespace Client.Utilities
     {
         //todo: to config
         private const string RequestAddress = "http://localhost/";
-        private const string RecognitionPath = "/api/FaceRecognition/Recognize";
-        private const string AddFacePath = "/api/FaceRecognition/AddFace";
+        private const string RecognitionPath = "/api/FacRec/Recognize";
+        private const string AddFacePath = "/api/FacRec/AddFace";
 
         public async Task<string> Recognize(Bitmap bitmap)
         {
@@ -32,15 +32,14 @@ namespace Client.Utilities
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/bson"));
 
-            var request = new Request
+            var request = new ClientRequestData
             {
-                Name = "Recognize",
+                Name = "",
                 BitmapInArray = bitmapData
             };
 
             MediaTypeFormatter bsonFormatter = new BsonMediaTypeFormatter();
-            HttpResponseMessage response;
-            response = await client.PostAsync(RecognitionPath, request, bsonFormatter);
+            var response = await client.PostAsync(RecognitionPath, request, bsonFormatter);
 
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
@@ -63,7 +62,7 @@ namespace Client.Utilities
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/bson"));
 
-            var request = new Request
+            var request = new ClientRequestData
             {
                 Name = name,
                 BitmapInArray = bitmapData

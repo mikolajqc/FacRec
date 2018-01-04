@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaceRecognition", "FaceRecognition\FaceRecognition.csproj", "{8580FDB1-BE35-42F9-93E6-180005CAF906}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EigenFaceRecognition", "FaceRecognition\EigenFaceRecognition.csproj", "{8580FDB1-BE35-42F9-93E6-180005CAF906}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{D850F835-00ED-43D1-8E83-16E4B260AEA2}"
 EndProject

@@ -10,31 +10,31 @@ using Commons.Inferfaces.Services;
 
 namespace Server.Controllers
 {
-    public class FaceRecognitionController : ApiController
+    public class FacRecController : ApiController
     {
         //DI:
         private readonly IRecognitonService _recognitionService;
         private readonly IAddNewFaceService _addNewFaceService;
         private readonly ILearningService _learningService;
 
-        public FaceRecognitionController(IRecognitonService recognitionService, IAddNewFaceService addNewFaceService, ILearningService learningService)
+        public FacRecController(IRecognitonService recognitionService, IAddNewFaceService addNewFaceService, ILearningService learningService)
         {
             _recognitionService = recognitionService;
             _addNewFaceService = addNewFaceService;
             _learningService = learningService;
         }
 
-        [Route("api/FaceRecognition/Learn")]
+        [Route("api/FacRec/Learn")]
         public HttpResponseMessage Learn()
         {
             _learningService.Learn();
             return Request.CreateResponse(HttpStatusCode.OK, "Learnt!");
         }
 
-        [Route("api/FaceRecognition/Recognize")]
-        public HttpResponseMessage Recognize(Request request)
+        [Route("api/FacRec/Recognize")]
+        public HttpResponseMessage Recognize(ClientRequestData clientRequestData)
         {
-            byte[] bitmapWithFaceInArray = request.BitmapInArray;
+            byte[] bitmapWithFaceInArray = clientRequestData.BitmapInArray;
             Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
             string resultOfRecognition = _recognitionService.Recognize(bitmapWithFace);
 
@@ -44,13 +44,13 @@ namespace Server.Controllers
             return response;
         }
 
-        [Route("api/FaceRecognition/AddFace")]
-        public HttpResponseMessage AddFace(Request request)
+        [Route("api/FacRec/AddFace")]
+        public HttpResponseMessage AddFace(ClientRequestData clientRequestData)
         {
-            byte[] bitmapWithFaceInArray = request.BitmapInArray;
+            byte[] bitmapWithFaceInArray = clientRequestData.BitmapInArray;
             Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
 
-            _addNewFaceService.AddNewFace(bitmapWithFace, request.Name);
+            _addNewFaceService.AddNewFace(bitmapWithFace, clientRequestData.Name);
             return Request.CreateResponse(HttpStatusCode.OK, "Face added!");
         }
 

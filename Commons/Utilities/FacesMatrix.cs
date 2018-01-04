@@ -114,6 +114,7 @@ namespace Commons.Utilities
         /// <param name="bitmap"></param>
         public FacesMatrix (Bitmap bitmap)
         {
+            //todo: ogarnij czy ten histogram czasami nie jest kilka razy wywolywany
             HistogramEqualization histogramEqualization = new HistogramEqualization(); // proces wyrownania histogramow
             bitmap = histogramEqualization.Apply(bitmap);
 

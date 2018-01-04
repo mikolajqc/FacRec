@@ -9,6 +9,7 @@ namespace Server.Repositories
 {
     public class GenericRepository<T> : IRepository<T> where T : class
     {
+        //todo: napisac usuwanie calej tabeli, tak zeby mozna bylo z tego korzystac w learningu
         private FaceRecognitionDatabaseEntities _db = null;
         // obiekt reprezentuje kolekcję wszystkich encji w danym kontekście
         // lub może być wynikiem zapytania z bazy danych

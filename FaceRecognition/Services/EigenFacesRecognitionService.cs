@@ -11,7 +11,7 @@ using Commons.Inferfaces.Services;
 //todo: ogarnij przetwarzanie wstepne! masz narazie jedynie wyrownanie histogramow. Dobrze by bylo miec jakies wycinanie zdjecia dodatkowo
 namespace FaceRecognition.Services
 {
-    public class RecognitionService : IRecognitonService
+    public class EigenFacesRecognitionService : IRecognitonService
     {
         #region fields
         //values loaded from DB
@@ -20,7 +20,7 @@ namespace FaceRecognition.Services
         private FacesMatrix _wages; // [eigenface,image]
         private List<string> _namesOfUsers;
 
-        //consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //todo: co zrobic z error tolerance???
         private const int Width = 92;
         private const int Height = 112;
         private const int ErrorTolerance = 70000000;
@@ -32,7 +32,7 @@ namespace FaceRecognition.Services
         #endregion
 
         #region contructors
-        public RecognitionService(IAverageVectorDao averageVectorDao, IEigenFaceDao eigenFaceDao, IWageDao wageDao)
+        public EigenFacesRecognitionService(IAverageVectorDao averageVectorDao, IEigenFaceDao eigenFaceDao, IWageDao wageDao)
         {
             _averageVectorDao = averageVectorDao;
             _eigenFaceDao = eigenFaceDao;
@@ -48,8 +48,8 @@ namespace FaceRecognition.Services
         /// <returns></returns>
         public string Recognize(Bitmap bitMapWithFace) // temporary: Bitmap zamienic na wlasny typ FaceImage ktory obsluguje pgm itd
         {
-            HistogramEqualization histogramEqualization = new HistogramEqualization();
-            bitMapWithFace = histogramEqualization.Apply(bitMapWithFace);
+        //    HistogramEqualization histogramEqualization = new HistogramEqualization();
+        //    bitMapWithFace = histogramEqualization.Apply(bitMapWithFace);
 
             LoadDataFromDatabase();
 

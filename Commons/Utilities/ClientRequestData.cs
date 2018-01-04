@@ -3,7 +3,7 @@
     /// <summary>
     /// Class that is used to send information between client and server
     /// </summary>
-    public class Request
+    public class ClientRequestData
     {
         private string _name;
         private byte[] _bitmapInArray;

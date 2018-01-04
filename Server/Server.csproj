@@ -144,7 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\FaceRecognitionController.cs" />
+    <Compile Include="Controllers\FacRecController.cs" />
     <Compile Include="DAO\AverageVectorDAO.cs" />
     <Compile Include="DAO\EigenFaceDAO.cs" />
     <Compile Include="DAO\WageDAO.cs" />
@@ -205,9 +205,9 @@
       <Project>{B8F33D83-E16C-4081-B0F7-668936059B54}</Project>
       <Name>Commons</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FaceRecognition\FaceRecognition.csproj">
+    <ProjectReference Include="..\FaceRecognition\EigenFaceRecognition.csproj">
       <Project>{8580fdb1-be35-42f9-93e6-180005caf906}</Project>
-      <Name>FaceRecognition</Name>
+      <Name>EigenFaceRecognition</Name>
     </ProjectReference>
     <ProjectReference Include="..\FisherFaceRecognition\FisherFaceRecognition.csproj">
       <Project>{DCFA72B5-8F69-4C13-9620-8F1D059E8EE0}</Project>
