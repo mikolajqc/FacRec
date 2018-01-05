@@ -9,11 +9,13 @@ namespace Client.Utilities
     //TODO: przenies wszystkie stale do configuracji
     class FaceDetector
     {
-        private readonly CascadeClassifier _classifier;
+        private readonly CascadeClassifier _faceClassifier;
+        private readonly CascadeClassifier _eyesClassifier;
 
         public FaceDetector()
         {
-            _classifier = new CascadeClassifier(@"haarcascade_frontalface_alt2.xml");
+            _faceClassifier = new CascadeClassifier(@"HaarCascadeFiles/haarcascade_frontalface_alt2.xml");
+           // _eyesClassifier = new CascadeClassifier(@"HaarCascadeFiles/haarcascade_eye.xml");
         }
 
         /// <summary>
@@ -26,7 +28,7 @@ namespace Client.Utilities
             Image<Bgr, byte> currentFrame = new Image<Bgr, byte>(sourceBitmap);
 
             var grayFrame = currentFrame.Convert<Gray, Byte>();
-            var faces = _classifier.DetectMultiScale(grayFrame, 1.1, 10, System.Drawing.Size.Empty);
+            var faces = _faceClassifier.DetectMultiScale(grayFrame, 1.1, 10, Size.Empty);
 
             foreach (var face in faces)
                 currentFrame.Draw(face, new Bgr(Color.BurlyWood));
@@ -40,6 +42,18 @@ namespace Client.Utilities
                 currentFrame = currentFrame.Copy();
                 bitmapWithCroppedFace = new Bitmap(currentFrame.ToBitmap());
             }
+
+            /*
+            grayFrame = currentFrame.Convert<Gray, Byte>();
+            var eyes = _eyesClassifier.DetectMultiScale(grayFrame, 1.1, 10, Size.Empty);
+
+            if (eyes.Length > 1)
+            {
+                currentFrame.ROI = eyes[0];
+                currentFrame = currentFrame.Copy();
+                bitmapWithCroppedFace = new Bitmap(currentFrame.ToBitmap());
+            }
+            */
 
             return new Tuple<Bitmap, Bitmap>(bitmapWithMarkedFace, bitmapWithCroppedFace);
         }
