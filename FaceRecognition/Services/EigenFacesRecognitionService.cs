@@ -21,8 +21,8 @@ namespace FaceRecognition.Services
         private List<string> _namesOfUsers;
 
         //todo: co zrobic z error tolerance???
-        private const int Width = 92;
-        private const int Height = 112;
+        private const int Width = 104;
+        private const int Height = 174;
         private const int ErrorTolerance = 70000000;
 
         //For DI:

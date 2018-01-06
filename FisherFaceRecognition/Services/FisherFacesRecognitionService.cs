@@ -21,8 +21,8 @@ namespace FisherFaceRecognition.Services
         private Dictionary<string, int> _namesAndIndex;
 
         //consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        private const int Width = 92;
-        private const int Height = 112;
+        private const int Width = 104;
+        private const int Height = 174;
 
         //For DI:
         private readonly IAverageVectorDao _averageVectorDao;

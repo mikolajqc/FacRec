@@ -17,9 +17,9 @@ namespace FaceRecognition.Services
         private FacesMatrix _eigenFacesT;
 
         //todo:consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        private const int Width = 92;
-        private const int Height = 112;
-        private const string _pathToLearningSet = @"D:\Studia\Inzynierka\LearningSet_AT&T\";
+        private const int Width = 104;
+        private const int Height = 174;
+        private const string _pathToLearningSet = @"D:\Studia\Inzynierka\FaceBase\";
         private const int RequiredNumberOfImagesPerPerson = 10;
 
         //For DI:
@@ -96,6 +96,8 @@ namespace FaceRecognition.Services
 
         private void AddFaceImageToLearningSet(Bitmap bitmapWithFace, string name)
         {
+            bitmapWithFace = new Bitmap(bitmapWithFace, new Size(Width, Height));
+
             string currentDirectory = Path.Combine(_pathToLearningSet, name);
             string nameOfFile;
 

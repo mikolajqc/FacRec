@@ -17,8 +17,8 @@ namespace FaceRecognition.Services
         private FacesMatrix _unprocessedVectors;
         private string _pathToLearningSet; /// Ogarnij zeby sciezke pobieralo z jakiegos configa 
 
-        private const int Width = 92;
-        private const int Height = 112;
+        private const int Width = 104;
+        private const int Height = 174;
         private const int RequiredNumberOfImagesPerPerson = 10;
 
         private readonly IAverageVectorDao _averageVectorDao;
@@ -33,7 +33,7 @@ namespace FaceRecognition.Services
             _eigenFaceDao = eigenFaceDao;
             _wageDao = wageDao;
 
-            _pathToLearningSet = @"D:\Studia\Inzynierka\LearningSet_AT&T\";
+            _pathToLearningSet = @"D:\Studia\Inzynierka\FaceBase\";
             _unprocessedVectors = new FacesMatrix();
             _userNames = new List<string>();
 

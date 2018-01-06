@@ -9,13 +9,16 @@ namespace Client.Utilities
     //TODO: przenies wszystkie stale do configuracji
     class FaceDetector
     {
+        private const int Width = 104;
+        private const int Height = 174;
+
         private readonly CascadeClassifier _faceClassifier;
         private readonly CascadeClassifier _eyesClassifier;
 
         public FaceDetector()
         {
             _faceClassifier = new CascadeClassifier(@"HaarCascadeFiles/haarcascade_frontalface_alt2.xml");
-           // _eyesClassifier = new CascadeClassifier(@"HaarCascadeFiles/haarcascade_eye.xml");
+            _eyesClassifier = new CascadeClassifier(@"HaarCascadeFiles/haarcascade_eye.xml");
         }
 
         /// <summary>
@@ -25,37 +28,94 @@ namespace Client.Utilities
         /// <returns></returns>
         public Tuple<Bitmap, Bitmap> GetBitmapWithDetectedFace(Bitmap sourceBitmap)
         {
-            Image<Bgr, byte> currentFrame = new Image<Bgr, byte>(sourceBitmap);
+            bool isFaceCorrect = true;
 
-            var grayFrame = currentFrame.Convert<Gray, Byte>();
-            var faces = _faceClassifier.DetectMultiScale(grayFrame, 1.1, 10, Size.Empty);
+            Image<Bgr, byte> imageWithCroppedFace = new Image<Bgr, byte>(sourceBitmap);
+            Image<Bgr, byte> imageWithMarkedFace = new Image<Bgr, byte>(sourceBitmap);
+            Image<Bgr, byte> imageOriginal = new Image<Bgr, byte>(sourceBitmap);
+
+            var grayFrame = imageWithCroppedFace.Convert<Gray, Byte>();
+            var faces = _faceClassifier.DetectMultiScale(grayFrame, 1.1, 10, new System.Drawing.Size(30, 30));
 
             foreach (var face in faces)
-                currentFrame.Draw(face, new Bgr(Color.BurlyWood));
+                imageWithMarkedFace.Draw(face, new Bgr(Color.BurlyWood));
 
-            Bitmap bitmapWithMarkedFace = new Bitmap(currentFrame.ToBitmap());
-            Bitmap bitmapWithCroppedFace = null;
-
-            if (faces.Length > 0)
+            if (faces.Length < 1)
             {
-                currentFrame.ROI = faces[0];
-                currentFrame = currentFrame.Copy();
-                bitmapWithCroppedFace = new Bitmap(currentFrame.ToBitmap());
+                return new Tuple<Bitmap, Bitmap>(new Bitmap(imageWithMarkedFace.ToBitmap()), null);
             }
 
-            /*
-            grayFrame = currentFrame.Convert<Gray, Byte>();
-            var eyes = _eyesClassifier.DetectMultiScale(grayFrame, 1.1, 10, Size.Empty);
+            imageWithCroppedFace.ROI = faces[0];
+            imageWithCroppedFace = imageWithCroppedFace.Copy();
+            // imageWithCroppedFace = imageWithCroppedFace.Resize(2*imageWithCroppedFace.Width, 2 * imageWithCroppedFace.Height, Emgu.CV.CvEnum.Inter.Linear);
 
-            if (eyes.Length > 1)
+            //eyes detection:
+            var gray = imageWithCroppedFace.Convert<Gray, Byte>();
+            var eyes = _eyesClassifier.DetectMultiScale(gray, 1.1, 10, Size.Empty);
+
+            //  foreach (var eye in eyes)
+            //       imageWithCroppedFace.Draw(eye, new Bgr(Color.BlueViolet), 2);
+
+            Rectangle rectangleToCroppFace;
+
+            //utworzenie rectangla do wyciecia twarzy
+            if (eyes.Length < 2)
             {
-                currentFrame.ROI = eyes[0];
-                currentFrame = currentFrame.Copy();
-                bitmapWithCroppedFace = new Bitmap(currentFrame.ToBitmap());
+                return new Tuple<Bitmap, Bitmap>(new Bitmap(imageWithMarkedFace.ToBitmap()), null);
             }
-            */
 
-            return new Tuple<Bitmap, Bitmap>(bitmapWithMarkedFace, bitmapWithCroppedFace);
+
+            if (eyes[0].Left < eyes[1].Left)
+            {
+
+                var deltaY = (eyes[1].Y + eyes[1].Height / 2) - (eyes[0].Y + eyes[0].Height / 2);
+                var deltaX = (eyes[1].X + eyes[1].Width / 2) - (eyes[0].X + eyes[0].Width / 2);
+                double degrees = Math.Atan2(deltaY, deltaX) * 180 / Math.PI;
+                if (Math.Abs(degrees) < 35)
+                {
+                    imageWithCroppedFace = imageWithCroppedFace.Rotate(-degrees, new Bgr(), true);
+                    imageOriginal = imageOriginal.Rotate(-degrees,
+                        new PointF(faces[0].X + faces[0].Width / 2, faces[0].Y + faces[0].Height / 2),
+                        Emgu.CV.CvEnum.Inter.Linear, new Bgr(), true);
+
+                    imageOriginal.ROI = faces[0];
+                    imageOriginal = imageOriginal.Copy();
+                }
+
+                rectangleToCroppFace = new Rectangle(eyes[0].Left, 0, eyes[1].Right - eyes[0].Left, imageWithCroppedFace.Height);
+            }
+            else
+            {
+
+
+                var deltaY = (eyes[0].Y + eyes[0].Height / 2) - (eyes[1].Y + eyes[1].Height / 2);
+                var deltaX = (eyes[0].X + eyes[0].Width / 2) - (eyes[1].X + eyes[1].Width / 2);
+                double degrees = Math.Atan2(deltaY, deltaX) * 180 / Math.PI;
+                if (Math.Abs(degrees) < 35)
+                {
+                    //   degrees = 10;
+                    imageWithCroppedFace = imageWithCroppedFace.Rotate(-degrees, new Bgr(), true);
+                    imageOriginal = imageOriginal.Rotate(-degrees,
+                        new PointF(faces[0].X + faces[0].Width / 2, faces[0].Y + faces[0].Height / 2),
+                        Emgu.CV.CvEnum.Inter.Linear, new Bgr(), true);
+
+                    imageOriginal.ROI = faces[0];
+                    imageOriginal = imageOriginal.Copy();
+                }
+                rectangleToCroppFace = new Rectangle(eyes[1].Left, 0, eyes[0].Right - eyes[1].Left, imageWithCroppedFace.Height);
+            }
+
+            imageWithCroppedFace.ROI = rectangleToCroppFace;
+            imageWithCroppedFace = imageWithCroppedFace.Copy();
+
+
+            imageOriginal.ROI = rectangleToCroppFace;
+            imageOriginal = imageOriginal.Copy();
+            var croppedBitmap = new Bitmap(imageOriginal.ToBitmap());
+          //  croppedBitmap.SetResolution(Width,Height);
+
+
+            return new Tuple<Bitmap, Bitmap>(new Bitmap(imageWithMarkedFace.ToBitmap()), croppedBitmap);
         }
         
     }
