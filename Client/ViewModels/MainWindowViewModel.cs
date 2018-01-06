@@ -135,6 +135,7 @@ namespace Client
         {
             if (ImageSnapshot != null)
             {
+                ResultOfRecognition = string.Empty;
                 string result = await _requestManager.Recognize(BitmapImage2Bitmap(ImageSnapshot));
                 ResultOfRecognition = result;
             }

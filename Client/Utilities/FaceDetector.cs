@@ -35,7 +35,7 @@ namespace Client.Utilities
             Image<Bgr, byte> imageOriginal = new Image<Bgr, byte>(sourceBitmap);
 
             var grayFrame = imageWithCroppedFace.Convert<Gray, Byte>();
-            var faces = _faceClassifier.DetectMultiScale(grayFrame, 1.1, 10, new System.Drawing.Size(30, 30));
+            var faces = _faceClassifier.DetectMultiScale(grayFrame, 1.1, 10, Size.Empty);
 
             foreach (var face in faces)
                 imageWithMarkedFace.Draw(face, new Bgr(Color.BurlyWood));
