@@ -78,8 +78,10 @@ namespace CommonsTests
                 {
                     list.Add(j * 0.1 + i);
                 }
+
                 listOfList.Add(list);
             }
+
             var facesMatrix = new FacesMatrix();
             facesMatrix.LoadFromListOfList(listOfList, 1);
             var facesMatrix1 = new FacesMatrix();

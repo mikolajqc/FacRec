@@ -8,10 +8,6 @@ namespace Commons.Utilities
 {
     public class FacesMatrix
     {
-        /// Jak mapowac obraz na czlowieka i gdzie to reprezentowac?
-        /// dodac obsluge innych rozszerzen niz .pgm
-        /// - ogarnac jak pobierac nazwe osoby poprzez nazwe folderu w katalogu zbioru uczacego
-        /// - czy ta klasa nie powinna byc niezalezna od tego co posiada?
         /// Orientation - 0 wektory polozone poziomo, 1 - wektory polozone pionowo
 
         #region fields
@@ -23,8 +19,9 @@ namespace Commons.Utilities
 
         public FacesMatrix()
         {
-            _content = new double[0,0];
+            _content = new double[0, 0];
         }
+
         /// <summary>
         /// [x,y]
         /// </summary>
@@ -32,7 +29,7 @@ namespace Commons.Utilities
         /// <param name="y"></param>
         public FacesMatrix(int x, int y)
         {
-            _content = new double[x,y];
+            _content = new double[x, y];
         }
 
         /// <summary>
@@ -44,11 +41,11 @@ namespace Commons.Utilities
         {
             _content = new double[numberOfCopies, vector.Length];
 
-            for(int i = 0; i < numberOfCopies; ++i)
+            for (int i = 0; i < numberOfCopies; ++i)
             {
-                for(int j = 0; j < vector.Length; ++j)
+                for (int j = 0; j < vector.Length; ++j)
                 {
-                    _content[i, j] = vector.Content[0,j];
+                    _content[i, j] = vector.Content[0, j];
                 }
             }
         }
@@ -58,10 +55,9 @@ namespace Commons.Utilities
             _content = content;
         }
 
-        //Moze to usunac?
         public FacesMatrix(double[] vector, int orientation)
         {
-            if(orientation == 0) _content = new double[vector.GetLength(0), 1];
+            if (orientation == 0) _content = new double[vector.GetLength(0), 1];
             else _content = new double[1, vector.GetLength(0)];
 
             for (int i = 0; i < vector.GetLength(0); ++i)
@@ -69,15 +65,13 @@ namespace Commons.Utilities
                 if (orientation == 0) _content[i, 0] = vector[i];
                 else _content[0, i] = vector[i];
             }
-
         }
 
         public FacesMatrix(List<double[]> content, int orientation)
         {
-            
             int x, y;
 
-            if(content.Count == 0)
+            if (content.Count == 0)
             {
                 _content = new double[0, 0];
                 return;
@@ -94,7 +88,7 @@ namespace Commons.Utilities
                 x = content.Count;
             }
 
-            _content = new double[x,y];
+            _content = new double[x, y];
 
             for (int i = 0; i < x; ++i)
             {
@@ -102,8 +96,6 @@ namespace Commons.Utilities
                 {
                     if (orientation == 0) _content[i, j] = content[j][i];
                     else _content[i, j] = content[i][j];
-
-
                 }
             }
         }
@@ -112,10 +104,10 @@ namespace Commons.Utilities
         /// Creates FacesMatrix from bitmap. Icludes histogram equalization. Transforms bitmap into grayscaled image and stores it to FacesMatrix
         /// </summary>
         /// <param name="bitmap"></param>
-        public FacesMatrix (Bitmap bitmap)
+        public FacesMatrix(Bitmap bitmap)
         {
             //todo: ogarnij czy ten histogram czasami nie jest kilka razy wywolywany
-            HistogramEqualization histogramEqualization = new HistogramEqualization(); // proces wyrownania histogramow
+            HistogramEqualization histogramEqualization = new HistogramEqualization();
             bitmap = histogramEqualization.Apply(bitmap);
 
             int width = bitmap.Size.Width;
@@ -142,15 +134,9 @@ namespace Commons.Utilities
 
         public double[,] Content
         {
-            get
-            {
-                return _content;
-            }
+            get { return _content; }
 
-            set
-            {
-                _content = value;
-            }
+            set { _content = value; }
         }
 
         public int X
@@ -173,10 +159,7 @@ namespace Commons.Utilities
 
         public int Length
         {
-            get
-            {
-                return _content.Length;
-            }
+            get { return _content.Length; }
         }
 
         #endregion
@@ -187,7 +170,7 @@ namespace Commons.Utilities
         {
             if (listOfLists.Count == 0)
             {
-                _content =  new double[0, 0];
+                _content = new double[0, 0];
             }
 
             if (orientation == 0) _content = new double[listOfLists[0].Count, listOfLists.Count];
@@ -208,7 +191,6 @@ namespace Commons.Utilities
                     }
                 }
             }
-
         }
 
         public FacesMatrix GetAverageVector(int orientation)
@@ -234,25 +216,25 @@ namespace Commons.Utilities
 
                 for (int i = 0; i < numberOfVectors; ++i)
                 {
-                    if(orientation == 0) sumOfPixelOnOnePosition += _content[j, i];
+                    if (orientation == 0) sumOfPixelOnOnePosition += _content[j, i];
                     else sumOfPixelOnOnePosition += _content[i, j];
                 }
 
                 sumVector[j] = sumOfPixelOnOnePosition / numberOfVectors;
             }
 
-            return new FacesMatrix(sumVector,1);
+            return new FacesMatrix(sumVector, 1);
         }
 
         public FacesMatrix Transpose()
         {
             FacesMatrix transposedMatrix = new FacesMatrix(Y, X);
 
-            for(int i = 0; i < X; ++i)
+            for (int i = 0; i < X; ++i)
             {
-                for(int j = 0; j < Y; ++j)
+                for (int j = 0; j < Y; ++j)
                 {
-                    transposedMatrix.Content[j,i] = _content[i,j];
+                    transposedMatrix.Content[j, i] = _content[i, j];
                 }
             }
 
@@ -265,13 +247,13 @@ namespace Commons.Utilities
         /// <param name="numberOfVector"></param>
         /// <param name="orientation"></param>
         /// <returns></returns>
-        public double[] GetVectorAsArray(int numberOfVector,int orientation)
+        public double[] GetVectorAsArray(int numberOfVector, int orientation)
         {
             int lengthOfVector = _content.GetLength(orientation);
 
             double[] result = new double[lengthOfVector];
 
-            for(int i = 0; i < lengthOfVector; ++i)
+            for (int i = 0; i < lengthOfVector; ++i)
             {
                 if (orientation == 0) result[i] = _content[i, numberOfVector];
                 else result[i] = _content[numberOfVector, i];
@@ -301,9 +283,9 @@ namespace Commons.Utilities
             for (int i = 0; i < numbersOfVectors; ++i)
             {
                 double[] currentVectorInArray = new double[lenghtOfVectors];
-                for(int j = 0; j < lenghtOfVectors; ++j)
+                for (int j = 0; j < lenghtOfVectors; ++j)
                 {
-                    if (orientation == 0) currentVectorInArray[j] = _content[j,i];
+                    if (orientation == 0) currentVectorInArray[j] = _content[j, i];
                     else currentVectorInArray[j] = _content[i, j];
                 }
 
@@ -336,9 +318,9 @@ namespace Commons.Utilities
 
             for (int i = 0; i < numberOfFirstVectors; ++i)
             {
-                for(int j = 0; j < vectorSize; ++j)
+                for (int j = 0; j < vectorSize; ++j)
                 {
-                    if(orientation == 0)
+                    if (orientation == 0)
                     {
                         currentContent[j, i] = _content[j, i];
                     }
@@ -356,18 +338,18 @@ namespace Commons.Utilities
 
         #region operators
 
-        public static FacesMatrix operator- (FacesMatrix a, FacesMatrix b)
+        public static FacesMatrix operator -(FacesMatrix a, FacesMatrix b)
         {
             FacesMatrix result = new FacesMatrix(a.X, a.Y);
 
             //if for DEBUG time only
-            if(a.X != b.X || a.Y != b.Y)
+            if (a.X != b.X || a.Y != b.Y)
             {
                 Console.WriteLine("FacesMatrixes must have the same sizes!");
                 return null;
             }
 
-            for(int i = 0; i < a.X; ++i)
+            for (int i = 0; i < a.X; ++i)
             {
                 for (int j = 0; j < a.Y; ++j)
                 {
@@ -377,6 +359,7 @@ namespace Commons.Utilities
 
             return result;
         }
+
         public static FacesMatrix operator +(FacesMatrix a, FacesMatrix b)
         {
             FacesMatrix result = new FacesMatrix(a.X, a.Y);

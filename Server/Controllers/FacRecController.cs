@@ -7,6 +7,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Commons;
 using Commons.Inferfaces.Services;
+using Commons.Utilities;
 
 namespace Server.Controllers
 {
@@ -17,7 +18,8 @@ namespace Server.Controllers
         private readonly IAddNewFaceService _addNewFaceService;
         private readonly ILearningService _learningService;
 
-        public FacRecController(IRecognitonService recognitionService, IAddNewFaceService addNewFaceService, ILearningService learningService)
+        public FacRecController(IRecognitonService recognitionService, IAddNewFaceService addNewFaceService,
+            ILearningService learningService)
         {
             _recognitionService = recognitionService;
             _addNewFaceService = addNewFaceService;
@@ -53,6 +55,5 @@ namespace Server.Controllers
             _addNewFaceService.AddNewFace(bitmapWithFace, clientRequestData.Name);
             return Request.CreateResponse(HttpStatusCode.OK, "Face added!");
         }
-
     }
 }
