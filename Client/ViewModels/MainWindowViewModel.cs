@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Caliburn.Micro;
+using Client.Models;
 using Client.Utilities;
 
 namespace Client
@@ -27,7 +26,7 @@ namespace Client
 
         private CameraManager _cameraManager;
         private FaceDetector _faceDetector;
-        private RequestManager _requestManager;
+        private FaceRecognitionManager _faceRecognitionManager;
         #endregion
 
         #region properties
@@ -114,7 +113,7 @@ namespace Client
                     () =>
                     {
                         var bitmap = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFramePreview()).Item2;
-                        if (bitmap != null) _imagesToAdd.Add(BitmapToImageSource(bitmap));
+                        if (bitmap != null) _imagesToAdd.Add(Tools.BitmapToImageSource(bitmap));
                         NotifyOfPropertyChange(() => ImagesToAdd);
                     }));
         }
@@ -126,7 +125,7 @@ namespace Client
                 () =>
                 {
                     var bitmap = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFramePreview()).Item2;
-                    if (bitmap != null) _imageSnapshot = BitmapToImageSource(bitmap);
+                    if (bitmap != null) _imageSnapshot = Tools.BitmapToImageSource(bitmap);
                     NotifyOfPropertyChange(() => ImageSnapshot);
                 }));
         }
@@ -136,8 +135,7 @@ namespace Client
             if (ImageSnapshot != null)
             {
                 ResultOfRecognition = string.Empty;
-                string result = await _requestManager.Recognize(BitmapImage2Bitmap(ImageSnapshot));
-                ResultOfRecognition = result;
+                ResultOfRecognition = await _faceRecognitionManager.Recognize(ImageSnapshot);
             }
             else
             {
@@ -147,10 +145,7 @@ namespace Client
 
         public async void AddFace()
         {
-            foreach (BitmapImage bitmapImage in _imagesToAdd)
-            {
-                await _requestManager.AddFace(BitmapImage2Bitmap(bitmapImage), _nameOfUser);
-            }
+            await _faceRecognitionManager.AddFace(_imagesToAdd, _nameOfUser);
             MessageBox.Show("Face Added!");
         }
 
@@ -162,9 +157,9 @@ namespace Client
         {
             _cameraManager = new CameraManager();
             _faceDetector = new FaceDetector();
-            _requestManager = new RequestManager();
+            _faceRecognitionManager = new FaceRecognitionManager();;
 
-            _timer = new System.Timers.Timer
+        _timer = new System.Timers.Timer
                 {
                     AutoReset = true,
                     Interval = 50
@@ -174,6 +169,7 @@ namespace Client
                 {
                     UpdateImage();
                 };
+
             _cameraManager.Start();
             _timer.Start();
         }
@@ -197,54 +193,12 @@ namespace Client
                 Application.Current.Dispatcher.BeginInvoke(
                     new System.Action(
                         () => {
-                                _imageWebcam = BitmapToImageSource(
+                                _imageWebcam = Tools.BitmapToImageSource(
                                     _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFramePreview()).Item1
                                 );
                             NotifyOfPropertyChange(() => ImageWebcam);
                         }));
 
-            }
-        }
-
-
-        ///todo: Funkcje externalowe przerobic na swoj kod i moze przenisc do jakichs tools? jako static
-
-        /// <summary>
-        /// External code!!!
-        /// </summary>
-        /// <param name="bitmap"></param>
-        /// <returns></returns>
-        private static BitmapImage BitmapToImageSource(Bitmap bitmap)
-        {
-            using (MemoryStream memory = new MemoryStream())
-            {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
-                memory.Position = 0;
-                BitmapImage bitmapimage = new BitmapImage();
-                bitmapimage.BeginInit();
-                bitmapimage.StreamSource = memory;
-                bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapimage.EndInit();
-
-                return bitmapimage;
-            }
-        }
-        
-        /// <summary>
-        /// External
-        /// </summary>
-        /// <param name="bitmapImage"></param>
-        /// <returns></returns>
-        private static Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
-        {
-            using (MemoryStream outStream = new MemoryStream())
-            {
-                BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
-                enc.Save(outStream);
-                var bitmap = new Bitmap(outStream);
-
-                return new Bitmap(bitmap);
             }
         }
 

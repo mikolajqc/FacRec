@@ -3,7 +3,7 @@ using Accord.Imaging;
 using Accord.Imaging.Filters;
 using AForge.Video.DirectShow;
 
-namespace Client.Utilities
+namespace Client.Models
 {
     class CameraManager
     {

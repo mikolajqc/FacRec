@@ -200,10 +200,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppBootstraper.cs" />
-    <Compile Include="Models\MainModel.cs" />
+    <Compile Include="Models\FaceRecognitionManager.cs" />
     <Compile Include="Utilities\RequestManager.cs" />
-    <Compile Include="Utilities\CameraManager.cs" />
-    <Compile Include="Utilities\FaceDetector.cs" />
+    <Compile Include="Models\CameraManager.cs" />
+    <Compile Include="Models\FaceDetector.cs" />
+    <Compile Include="Utilities\Tools.cs" />
     <Compile Include="Views\MainWindowView.xaml.cs">
       <DependentUpon>MainWindowView.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -265,6 +266,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Accord.3.8.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.8.0\build\Accord.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

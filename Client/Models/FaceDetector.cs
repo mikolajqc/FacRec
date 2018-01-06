@@ -3,7 +3,7 @@ using System.Drawing;
 using Emgu.CV;
 using Emgu.CV.Structure;
 
-namespace Client.Utilities
+namespace Client.Models
 {
     //TODO: ogarnac tak zeby sama detekcja robila sie na niskiej rozdzielczosci zdjeciu. A wycinka szla z odpowiednio wyskalowanego zdjecia wysokiej jakosci, cos na zasadzie podgladu
     //TODO: przenies wszystkie stale do configuracji
@@ -112,8 +112,6 @@ namespace Client.Utilities
             imageOriginal.ROI = rectangleToCroppFace;
             imageOriginal = imageOriginal.Copy();
             var croppedBitmap = new Bitmap(imageOriginal.ToBitmap());
-          //  croppedBitmap.SetResolution(Width,Height);
-
 
             return new Tuple<Bitmap, Bitmap>(new Bitmap(imageWithMarkedFace.ToBitmap()), croppedBitmap);
         }
