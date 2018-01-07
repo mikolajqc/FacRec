@@ -14,17 +14,18 @@ namespace FaceRecognition.Services
 {
     public class LearningService : ILearningService
     {
-        private FacesMatrix _unprocessedVectors;
-        private string _pathToLearningSet; /// Ogarnij zeby sciezke pobieralo z jakiegos configa 
-
         private const int Width = 104;
         private const int Height = 174;
         private const int RequiredNumberOfImagesPerPerson = 10;
+        private const int NumberOfKeyEigenFaces = 100;
+        private const string PathToLearningSet = @"D:\Studia\Inzynierka\FaceBase\";
 
         private readonly IAverageVectorDao _averageVectorDao;
         private readonly IEigenFaceDao _eigenFaceDao;
         private readonly IWageDao _wageDao;
-        private List<string> _userNames;
+
+        private readonly FacesMatrix _unprocessedVectors;
+        private readonly List<string> _userNames;
 
         #region constructors
         public LearningService(IAverageVectorDao averageVectorDao, IEigenFaceDao eigenFaceDao, IWageDao wageDao)
@@ -33,7 +34,6 @@ namespace FaceRecognition.Services
             _eigenFaceDao = eigenFaceDao;
             _wageDao = wageDao;
 
-            _pathToLearningSet = @"D:\Studia\Inzynierka\FaceBase\";
             _unprocessedVectors = new FacesMatrix();
             _userNames = new List<string>();
 
@@ -53,7 +53,7 @@ namespace FaceRecognition.Services
             FacesMatrix eigenFaces =  eigenVectors * differenceVectorsT;
 
             //odcinka 20 najistotniejszych
-            eigenFaces = eigenFaces.GetFirstVectors(100, 0);
+            eigenFaces = eigenFaces.GetFirstVectors(NumberOfKeyEigenFaces, 0);
 
             FacesMatrix dataAfterPca = differenceVectorsT * eigenFaces.Transpose();
 
@@ -107,10 +107,10 @@ namespace FaceRecognition.Services
         /// </summary>
         private void LoadLearningSet()
         {
-            Console.WriteLine("Loading images from: " + _pathToLearningSet + "...");
+            Console.WriteLine("Loading images from: " + PathToLearningSet + "...");
             List<List<double>> temporarySetOfLoadedImages = new List<List<double>>();
 
-            foreach (string dir in Directory.GetDirectories(_pathToLearningSet))
+            foreach (string dir in Directory.GetDirectories(PathToLearningSet))
             {
                 if (Directory.GetFiles(dir).Length == RequiredNumberOfImagesPerPerson)
                 {

@@ -23,7 +23,7 @@ namespace FaceRecognition.Services
         //todo: co zrobic z error tolerance???
         private const int Width = 104;
         private const int Height = 174;
-        private const int ErrorTolerance = 70000000;
+        private const int ErrorTolerance = int.MaxValue;//70000000;
 
         //For DI:
         private readonly IAverageVectorDao _averageVectorDao;
