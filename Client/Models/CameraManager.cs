@@ -18,18 +18,16 @@ namespace Client.Models
             _videoSource = new VideoCaptureDevice(_videoDevices[0].MonikerString);
             _videoSource.NewFrame += (s, eventArgs)
                 =>
+            {
+                lock (this)
                 {
-                    lock (this)
-                    {
-                        _currentBitmap = new Bitmap(eventArgs.Frame);
-                        var resize = new ResizeNearestNeighbor(480,320);
-                        var im = UnmanagedImage.FromManagedImage(eventArgs.Frame);
-                        var downsample = resize.Apply(im);
-                        _currentBitmapPreview = downsample.ToManagedImage();
-                    }
-
-                };
-            
+                    _currentBitmap = new Bitmap(eventArgs.Frame);
+                    var resize = new ResizeNearestNeighbor(480, 320);
+                    var im = UnmanagedImage.FromManagedImage(eventArgs.Frame);
+                    var downsample = resize.Apply(im);
+                    _currentBitmapPreview = downsample.ToManagedImage();
+                }
+            };
         }
 
         public void Start()

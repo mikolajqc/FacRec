@@ -9,9 +9,6 @@ namespace Client.Models
     //TODO: przenies wszystkie stale do configuracji
     class FaceDetector
     {
-        private const int Width = 104;
-        private const int Height = 174;
-
         private readonly CascadeClassifier _faceClassifier;
         private readonly CascadeClassifier _eyesClassifier;
 
@@ -28,8 +25,6 @@ namespace Client.Models
         /// <returns></returns>
         public Tuple<Bitmap, Bitmap> GetBitmapWithDetectedFace(Bitmap sourceBitmap)
         {
-            bool isFaceCorrect = true;
-
             Image<Bgr, byte> imageWithCroppedFace = new Image<Bgr, byte>(sourceBitmap);
             Image<Bgr, byte> imageWithMarkedFace = new Image<Bgr, byte>(sourceBitmap);
             Image<Bgr, byte> imageOriginal = new Image<Bgr, byte>(sourceBitmap);
@@ -47,14 +42,10 @@ namespace Client.Models
 
             imageWithCroppedFace.ROI = faces[0];
             imageWithCroppedFace = imageWithCroppedFace.Copy();
-            // imageWithCroppedFace = imageWithCroppedFace.Resize(2*imageWithCroppedFace.Width, 2 * imageWithCroppedFace.Height, Emgu.CV.CvEnum.Inter.Linear);
 
             //eyes detection:
             var gray = imageWithCroppedFace.Convert<Gray, Byte>();
             var eyes = _eyesClassifier.DetectMultiScale(gray, 1.1, 10, Size.Empty);
-
-            //  foreach (var eye in eyes)
-            //       imageWithCroppedFace.Draw(eye, new Bgr(Color.BlueViolet), 2);
 
             Rectangle rectangleToCroppFace;
 
@@ -67,7 +58,6 @@ namespace Client.Models
 
             if (eyes[0].Left < eyes[1].Left)
             {
-
                 var deltaY = (eyes[1].Y + eyes[1].Height / 2) - (eyes[0].Y + eyes[0].Height / 2);
                 var deltaX = (eyes[1].X + eyes[1].Width / 2) - (eyes[0].X + eyes[0].Width / 2);
                 double degrees = Math.Atan2(deltaY, deltaX) * 180 / Math.PI;
@@ -82,18 +72,16 @@ namespace Client.Models
                     imageOriginal = imageOriginal.Copy();
                 }
 
-                rectangleToCroppFace = new Rectangle(eyes[0].Left, 0, eyes[1].Right - eyes[0].Left, imageWithCroppedFace.Height);
+                rectangleToCroppFace = new Rectangle(eyes[0].Left, 0, eyes[1].Right - eyes[0].Left,
+                    imageWithCroppedFace.Height);
             }
             else
             {
-
-
                 var deltaY = (eyes[0].Y + eyes[0].Height / 2) - (eyes[1].Y + eyes[1].Height / 2);
                 var deltaX = (eyes[0].X + eyes[0].Width / 2) - (eyes[1].X + eyes[1].Width / 2);
                 double degrees = Math.Atan2(deltaY, deltaX) * 180 / Math.PI;
                 if (Math.Abs(degrees) < 35)
                 {
-                    //   degrees = 10;
                     imageWithCroppedFace = imageWithCroppedFace.Rotate(-degrees, new Bgr(), true);
                     imageOriginal = imageOriginal.Rotate(-degrees,
                         new PointF(faces[0].X + faces[0].Width / 2, faces[0].Y + faces[0].Height / 2),
@@ -102,12 +90,12 @@ namespace Client.Models
                     imageOriginal.ROI = faces[0];
                     imageOriginal = imageOriginal.Copy();
                 }
-                rectangleToCroppFace = new Rectangle(eyes[1].Left, 0, eyes[0].Right - eyes[1].Left, imageWithCroppedFace.Height);
+
+                rectangleToCroppFace = new Rectangle(eyes[1].Left, 0, eyes[0].Right - eyes[1].Left,
+                    imageWithCroppedFace.Height);
             }
 
             imageWithCroppedFace.ROI = rectangleToCroppFace;
-            imageWithCroppedFace = imageWithCroppedFace.Copy();
-
 
             imageOriginal.ROI = rectangleToCroppFace;
             imageOriginal = imageOriginal.Copy();
