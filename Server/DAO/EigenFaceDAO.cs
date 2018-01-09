@@ -8,7 +8,7 @@ namespace Server.DAO
 {
     public class EigenFaceDao : IEigenFaceDao
     {
-        GenericUnitOfWork _guow = new GenericUnitOfWork(); // zastosuj SipleInjector
+        GenericUnitOfWork _guow = new GenericUnitOfWork();
 
         public void Add(EigenFace eigenFace)
         {

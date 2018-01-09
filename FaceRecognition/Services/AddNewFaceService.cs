@@ -16,10 +16,10 @@ namespace FaceRecognition.Services
         private FacesMatrix _averageVector;
         private FacesMatrix _eigenFacesT;
 
-        //todo:consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //todo: create config file
         private const int Width = 104;
         private const int Height = 174;
-        private const string _pathToLearningSet = @"D:\Studia\Inzynierka\FaceBase\";
+        private const string PathToLearningSet = @"D:\Studia\Inzynierka\FaceBase\";
         private const int RequiredNumberOfImagesPerPerson = 10;
 
         //For DI:
@@ -42,7 +42,7 @@ namespace FaceRecognition.Services
         {
             LoadDataFromDatabase();
 
-            double[] wagesOfNewImage = GetWagesOfImageInEigenFacesSpace(bitmapWithFace); //new face in face space
+            var wagesOfNewImage = GetWagesOfImageInEigenFacesSpace(bitmapWithFace);
             _wageDao.Add(new Wage()
                 {
                     Name = name,
@@ -98,7 +98,7 @@ namespace FaceRecognition.Services
         {
             bitmapWithFace = new Bitmap(bitmapWithFace, new Size(Width, Height));
 
-            string currentDirectory = Path.Combine(_pathToLearningSet, name);
+            string currentDirectory = Path.Combine(PathToLearningSet, name);
             string nameOfFile;
 
             if (Directory.Exists(currentDirectory))

@@ -17,7 +17,7 @@ namespace Client.Utilities
         private const string RecognitionPath = "/api/FacRec/Recognize";
         private const string AddFacePath = "/api/FacRec/AddFace";
 
-        public async Task<string> Recognize(Bitmap bitmap)
+        public async Task<string> Recognize(Bitmap bitmap, bool isLdaSet)
         {
             byte[] bitmapData;
             var stream = new MemoryStream();
@@ -36,7 +36,8 @@ namespace Client.Utilities
             var request = new ClientRequestData
             {
                 Name = "",
-                BitmapInArray = bitmapData
+                BitmapInArray = bitmapData,
+                IsLdaSet = isLdaSet
             };
 
             MediaTypeFormatter bsonFormatter = new BsonMediaTypeFormatter();

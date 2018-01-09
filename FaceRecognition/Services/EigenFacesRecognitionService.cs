@@ -48,9 +48,6 @@ namespace FaceRecognition.Services
         /// <returns></returns>
         public string Recognize(Bitmap bitMapWithFace) // temporary: Bitmap zamienic na wlasny typ FaceImage ktory obsluguje pgm itd
         {
-        //    HistogramEqualization histogramEqualization = new HistogramEqualization();
-        //    bitMapWithFace = histogramEqualization.Apply(bitMapWithFace);
-
             LoadDataFromDatabase();
 
             double[] wagesInArray = GetWagesOfImageInEigenFacesSpace(bitMapWithFace);
@@ -60,7 +57,8 @@ namespace FaceRecognition.Services
             for (int numberOfKnownImage = 0; numberOfKnownImage < _wages.Y; ++numberOfKnownImage)
             {
                 double[] currentImageWagesInArray = _wages.GetVectorAsArray(numberOfKnownImage, 0);
-                double currentEuclideanDistance = Accord.Math.Distance.Euclidean(wagesInArray, currentImageWagesInArray);
+                double currentEuclideanDistance =
+                    Accord.Math.Distance.Euclidean(wagesInArray, currentImageWagesInArray);
 
                 if (minEuclideanDistance > currentEuclideanDistance)
                 {
@@ -75,6 +73,7 @@ namespace FaceRecognition.Services
         #endregion
 
         #region privatemethods
+
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
             Bitmap scaledBitmap = new Bitmap(bitmap, new Size(Width, Height));
@@ -95,7 +94,8 @@ namespace FaceRecognition.Services
         private void LoadAverageVectorFromDatabase()
         {
             List<AverageVector> listOfAverageVectors = _averageVectorDao.GetOverview() as List<AverageVector>;
-            double[] valueOfAverageVector = (JsonConvert.DeserializeObject(listOfAverageVectors[0].Value, typeof(double[])) as double[]);
+            double[] valueOfAverageVector =
+                (JsonConvert.DeserializeObject(listOfAverageVectors[0].Value, typeof(double[])) as double[]);
 
             _averageVector = new FacesMatrix(valueOfAverageVector, 1);
         }

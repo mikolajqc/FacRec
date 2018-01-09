@@ -8,7 +8,7 @@ namespace Server.DAO
 {
     public class WageDao : IWageDao
     {
-        GenericUnitOfWork _guow = new GenericUnitOfWork(); // zastosuj SipleInjector chyba musi byc singleton???? poczytaj jak to powinno wygladac
+        GenericUnitOfWork _guow = new GenericUnitOfWork();
         public void Add(Wage wage)
         {
             _guow.Repository<Models.Wage>().Add(

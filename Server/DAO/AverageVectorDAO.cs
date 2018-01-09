@@ -8,7 +8,7 @@ namespace Server.DAO
 {
     public class AverageVectorDao : IAverageVectorDao
     {
-        GenericUnitOfWork _guow = new GenericUnitOfWork(); // zastosuj SipleInjector
+        GenericUnitOfWork _guow = new GenericUnitOfWork();
 
         public void Add(AverageVector averageVector)
         {

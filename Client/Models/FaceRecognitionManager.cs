@@ -14,9 +14,9 @@ namespace Client.Models
             _requestManager = new RequestManager();
         }
 
-        public Task<string> Recognize(BitmapImage bitmapWithCroppedFace)
+        public Task<string> Recognize(BitmapImage bitmapWithCroppedFace, bool isLdaSet)
         {
-            return _requestManager.Recognize(Tools.BitmapImage2Bitmap(bitmapWithCroppedFace));
+            return _requestManager.Recognize(Tools.BitmapImage2Bitmap(bitmapWithCroppedFace), isLdaSet);
         }
 
         public async Task<int> AddFace(List<BitmapImage> bitmapWithCroppedFacesToAdd, string nameOfUser)

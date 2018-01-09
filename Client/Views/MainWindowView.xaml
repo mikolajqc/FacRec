@@ -51,9 +51,10 @@
                             Content="Take a photo to recognize" Margin="10,0,10,0" />
                     <Button Height="30" Grid.Column="0" Grid.Row="1" x:Name="Recognize" Content="Recognize"
                             Margin="10,0,10,0" />
-                    <CheckBox Grid.Row="2" Content="PCA + LDA" VerticalAlignment="Center" x:Name="IsLdaActive"
-                              Margin="10,0,10,0" />
-                    <Label Grid.Row="3" Content="Result:" VerticalAlignment="Center" Margin="10,0,10,0" />
+                    <!--todo: ogarnij jak bindowac checkbox-->
+                    <CheckBox Grid.Row="2" Content="PCA + LDA" VerticalAlignment="Center" x:Name="IsLdaSet"
+                              Margin="10,0,10,0" IsChecked="{Binding Path=IsLdaSet, Mode=TwoWay}"/>
+                    <Label Grid.Row="3" Content="Result:" VerticalAlignment="Center" Margin="10,0,10,0" /> 
                     <TextBox Height="30" Grid.Column="0" Grid.Row="3" IsReadOnly="True" x:Name="ResultOfRecognition"
                              VerticalAlignment="Center" Width="100" HorizontalAlignment="Right" Margin="10,0,10,0" />
                 </Grid>

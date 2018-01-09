@@ -9,7 +9,6 @@ namespace Client.Models
     {
         private VideoCaptureDevice _videoSource;
         private readonly FilterInfoCollection _videoDevices;
-        private Bitmap _currentBitmapPreview;
         private Bitmap _currentBitmap;
         private bool _isStarted;
 
@@ -26,11 +25,10 @@ namespace Client.Models
             {
                 lock (this)
                 {
-                    _currentBitmap = new Bitmap(eventArgs.Frame);
                     var resize = new ResizeNearestNeighbor(480, 320);
                     var im = UnmanagedImage.FromManagedImage(eventArgs.Frame);
                     var downsample = resize.Apply(im);
-                    _currentBitmapPreview = downsample.ToManagedImage();
+                    _currentBitmap = downsample.ToManagedImage();
                 }
             };
         }
@@ -43,7 +41,7 @@ namespace Client.Models
 
         public Bitmap GetFrame()
         {
-            return _currentBitmapPreview;
+            return _currentBitmap;
         }
 
         public bool IsCameraAvailable()

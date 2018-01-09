@@ -19,7 +19,9 @@ namespace Server
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
             //Services
-            container.Register<IRecognitonService, FisherFacesRecognitionService>(Lifestyle.Transient);
+            //container.Register<IRecognitonService, FisherFacesRecognitionService>(Lifestyle.Transient);
+            container.RegisterCollection<IRecognitonService>(new[]
+                {typeof(EigenFacesRecognitionService), typeof(FisherFacesRecognitionService)});
             container.Register<IAddNewFaceService, AddNewFaceService>(Lifestyle.Transient);
             container.Register<ILearningService, LearningService>(Lifestyle.Transient);
 

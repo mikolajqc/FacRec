@@ -7,6 +7,7 @@
     {
         private string _name;
         private byte[] _bitmapInArray;
+        private bool _isLdaSet;
 
         public string Name
         {
@@ -20,6 +21,12 @@
             get { return _bitmapInArray; }
 
             set { _bitmapInArray = value; }
+        }
+
+        public bool IsLdaSet
+        {
+            get { return _isLdaSet; }
+            set { _isLdaSet = value; }
         }
     }
 }

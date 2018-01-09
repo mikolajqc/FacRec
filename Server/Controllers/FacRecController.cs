@@ -1,11 +1,12 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
-using Commons;
 using Commons.Inferfaces.Services;
 using Commons.Utilities;
 
@@ -14,14 +15,16 @@ namespace Server.Controllers
     public class FacRecController : ApiController
     {
         //DI:
-        private readonly IRecognitonService _recognitionService;
+        private readonly IEnumerable<IRecognitonService> _recognitionServices;
         private readonly IAddNewFaceService _addNewFaceService;
         private readonly ILearningService _learningService;
 
-        public FacRecController(IRecognitonService recognitionService, IAddNewFaceService addNewFaceService,
+        public FacRecController(
+            IEnumerable<IRecognitonService> recognitionServices,
+            IAddNewFaceService addNewFaceService,
             ILearningService learningService)
         {
-            _recognitionService = recognitionService;
+            _recognitionServices = recognitionServices;
             _addNewFaceService = addNewFaceService;
             _learningService = learningService;
         }
@@ -38,7 +41,9 @@ namespace Server.Controllers
         {
             byte[] bitmapWithFaceInArray = clientRequestData.BitmapInArray;
             Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
-            string resultOfRecognition = _recognitionService.Recognize(bitmapWithFace);
+            string resultOfRecognition = clientRequestData.IsLdaSet
+                ? _recognitionServices.ElementAt(1).Recognize(bitmapWithFace)
+                : _recognitionServices.ElementAt(0).Recognize(bitmapWithFace);
 
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, "FaceRecognition response");
             response.Content = new StringContent(JsonConvert.SerializeObject(resultOfRecognition), Encoding.Unicode);

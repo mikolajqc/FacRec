@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -25,10 +24,12 @@ namespace Client
         private string _resultOfRecognition;
         private System.Timers.Timer _timer;
         private List<BitmapImage> _imagesToAdd = new List<BitmapImage>();
+        private bool _isLdaSet;
 
         private CameraManager _cameraManager;
         private FaceDetector _faceDetector;
         private FaceRecognitionManager _faceRecognitionManager;
+
         #endregion
 
         #region properties
@@ -55,10 +56,7 @@ namespace Client
 
         public BitmapImage ImageWebcam
         {
-            get
-            {
-                return _imageWebcam;
-            }
+            get { return _imageWebcam; }
             set
             {
                 _imageWebcam = value;
@@ -68,10 +66,7 @@ namespace Client
 
         public BitmapImage ImageSnapshot
         {
-            get
-            {
-                return _imageSnapshot;
-            }
+            get { return _imageSnapshot; }
 
             set
             {
@@ -82,14 +77,21 @@ namespace Client
 
         public string NameOfUser
         {
-            get
-            {
-                return _nameOfUser;
-            }
+            get { return _nameOfUser; }
             set
             {
                 _nameOfUser = value;
                 NotifyOfPropertyChange(() => NameOfUser);
+            }
+        }
+
+        public bool IsLdaSet
+        {
+            get { return _isLdaSet; }
+            set
+            {
+                _isLdaSet = value; 
+                NotifyOfPropertyChange(()=>IsLdaSet);
             }
         }
 
@@ -139,7 +141,8 @@ namespace Client
                 ResultOfRecognition = string.Empty;
                 try
                 {
-                    ResultOfRecognition = await _faceRecognitionManager.Recognize(ImageSnapshot);
+                    NotifyOfPropertyChange(() => IsLdaSet);
+                    ResultOfRecognition = await _faceRecognitionManager.Recognize(ImageSnapshot, IsLdaSet);
                 }
                 catch (HttpRequestException e)
                 {
