@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Caliburn.Micro;
@@ -112,7 +114,7 @@ namespace Client
                 new System.Action(
                     () =>
                     {
-                        var bitmap = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFramePreview()).Item2;
+                        var bitmap = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item2;
                         if (bitmap != null) _imagesToAdd.Add(Tools.BitmapToImageSource(bitmap));
                         NotifyOfPropertyChange(() => ImagesToAdd);
                     }));
@@ -124,7 +126,7 @@ namespace Client
             new System.Action(
                 () =>
                 {
-                    var bitmap = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFramePreview()).Item2;
+                    var bitmap = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item2;
                     if (bitmap != null) _imageSnapshot = Tools.BitmapToImageSource(bitmap);
                     NotifyOfPropertyChange(() => ImageSnapshot);
                 }));
@@ -135,7 +137,14 @@ namespace Client
             if (ImageSnapshot != null)
             {
                 ResultOfRecognition = string.Empty;
-                ResultOfRecognition = await _faceRecognitionManager.Recognize(ImageSnapshot);
+                try
+                {
+                    ResultOfRecognition = await _faceRecognitionManager.Recognize(ImageSnapshot);
+                }
+                catch (HttpRequestException e)
+                {
+                    MessageBox.Show(e.Message + " Check Internet connection.");
+                }
             }
             else
             {
@@ -145,7 +154,15 @@ namespace Client
 
         public async void AddFace()
         {
-            await _faceRecognitionManager.AddFace(_imagesToAdd, _nameOfUser);
+            try
+            {
+                await _faceRecognitionManager.AddFace(_imagesToAdd, _nameOfUser);
+            }
+            catch (HttpRequestException e)
+            {
+                MessageBox.Show(e.Message + " Check Internet connection.");
+            }
+
             MessageBox.Show("Face Added!");
         }
 
@@ -157,21 +174,25 @@ namespace Client
         {
             _cameraManager = new CameraManager();
             _faceDetector = new FaceDetector();
-            _faceRecognitionManager = new FaceRecognitionManager();;
+            _faceRecognitionManager = new FaceRecognitionManager();
 
-        _timer = new System.Timers.Timer
-                {
-                    AutoReset = true,
-                    Interval = 50
-                };
-            // ogarnac to inaczej
-            _timer.Elapsed += (sender, e) =>
-                {
-                    UpdateImage();
-                };
-
-            _cameraManager.Start();
+            _timer = new System.Timers.Timer
+            {
+                AutoReset = true,
+                Interval = 50
+            };
+            _timer.Elapsed += (sender, e) => { UpdateImage(); };
             _timer.Start();
+
+            if (_cameraManager.IsCameraAvailable())
+            {
+                _cameraManager.Init();
+                _cameraManager.Start();
+            }
+            else
+            {
+                MessageBox.Show("The camera is not available!");
+            }
         }
 
         protected override void OnDeactivate(bool close)
@@ -188,13 +209,13 @@ namespace Client
 
         private void UpdateImage()
         {
-            if(_cameraManager.GetFramePreview() != null)
+            if(_cameraManager.GetFrame() != null)
             {
                 Application.Current.Dispatcher.BeginInvoke(
                     new System.Action(
                         () => {
                                 _imageWebcam = Tools.BitmapToImageSource(
-                                    _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFramePreview()).Item1
+                                    _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item1
                                 );
                             NotifyOfPropertyChange(() => ImageWebcam);
                         }));

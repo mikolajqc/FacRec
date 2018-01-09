@@ -7,14 +7,19 @@ namespace Client.Models
 {
     class CameraManager
     {
-        private readonly VideoCaptureDevice _videoSource;
+        private VideoCaptureDevice _videoSource;
         private readonly FilterInfoCollection _videoDevices;
         private Bitmap _currentBitmapPreview;
         private Bitmap _currentBitmap;
+        private bool _isStarted;
 
         public CameraManager()
         {
             _videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+        }
+
+        public void Init()
+        {
             _videoSource = new VideoCaptureDevice(_videoDevices[0].MonikerString);
             _videoSource.NewFrame += (s, eventArgs)
                 =>
@@ -33,21 +38,24 @@ namespace Client.Models
         public void Start()
         {
             _videoSource.Start();
-        }
-
-        public Bitmap GetFramePreview()
-        {
-            return _currentBitmapPreview;
+            _isStarted = true;
         }
 
         public Bitmap GetFrame()
         {
-            return _currentBitmap;
+            return _currentBitmapPreview;
+        }
+
+        public bool IsCameraAvailable()
+        {
+            if (_videoDevices.Count > 0) return true;
+            return false;
         }
 
         public void Stop()
         {
-            _videoSource.Stop();
+            if(_isStarted) _videoSource.Stop();
+            _isStarted = false;
         }
     }
 }

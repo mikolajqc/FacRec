@@ -56,7 +56,7 @@ namespace Client.Utilities
 
             var client = new HttpClient()
             {
-                BaseAddress = new Uri("http://localhost/")
+                BaseAddress = new Uri(RequestAddress)
             };
             // Set the Accept header for BSON.
             client.DefaultRequestHeaders.Accept.Clear();
