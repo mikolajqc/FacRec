@@ -9,7 +9,6 @@ using System.Linq;
 using Commons.Consts;
 using Commons.Inferfaces.Services;
 
-//todo: ogarnij przetwarzanie wstepne! masz narazie jedynie wyrownanie histogramow. Dobrze by bylo miec jakies wycinanie zdjecia dodatkowo
 namespace FaceRecognition.Services
 {
     public class EigenFacesRecognitionService : IRecognitonService
@@ -63,7 +62,7 @@ namespace FaceRecognition.Services
                 }
             }
 
-            if (minEuclideanDistance > CommonConsts.ErrorToleranceForEigenFaces) return "unknown";
+            if (minEuclideanDistance > CommonConsts.Server.ErrorToleranceForEigenFaces) return "unknown";
             return _namesOfUsers.ElementAt(numberOfString);
         }
         #endregion
@@ -72,7 +71,7 @@ namespace FaceRecognition.Services
 
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
-            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.DefaultWidthOfPicturesOfFace, CommonConsts.DefaultHeightOfPictureOfFace));
+            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.Server.DefaultWidthOfPicturesOfFace, CommonConsts.Server.DefaultHeightOfPictureOfFace));
             FacesMatrix vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
             FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
             FacesMatrix currentImageWages = diff.Transpose() * _eigenFacesT;

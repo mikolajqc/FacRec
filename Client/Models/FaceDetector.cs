@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Drawing;
+using Commons.Consts;
 using Emgu.CV;
 using Emgu.CV.Structure;
 
 namespace Client.Models
 {
-    //TODO: ogarnac tak zeby sama detekcja robila sie na niskiej rozdzielczosci zdjeciu. A wycinka szla z odpowiednio wyskalowanego zdjecia wysokiej jakosci, cos na zasadzie podgladu
     //TODO: przenies wszystkie stale do configuracji
     class FaceDetector
     {
@@ -14,8 +14,8 @@ namespace Client.Models
 
         public FaceDetector()
         {
-            _faceClassifier = new CascadeClassifier(@"HaarCascadeFiles/haarcascade_frontalface_alt2.xml");
-            _eyesClassifier = new CascadeClassifier(@"HaarCascadeFiles/haarcascade_eye.xml");
+            _faceClassifier = new CascadeClassifier(CommonConsts.Client.PathToConfigOfCascadeForFaces);
+            _eyesClassifier = new CascadeClassifier(CommonConsts.Client.PathToConfigOfCascadeForEyes);
         }
 
         /// <summary>

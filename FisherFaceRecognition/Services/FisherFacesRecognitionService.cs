@@ -66,7 +66,7 @@ namespace FisherFaceRecognition.Services
 
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
-            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.DefaultWidthOfPicturesOfFace, CommonConsts.DefaultHeightOfPictureOfFace));
+            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.Server.DefaultWidthOfPicturesOfFace, CommonConsts.Server.DefaultHeightOfPictureOfFace));
             FacesMatrix vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
             FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
             FacesMatrix currentImageWages = diff.Transpose() * _eigenFacesT;

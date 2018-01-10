@@ -49,7 +49,7 @@ namespace FaceRecognition.Services
             FacesMatrix eigenFaces = eigenVectors * differenceVectorsT;
 
             //take key values
-            eigenFaces = eigenFaces.GetFirstVectors(CommonConsts.NumberOfKeyEigenFaces, 0);
+            eigenFaces = eigenFaces.GetFirstVectors(CommonConsts.Server.NumberOfKeyEigenFaces, 0);
 
             FacesMatrix dataAfterPca = differenceVectorsT * eigenFaces.Transpose();
 
@@ -109,9 +109,9 @@ namespace FaceRecognition.Services
         {
             List<List<double>> temporarySetOfLoadedImages = new List<List<double>>();
 
-            foreach (string dir in Directory.GetDirectories(CommonConsts.PathToLearningSet))
+            foreach (string dir in Directory.GetDirectories(CommonConsts.Server.PathToLearningSet))
             {
-                if (Directory.GetFiles(dir).Length == CommonConsts.RequiredNumberOfImagesPerPersonForLearning)
+                if (Directory.GetFiles(dir).Length == CommonConsts.Server.RequiredNumberOfImagesPerPersonForLearning)
                 {
                     foreach (string file in Directory.GetFiles(dir))
                     {
@@ -154,7 +154,7 @@ namespace FaceRecognition.Services
 
         private Bitmap ScaleBitmapToRequredSize(Bitmap bitMap)
         {
-            return new Bitmap(bitMap, new Size(CommonConsts.DefaultWidthOfPicturesOfFace, CommonConsts.DefaultHeightOfPictureOfFace));
+            return new Bitmap(bitMap, new Size(CommonConsts.Server.DefaultWidthOfPicturesOfFace, CommonConsts.Server.DefaultHeightOfPictureOfFace));
         }
     }
 }

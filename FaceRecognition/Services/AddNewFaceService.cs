@@ -57,7 +57,7 @@ namespace FaceRecognition.Services
 
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
-            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.DefaultWidthOfPicturesOfFace, CommonConsts.DefaultHeightOfPictureOfFace));
+            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.Server.DefaultWidthOfPicturesOfFace, CommonConsts.Server.DefaultHeightOfPictureOfFace));
             FacesMatrix vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
             FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
             FacesMatrix currentImageWages = diff.Transpose() * _eigenFacesT;
@@ -91,15 +91,15 @@ namespace FaceRecognition.Services
 
         private void AddFaceImageToLearningSet(Bitmap bitmapWithFace, string name)
         {
-            bitmapWithFace = new Bitmap(bitmapWithFace, new Size(CommonConsts.DefaultWidthOfPicturesOfFace, CommonConsts.DefaultHeightOfPictureOfFace));
+            bitmapWithFace = new Bitmap(bitmapWithFace, new Size(CommonConsts.Server.DefaultWidthOfPicturesOfFace, CommonConsts.Server.DefaultHeightOfPictureOfFace));
 
-            string currentDirectory = Path.Combine(CommonConsts.PathToLearningSet, name);
+            string currentDirectory = Path.Combine(CommonConsts.Server.PathToLearningSet, name);
             string nameOfFile;
 
             if (Directory.Exists(currentDirectory))
             {
                 int index = Directory.GetFiles(currentDirectory).Length;
-                if (index == CommonConsts.RequiredNumberOfImagesPerPersonForLearning) return;
+                if (index == CommonConsts.Server.RequiredNumberOfImagesPerPersonForLearning) return;
                 nameOfFile = index + ".jpg";
             }
             else

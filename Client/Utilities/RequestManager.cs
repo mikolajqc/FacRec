@@ -5,18 +5,13 @@ using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Commons;
+using Commons.Consts;
 using Commons.Utilities;
 
 namespace Client.Utilities
 {
     public class RequestManager
     {
-        //todo: to config
-        private const string RequestAddress = "http://localhost/";
-        private const string RecognitionPath = "/api/FacRec/Recognize";
-        private const string AddFacePath = "/api/FacRec/AddFace";
-
         public async Task<string> Recognize(Bitmap bitmap, bool isLdaSet)
         {
             byte[] bitmapData;
@@ -26,7 +21,7 @@ namespace Client.Utilities
 
             var client = new HttpClient()
             {
-                BaseAddress = new Uri(RequestAddress)
+                BaseAddress = new Uri(CommonConsts.Client.ServerAddress)
             };
             // Set the Accept header for BSON.
             client.DefaultRequestHeaders.Accept.Clear();
@@ -41,7 +36,7 @@ namespace Client.Utilities
             };
 
             MediaTypeFormatter bsonFormatter = new BsonMediaTypeFormatter();
-            var response = await client.PostAsync(RecognitionPath, request, bsonFormatter);
+            var response = await client.PostAsync(CommonConsts.Client.RecognitionActionPath, request, bsonFormatter);
 
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
@@ -57,7 +52,7 @@ namespace Client.Utilities
 
             var client = new HttpClient()
             {
-                BaseAddress = new Uri(RequestAddress)
+                BaseAddress = new Uri(CommonConsts.Client.ServerAddress)
             };
             // Set the Accept header for BSON.
             client.DefaultRequestHeaders.Accept.Clear();
@@ -72,7 +67,7 @@ namespace Client.Utilities
 
             MediaTypeFormatter bsonFormatter = new BsonMediaTypeFormatter();
             HttpResponseMessage response;
-            response = await client.PostAsync(AddFacePath, request, bsonFormatter);
+            response = await client.PostAsync(CommonConsts.Client.AddFaceActionPath, request, bsonFormatter);
 
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
