@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using Accord.Statistics.Analysis;
 using Commons.BussinessClasses;
+using Commons.Consts;
 using Commons.Utilities;
 using Newtonsoft.Json;
 using Commons.Inferfaces.DAOs;
@@ -19,10 +20,6 @@ namespace FisherFaceRecognition.Services
         private FacesMatrix _wages; // [eigenface,image]
         private List<string> _namesOfUsers;
         private Dictionary<string, int> _namesAndIndex;
-
-        //consts - to sth with it !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        private const int Width = 104;
-        private const int Height = 174;
 
         //For DI:
         private readonly IAverageVectorDao _averageVectorDao;
@@ -69,7 +66,7 @@ namespace FisherFaceRecognition.Services
 
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
-            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(Width, Height));
+            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.DefaultWidthOfPicturesOfFace, CommonConsts.DefaultHeightOfPictureOfFace));
             FacesMatrix vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
             FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
             FacesMatrix currentImageWages = diff.Transpose() * _eigenFacesT;

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Commons.Consts;
 using Commons.Inferfaces.Services;
 
 //todo: ogarnij przetwarzanie wstepne! masz narazie jedynie wyrownanie histogramow. Dobrze by bylo miec jakies wycinanie zdjecia dodatkowo
@@ -19,11 +20,6 @@ namespace FaceRecognition.Services
         private FacesMatrix _eigenFacesT;
         private FacesMatrix _wages; // [eigenface,image]
         private List<string> _namesOfUsers;
-
-        //todo: co zrobic z error tolerance???
-        private const int Width = 104;
-        private const int Height = 174;
-        private const int ErrorTolerance = int.MaxValue;//70000000;
 
         //For DI:
         private readonly IAverageVectorDao _averageVectorDao;
@@ -67,7 +63,7 @@ namespace FaceRecognition.Services
                 }
             }
 
-            if (minEuclideanDistance > ErrorTolerance) return "unknown";
+            if (minEuclideanDistance > CommonConsts.ErrorToleranceForEigenFaces) return "unknown";
             return _namesOfUsers.ElementAt(numberOfString);
         }
         #endregion
@@ -76,7 +72,7 @@ namespace FaceRecognition.Services
 
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
-            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(Width, Height));
+            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.DefaultWidthOfPicturesOfFace, CommonConsts.DefaultHeightOfPictureOfFace));
             FacesMatrix vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
             FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
             FacesMatrix currentImageWages = diff.Transpose() * _eigenFacesT;

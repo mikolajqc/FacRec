@@ -8,18 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using Commons.Consts;
 using Commons.Inferfaces.Services;
 
 namespace FaceRecognition.Services
 {
     public class LearningService : ILearningService
     {
-        private const int Width = 104;
-        private const int Height = 174;
-        private const int RequiredNumberOfImagesPerPerson = 10;
-        private const int NumberOfKeyEigenFaces = 100;
-        private const string PathToLearningSet = @"D:\Studia\Inzynierka\FaceBase\";
-
         private readonly IAverageVectorDao _averageVectorDao;
         private readonly IEigenFaceDao _eigenFaceDao;
         private readonly IWageDao _wageDao;
@@ -28,6 +23,7 @@ namespace FaceRecognition.Services
         private readonly List<string> _userNames;
 
         #region constructors
+
         public LearningService(IAverageVectorDao averageVectorDao, IEigenFaceDao eigenFaceDao, IWageDao wageDao)
         {
             _averageVectorDao = averageVectorDao;
@@ -36,7 +32,6 @@ namespace FaceRecognition.Services
 
             _unprocessedVectors = new FacesMatrix();
             _userNames = new List<string>();
-
         }
         #endregion
 
@@ -54,7 +49,7 @@ namespace FaceRecognition.Services
             FacesMatrix eigenFaces = eigenVectors * differenceVectorsT;
 
             //take key values
-            eigenFaces = eigenFaces.GetFirstVectors(NumberOfKeyEigenFaces, 0);
+            eigenFaces = eigenFaces.GetFirstVectors(CommonConsts.NumberOfKeyEigenFaces, 0);
 
             FacesMatrix dataAfterPca = differenceVectorsT * eigenFaces.Transpose();
 
@@ -110,17 +105,13 @@ namespace FaceRecognition.Services
                 );         
         }
 
-        /// <summary>
-        /// Loads learning set of images and 
-        /// </summary>
         private void LoadLearningSet()
         {
-            Console.WriteLine("Loading images from: " + PathToLearningSet + "...");
             List<List<double>> temporarySetOfLoadedImages = new List<List<double>>();
 
-            foreach (string dir in Directory.GetDirectories(PathToLearningSet))
+            foreach (string dir in Directory.GetDirectories(CommonConsts.PathToLearningSet))
             {
-                if (Directory.GetFiles(dir).Length == RequiredNumberOfImagesPerPerson)
+                if (Directory.GetFiles(dir).Length == CommonConsts.RequiredNumberOfImagesPerPersonForLearning)
                 {
                     foreach (string file in Directory.GetFiles(dir))
                     {
@@ -163,7 +154,7 @@ namespace FaceRecognition.Services
 
         private Bitmap ScaleBitmapToRequredSize(Bitmap bitMap)
         {
-            return new Bitmap(bitMap, new Size(Width, Height));
+            return new Bitmap(bitMap, new Size(CommonConsts.DefaultWidthOfPicturesOfFace, CommonConsts.DefaultHeightOfPictureOfFace));
         }
     }
 }

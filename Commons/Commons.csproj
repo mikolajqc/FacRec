@@ -102,6 +102,7 @@
     <Compile Include="BussinessClasses\AverageVector.cs" />
     <Compile Include="BussinessClasses\EigenFace.cs" />
     <Compile Include="BussinessClasses\Wage.cs" />
+    <Compile Include="Consts\CommonConsts.cs" />
     <Compile Include="Inferfaces\DAOs\IAverageVectorDAO.cs" />
     <Compile Include="Inferfaces\DAOs\IEigenFaceDAO.cs" />
     <Compile Include="Inferfaces\DAOs\IWageDAO.cs" />

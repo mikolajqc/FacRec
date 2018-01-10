@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using Commons.Inferfaces.DAOs;
 using Commons.BussinessClasses;
+using Commons.Consts;
 using Commons.Inferfaces.Services;
 using Newtonsoft.Json;
 using Commons.Utilities;
@@ -15,12 +16,6 @@ namespace FaceRecognition.Services
         //values loaded from DB
         private FacesMatrix _averageVector;
         private FacesMatrix _eigenFacesT;
-
-        //todo: create config file
-        private const int Width = 104;
-        private const int Height = 174;
-        private const string PathToLearningSet = @"D:\Studia\Inzynierka\FaceBase\";
-        private const int RequiredNumberOfImagesPerPerson = 10;
 
         //For DI:
         private readonly IAverageVectorDao _averageVectorDao;
@@ -62,7 +57,7 @@ namespace FaceRecognition.Services
 
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
-            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(Width, Height));
+            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.DefaultWidthOfPicturesOfFace, CommonConsts.DefaultHeightOfPictureOfFace));
             FacesMatrix vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
             FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
             FacesMatrix currentImageWages = diff.Transpose() * _eigenFacesT;
@@ -96,15 +91,15 @@ namespace FaceRecognition.Services
 
         private void AddFaceImageToLearningSet(Bitmap bitmapWithFace, string name)
         {
-            bitmapWithFace = new Bitmap(bitmapWithFace, new Size(Width, Height));
+            bitmapWithFace = new Bitmap(bitmapWithFace, new Size(CommonConsts.DefaultWidthOfPicturesOfFace, CommonConsts.DefaultHeightOfPictureOfFace));
 
-            string currentDirectory = Path.Combine(PathToLearningSet, name);
+            string currentDirectory = Path.Combine(CommonConsts.PathToLearningSet, name);
             string nameOfFile;
 
             if (Directory.Exists(currentDirectory))
             {
                 int index = Directory.GetFiles(currentDirectory).Length;
-                if (index == RequiredNumberOfImagesPerPerson) return;
+                if (index == CommonConsts.RequiredNumberOfImagesPerPersonForLearning) return;
                 nameOfFile = index + ".jpg";
             }
             else
