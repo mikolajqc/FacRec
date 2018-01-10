@@ -5,14 +5,12 @@ using System.Windows.Media.Imaging;
 using Caliburn.Micro;
 using Client.Models;
 using Client.Utilities;
+using Commons.Consts;
 
 namespace Client
 {
     //todo: Zrobic architekture MVVM!!!!
-    //todo: ResizeNearestNeighbor do skalowania? z bilbioteki AForge
-    //todo: lista dostepnych urzadzen video
     //todo: Simple IoC Container dla Caliburn.Micro
-    //todo: zamiast robic kilka requestow na dodanie twarzy, ogarnac jeden
     //todo: lustrzane odbicie
     public class MainWindowViewModel : Screen
     {
@@ -146,7 +144,7 @@ namespace Client
                 }
                 catch (HttpRequestException e)
                 {
-                    MessageBox.Show(e.Message + " Check Internet connection.");
+                    MessageBox.Show("Error with connection to server address: " + CommonConsts.Client.ServerAddress + " or server error. Check Internet connection.\nDetails: " + e.Message);
                 }
             }
             else
@@ -157,16 +155,23 @@ namespace Client
 
         public async void AddFace()
         {
-            try
+            if (ImagesToAdd.Length != 0)
             {
-                await _faceRecognitionManager.AddFace(_imagesToAdd, _nameOfUser);
-            }
-            catch (HttpRequestException e)
-            {
-                MessageBox.Show(e.Message + " Check Internet connection.");
-            }
+                try
+                {
+                    await _faceRecognitionManager.AddFace(_imagesToAdd, _nameOfUser);
+                }
+                catch (HttpRequestException e)
+                {
+                    MessageBox.Show("Error with connection to server address: "+ CommonConsts.Client.ServerAddress + " or server error. Check Internet connection.\nDetails: " + e.Message);
+                }
 
-            MessageBox.Show("Face Added!");
+                MessageBox.Show("Face Added!");
+            }
+            else
+            {
+                MessageBox.Show("You need to take a photo of new face first!");
+            }
         }
 
         #endregion
