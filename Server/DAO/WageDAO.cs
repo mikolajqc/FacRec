@@ -23,23 +23,10 @@ namespace Server.DAO
             _guow.SaveChanges();
         }
 
-        public void Delete(Wage wage)
+        public void DeleteAll()
         {
-            _guow.Repository<Models.Wage>().Delete(
-            new Models.Wage
-            {
-                        ID = wage.Id,
-                        Name = wage.Name,
-                        Value = wage.Value
-                    }
-                );
-
+            _guow.Repository<Models.Wage>().DeleteAll();
             _guow.SaveChanges();
-        }
-
-        public Wage GetDetail()
-        {
-            throw new NotImplementedException();
         }
 
         public IEnumerable<Wage> GetOverview()

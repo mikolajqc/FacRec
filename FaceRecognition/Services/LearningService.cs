@@ -42,6 +42,7 @@ namespace FaceRecognition.Services
 
         public void Learn()
         {
+            ClearDatabase();
             LoadLearningSet();
 
             FacesMatrix averageVector = _unprocessedVectors.GetAverageVector(1);
@@ -50,9 +51,9 @@ namespace FaceRecognition.Services
             FacesMatrix covariation = differenceVectorsT * differenceVectors;
             EigenvalueDecomposition decomposition = new EigenvalueDecomposition(covariation.Content, true, true);
             FacesMatrix eigenVectors = new FacesMatrix(decomposition.Eigenvectors);
-            FacesMatrix eigenFaces =  eigenVectors * differenceVectorsT;
+            FacesMatrix eigenFaces = eigenVectors * differenceVectorsT;
 
-            //odcinka 20 najistotniejszych
+            //take key values
             eigenFaces = eigenFaces.GetFirstVectors(NumberOfKeyEigenFaces, 0);
 
             FacesMatrix dataAfterPca = differenceVectorsT * eigenFaces.Transpose();
@@ -63,6 +64,13 @@ namespace FaceRecognition.Services
             StoreDataAfterPcaToDatabase(dataAfterPca.GetMatrixAsListOfArrays(0), _userNames);
             StoreEigenFacesToDatabase(eigenFacesAsListOfArrays);
             StoreAverageVectorToDatabase(averageVectorAsArray);
+        }
+
+        private void ClearDatabase()
+        {
+            _wageDao.DeleteAll();
+            _averageVectorDao.DeleteAll();
+            _eigenFaceDao.DeleteAll();
         }
 
         private void StoreDataAfterPcaToDatabase(List<double[]> wages, List<string> names)

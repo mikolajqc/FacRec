@@ -23,22 +23,10 @@ namespace Server.DAO
             _guow.SaveChanges();
         }
 
-        public void Delete(EigenFace eigenFace) //todo: Upewnic sie czy to napewno usuwa !!!!!
+        public void DeleteAll()
         {
-            _guow.Repository<Models.EigenFace>().Delete(
-                        new Models.EigenFace
-                        {
-                            ID = eigenFace.Id,
-                            Value = eigenFace.Value
-                        }
-                );
-
+            _guow.Repository<Models.EigenFace>().DeleteAll();
             _guow.SaveChanges();
-        }
-
-        public EigenFace GetDetail()
-        {
-            throw new NotImplementedException();
         }
 
         public IEnumerable<EigenFace> GetOverview()

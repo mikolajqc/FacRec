@@ -23,24 +23,13 @@ namespace Server.DAO
             _guow.SaveChanges();
         }
 
-        public void Delete(AverageVector averageVector)
+        public void DeleteAll()
         {
-            _guow.Repository<Models.AverageVector>().Delete(
-            new Models.AverageVector
-            {
-                        ID = averageVector.Id,
-                        Value = averageVector.Value
-                    }
-                );
-
+            _guow.Repository<Models.AverageVector>().DeleteAll();
             _guow.SaveChanges();
         }
 
-        public AverageVector GetDetail()
-        {
-            throw new NotImplementedException();
-        }
-
+        //todo: zrob tu rzucanie entity exception gdy baza niedostepna i ogarnij jak to wyslac do klienta zeby pokazal dobry komunikat, bo narazie zwraca 500 error.
         public IEnumerable<AverageVector> GetOverview()
         {
             List<AverageVector> result = new List<AverageVector>();
@@ -56,5 +45,6 @@ namespace Server.DAO
             }
             return result;
         }
+
     }
 }

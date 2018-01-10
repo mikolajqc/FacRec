@@ -13,13 +13,12 @@ namespace Server
     public class WebApiApplication : System.Web.HttpApplication
     {
         protected void Application_Start()
-        { 
+        {
             //SimpleInjector configuration
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
             //Services
-            //container.Register<IRecognitonService, FisherFacesRecognitionService>(Lifestyle.Transient);
             container.RegisterCollection<IRecognitonService>(new[]
                 {typeof(EigenFacesRecognitionService), typeof(FisherFacesRecognitionService)});
             container.Register<IAddNewFaceService, AddNewFaceService>(Lifestyle.Transient);
@@ -29,7 +28,6 @@ namespace Server
             container.Register<IAverageVectorDao, AverageVectorDao>(Lifestyle.Transient);
             container.Register<IEigenFaceDao, EigenFaceDao>(Lifestyle.Transient);
             container.Register<IWageDao, WageDao>(Lifestyle.Transient);
-
 
 
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
