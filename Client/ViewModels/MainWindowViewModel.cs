@@ -115,8 +115,15 @@ namespace Client
                     () =>
                     {
                         var bitmap = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item2;
-                        if (bitmap != null) _imagesToAdd.Add(Tools.BitmapToImageSource(bitmap));
-                        NotifyOfPropertyChange(() => ImagesToAdd);
+                        if (bitmap == null)
+                        {
+                            MessageBox.Show("Face is not detected corectly. Try again.");
+                        }
+                        else
+                        {
+                            _imagesToAdd.Add(Tools.BitmapToImageSource(bitmap));
+                            NotifyOfPropertyChange(() => ImagesToAdd);
+                        }
                     }));
         }
 
@@ -127,14 +134,25 @@ namespace Client
                 () =>
                 {
                     var bitmap = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item2;
-                    if (bitmap != null) _imageSnapshot = Tools.BitmapToImageSource(bitmap);
-                    NotifyOfPropertyChange(() => ImageSnapshot);
+                    if (bitmap == null)
+                    {
+                        MessageBox.Show("Face is not detected corectly. Try again.");
+                    }
+                    else
+                    {
+                        _imageSnapshot = Tools.BitmapToImageSource(bitmap);
+                        NotifyOfPropertyChange(() => ImageSnapshot);
+                    }
                 }));
         }
 
         public async void Recognize()
         {
-            if (ImageSnapshot != null)
+            if (ImageSnapshot == null)
+            {
+                MessageBox.Show("You need to take a photo first!");
+            }
+            else
             {
                 ResultOfRecognition = string.Empty;
                 try
@@ -147,15 +165,19 @@ namespace Client
                     MessageBox.Show("Error with connection to server address: " + CommonConsts.Client.ServerAddress + " or server error. Check Internet connection.\nDetails: " + e.Message);
                 }
             }
-            else
-            {
-                MessageBox.Show("You need to take a photo first!");
-            }
         }
 
         public async void AddFace()
         {
-            if (ImagesToAdd.Length != 0)
+            if (ImagesToAdd.Length == 0)
+            {
+                MessageBox.Show("You need to take a photo of new face first!");
+            }
+            else if(string.IsNullOrEmpty(NameOfUser))
+            {
+                MessageBox.Show("You need to enter username!");
+            }
+            else
             {
                 try
                 {
@@ -163,14 +185,10 @@ namespace Client
                 }
                 catch (HttpRequestException e)
                 {
-                    MessageBox.Show("Error with connection to server address: "+ CommonConsts.Client.ServerAddress + " or server error. Check Internet connection.\nDetails: " + e.Message);
+                    MessageBox.Show("Error with connection to server address: " + CommonConsts.Client.ServerAddress + " or server error. Check Internet connection.\nDetails: " + e.Message);
                 }
 
                 MessageBox.Show("Face Added!");
-            }
-            else
-            {
-                MessageBox.Show("You need to take a photo of new face first!");
             }
         }
 
