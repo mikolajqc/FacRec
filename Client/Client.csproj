@@ -201,6 +201,7 @@
     </Compile>
     <Compile Include="AppBootstraper.cs" />
     <Compile Include="Models\FaceRecognitionManager.cs" />
+    <Compile Include="Models\MainModel.cs" />
     <Compile Include="Utilities\RequestManager.cs" />
     <Compile Include="Models\CameraManager.cs" />
     <Compile Include="Models\FaceDetector.cs" />

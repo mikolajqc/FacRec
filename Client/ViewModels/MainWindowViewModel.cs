@@ -15,18 +15,11 @@ namespace Client
     public class MainWindowViewModel : Screen
     {
         #region fields
-        ///Sprawdzic czy tutaj musi byc BitmapImage czy moze byc Bitmap
-        private BitmapImage _imageWebcam;
-        private BitmapImage _imageSnapshot;
-        private string _nameOfUser;
-        private string _resultOfRecognition;
         private System.Timers.Timer _timer;
-        private List<BitmapImage> _imagesToAdd = new List<BitmapImage>();
-        private bool _isLdaSet;
-
         private CameraManager _cameraManager;
-        private FaceDetector _faceDetector;
-        private FaceRecognitionManager _faceRecognitionManager;
+
+        //for tests purpose
+        private MainModel _mainModel = new MainModel();
 
         #endregion
 
@@ -34,61 +27,61 @@ namespace Client
 
         public string ResultOfRecognition
         {
-            get { return _resultOfRecognition; }
+            get { return _mainModel.ResultOfRecognition; }
             set
             {
-                _resultOfRecognition = value;
+                _mainModel.ResultOfRecognition = value;
                 NotifyOfPropertyChange(() => ResultOfRecognition);
             }
         }
 
         public BitmapImage[] ImagesToAdd
         {
-            get { return _imagesToAdd.ToArray(); }
+            get { return _mainModel.ImagesToAdd.ToArray(); }
             set
             {
-                _imagesToAdd = new List<BitmapImage>(value);
+                _mainModel.ImagesToAdd = new List<BitmapImage>(value);
                 NotifyOfPropertyChange(() => ImagesToAdd);
             }
         }
 
         public BitmapImage ImageWebcam
         {
-            get { return _imageWebcam; }
+            get { return _mainModel.ImageWebcam; }
             set
             {
-                _imageWebcam = value;
+                _mainModel.ImageWebcam = value;
                 NotifyOfPropertyChange(() => ImageWebcam);
             }
         }
 
         public BitmapImage ImageSnapshot
         {
-            get { return _imageSnapshot; }
+            get { return _mainModel.ImageSnapshot; }
 
             set
             {
-                _imageSnapshot = value;
+                _mainModel.ImageSnapshot = value;
                 NotifyOfPropertyChange(() => ImageSnapshot);
             }
         }
 
         public string NameOfUser
         {
-            get { return _nameOfUser; }
+            get { return _mainModel.NameOfUser; }
             set
             {
-                _nameOfUser = value;
+                _mainModel.NameOfUser = value;
                 NotifyOfPropertyChange(() => NameOfUser);
             }
         }
 
         public bool IsLdaSet
         {
-            get { return _isLdaSet; }
+            get { return _mainModel.IsLdaSet; }
             set
             {
-                _isLdaSet = value; 
+                _mainModel.IsLdaSet = value; 
                 NotifyOfPropertyChange(()=>IsLdaSet);
             }
         }
@@ -103,7 +96,7 @@ namespace Client
                 new System.Action(
                     () =>
                     {
-                        _imagesToAdd.Clear();
+                        _mainModel.ClearImagesToAdd();
                         NotifyOfPropertyChange(() => ImagesToAdd);
                     }));
         }
@@ -114,14 +107,14 @@ namespace Client
                 new System.Action(
                     () =>
                     {
-                        var bitmap = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item2;
+                        var bitmap = _mainModel.GetBitmapWithDetectedFace(_cameraManager.GetFrame());
                         if (bitmap == null)
                         {
                             MessageBox.Show("Face is not detected corectly. Try again.");
                         }
                         else
                         {
-                            _imagesToAdd.Add(Tools.BitmapToImageSource(bitmap));
+                            _mainModel.AddImageToAdd(Tools.BitmapToImageSource(bitmap));
                             NotifyOfPropertyChange(() => ImagesToAdd);
                         }
                     }));
@@ -133,14 +126,14 @@ namespace Client
             new System.Action(
                 () =>
                 {
-                    var bitmap = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item2;
+                    var bitmap = _mainModel.GetBitmapWithDetectedFace(_cameraManager.GetFrame());
                     if (bitmap == null)
                     {
                         MessageBox.Show("Face is not detected corectly. Try again.");
                     }
                     else
                     {
-                        _imageSnapshot = Tools.BitmapToImageSource(bitmap);
+                        ImageSnapshot = Tools.BitmapToImageSource(bitmap);
                         NotifyOfPropertyChange(() => ImageSnapshot);
                     }
                 }));
@@ -158,7 +151,7 @@ namespace Client
                 try
                 {
                     NotifyOfPropertyChange(() => IsLdaSet);
-                    ResultOfRecognition = await _faceRecognitionManager.Recognize(ImageSnapshot, IsLdaSet);
+                    ResultOfRecognition = await _mainModel.Recognize();
                 }
                 catch (HttpRequestException e)
                 {
@@ -181,7 +174,7 @@ namespace Client
             {
                 try
                 {
-                    await _faceRecognitionManager.AddFace(_imagesToAdd, _nameOfUser);
+                    await _mainModel.AddPhotosOfFaces();
                 }
                 catch (HttpRequestException e)
                 {
@@ -199,8 +192,6 @@ namespace Client
         protected override void OnActivate()
         {
             _cameraManager = new CameraManager();
-            _faceDetector = new FaceDetector();
-            _faceRecognitionManager = new FaceRecognitionManager();
 
             _timer = new System.Timers.Timer
             {
@@ -242,9 +233,9 @@ namespace Client
                         () =>
                         {
                             var bitmapWithMarkedFace =
-                                _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item1;
+                                _mainModel.GetBitmapWithMarkedFace(_cameraManager.GetFrame());
                             bitmapWithMarkedFace.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                            _imageWebcam = Tools.BitmapToImageSource(
+                            ImageWebcam = Tools.BitmapToImageSource(
                                 bitmapWithMarkedFace
                                 );
                             NotifyOfPropertyChange(() => ImageWebcam);
