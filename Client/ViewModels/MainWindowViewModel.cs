@@ -16,7 +16,6 @@ namespace Client
     {
         #region fields
         private System.Timers.Timer _timer;
-        private CameraManager _cameraManager;
 
         //for tests purpose
         private MainModel _mainModel = new MainModel();
@@ -107,7 +106,7 @@ namespace Client
                 new System.Action(
                     () =>
                     {
-                        var bitmap = _mainModel.GetBitmapWithDetectedFace(_cameraManager.GetFrame());
+                        var bitmap = _mainModel.GetBitmapWithDetectedFace();
                         if (bitmap == null)
                         {
                             MessageBox.Show("Face is not detected corectly. Try again.");
@@ -126,7 +125,7 @@ namespace Client
             new System.Action(
                 () =>
                 {
-                    var bitmap = _mainModel.GetBitmapWithDetectedFace(_cameraManager.GetFrame());
+                    var bitmap = _mainModel.GetBitmapWithDetectedFace();
                     if (bitmap == null)
                     {
                         MessageBox.Show("Face is not detected corectly. Try again.");
@@ -191,8 +190,6 @@ namespace Client
 
         protected override void OnActivate()
         {
-            _cameraManager = new CameraManager();
-
             _timer = new System.Timers.Timer
             {
                 AutoReset = true,
@@ -201,10 +198,10 @@ namespace Client
             _timer.Elapsed += (sender, e) => { UpdateImage(); };
             _timer.Start();
 
-            if (_cameraManager.IsCameraAvailable())
+            if (_mainModel.IsCameraAvailable())
             {
-                _cameraManager.Init();
-                _cameraManager.Start();
+                _mainModel.CameraInit();
+                _mainModel.CameraStart();
             }
             else
             {
@@ -215,7 +212,7 @@ namespace Client
         protected override void OnDeactivate(bool close)
         {
             _timer.Stop();
-            _cameraManager.Stop();
+            _mainModel.CameraStop();
             base.OnDeactivate(close);
         }
 
@@ -226,18 +223,13 @@ namespace Client
 
         private void UpdateImage()
         {
-            if(_cameraManager.GetFrame() != null)
+            if(_mainModel.GetFrame() != null)
             {
                 Application.Current.Dispatcher.BeginInvoke(
                     new System.Action(
                         () =>
                         {
-                            var bitmapWithMarkedFace =
-                                _mainModel.GetBitmapWithMarkedFace(_cameraManager.GetFrame());
-                            bitmapWithMarkedFace.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                            ImageWebcam = Tools.BitmapToImageSource(
-                                bitmapWithMarkedFace
-                                );
+                            _mainModel.UpdateBitmapWithMarkedFace();
                             NotifyOfPropertyChange(() => ImageWebcam);
                         }));
 
