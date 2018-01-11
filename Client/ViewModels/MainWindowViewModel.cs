@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -11,7 +12,6 @@ namespace Client
 {
     //todo: Zrobic architekture MVVM!!!!
     //todo: Simple IoC Container dla Caliburn.Micro
-    //todo: lustrzane odbicie
     public class MainWindowViewModel : Screen
     {
         #region fields
@@ -239,9 +239,13 @@ namespace Client
             {
                 Application.Current.Dispatcher.BeginInvoke(
                     new System.Action(
-                        () => {
-                                _imageWebcam = Tools.BitmapToImageSource(
-                                    _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item1
+                        () =>
+                        {
+                            var bitmapWithMarkedFace =
+                                _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item1;
+                            bitmapWithMarkedFace.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                            _imageWebcam = Tools.BitmapToImageSource(
+                                bitmapWithMarkedFace
                                 );
                             NotifyOfPropertyChange(() => ImageWebcam);
                         }));
