@@ -200,11 +200,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppBootstraper.cs" />
-    <Compile Include="Models\FaceRecognitionManager.cs" />
+    <Compile Include="Utilities\FaceRecognitionManager.cs" />
     <Compile Include="Models\MainModel.cs" />
     <Compile Include="Utilities\RequestManager.cs" />
-    <Compile Include="Models\CameraManager.cs" />
-    <Compile Include="Models\FaceDetector.cs" />
+    <Compile Include="Utilities\CameraManager.cs" />
+    <Compile Include="Utilities\FaceDetector.cs" />
     <Compile Include="Utilities\Tools.cs" />
     <Compile Include="Views\MainWindowView.xaml.cs">
       <DependentUpon>MainWindowView.xaml</DependentUpon>

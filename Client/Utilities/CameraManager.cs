@@ -4,7 +4,7 @@ using Accord.Imaging;
 using Accord.Imaging.Filters;
 using AForge.Video.DirectShow;
 
-namespace Client.Models
+namespace Client.Utilities
 {
     class CameraManager : IDisposable
     {

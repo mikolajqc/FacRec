@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using Client.Utilities;
 
-namespace Client.Models
+namespace Client.Utilities
 {
     public class FaceRecognitionManager
     {
@@ -28,6 +27,5 @@ namespace Client.Models
 
             return 0;
         }
-
     }
 }

@@ -73,6 +73,5 @@ namespace Client.Utilities
             string result = await response.Content.ReadAsStringAsync();
             return result;
         }
-
     }
 }
