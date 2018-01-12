@@ -16,15 +16,15 @@ namespace Client.Models
 
         private readonly FaceDetector _faceDetector;
         private readonly CameraManager _cameraManager;
-        private readonly FaceRecognitionManager _faceRecognitionManager;
+        private readonly RequestManager _requestManager;
 
         #endregion
 
         public MainModel()
         {
-            _faceRecognitionManager = new FaceRecognitionManager();
             _faceDetector = new FaceDetector();
             _cameraManager = new CameraManager();
+            _requestManager = new RequestManager();
             ImagesToAdd = new List<Bitmap>();
         }
 
@@ -57,13 +57,17 @@ namespace Client.Models
 
         public async Task<int> AddPhotosOfFaces()
         {
-            await _faceRecognitionManager.AddFace(ImagesToAdd, NameOfUser);
+            foreach (var bitmap in ImagesToAdd)
+            {
+                await _requestManager.AddFace(bitmap, NameOfUser);
+            }
+
             return 0;
         }
 
         public async Task<int> Recognize()
         {
-            ResultOfRecognition = await _faceRecognitionManager.Recognize(ImageSnapshot, IsLdaSet);
+            ResultOfRecognition = await _requestManager.Recognize(ImageSnapshot, IsLdaSet);
             return 0;
         }
 

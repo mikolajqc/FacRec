@@ -200,7 +200,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppBootstraper.cs" />
-    <Compile Include="Utilities\FaceRecognitionManager.cs" />
     <Compile Include="Models\MainModel.cs" />
     <Compile Include="Utilities\RequestManager.cs" />
     <Compile Include="Utilities\CameraManager.cs" />
