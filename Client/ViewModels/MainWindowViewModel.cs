@@ -1,24 +1,22 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Caliburn.Micro;
 using Client.Models;
-using Client.Utilities;
 using Commons.Consts;
 
 namespace Client
 {
     //todo: Zrobic architekture MVVM!!!!
     //todo: Simple IoC Container dla Caliburn.Micro
+    //todo: sprawdz czy po zmianie struktury dzialaja exceptions
     public class MainWindowViewModel : Screen
     {
         #region fields
-        private System.Timers.Timer _timer;
 
-        //for tests purpose
-        private MainModel _mainModel = new MainModel();
+        private System.Timers.Timer _timer;
+        private readonly MainModel _mainModel = new MainModel();
 
         #endregion
 
@@ -106,16 +104,15 @@ namespace Client
                 new System.Action(
                     () =>
                     {
-                        var bitmap = _mainModel.GetBitmapWithDetectedFace();
-                        if (bitmap == null)
+                        if (_mainModel.AddFaceToAddSet() == 0)
                         {
                             MessageBox.Show("Face is not detected corectly. Try again.");
                         }
                         else
                         {
-                            _mainModel.AddImageToAdd(Tools.BitmapToImageSource(bitmap));
                             NotifyOfPropertyChange(() => ImagesToAdd);
                         }
+                        
                     }));
         }
 
@@ -125,14 +122,12 @@ namespace Client
             new System.Action(
                 () =>
                 {
-                    var bitmap = _mainModel.GetBitmapWithDetectedFace();
-                    if (bitmap == null)
+                    if (_mainModel.UpdateBitmapWithDetectedFace() == 0)
                     {
                         MessageBox.Show("Face is not detected corectly. Try again.");
                     }
                     else
                     {
-                        ImageSnapshot = Tools.BitmapToImageSource(bitmap);
                         NotifyOfPropertyChange(() => ImageSnapshot);
                     }
                 }));
@@ -150,7 +145,8 @@ namespace Client
                 try
                 {
                     NotifyOfPropertyChange(() => IsLdaSet);
-                    ResultOfRecognition = await _mainModel.Recognize();
+                    await _mainModel.Recognize();
+                    NotifyOfPropertyChange(()=>ResultOfRecognition);
                 }
                 catch (HttpRequestException e)
                 {
@@ -198,10 +194,9 @@ namespace Client
             _timer.Elapsed += (sender, e) => { UpdateImage(); };
             _timer.Start();
 
-            if (_mainModel.IsCameraAvailable())
+            if (_mainModel.IsCameraAvailable)
             {
-                _mainModel.CameraInit();
-                _mainModel.CameraStart();
+                _mainModel.ActivateCamera();
             }
             else
             {
@@ -212,7 +207,7 @@ namespace Client
         protected override void OnDeactivate(bool close)
         {
             _timer.Stop();
-            _mainModel.CameraStop();
+            _mainModel.Dispose();
             base.OnDeactivate(close);
         }
 
@@ -223,17 +218,13 @@ namespace Client
 
         private void UpdateImage()
         {
-            if(_mainModel.GetFrame() != null)
-            {
-                Application.Current.Dispatcher.BeginInvoke(
-                    new System.Action(
-                        () =>
-                        {
-                            _mainModel.UpdateBitmapWithMarkedFace();
-                            NotifyOfPropertyChange(() => ImageWebcam);
-                        }));
-
-            }
+            Application.Current.Dispatcher.BeginInvoke(
+                new System.Action(
+                    () =>
+                    {
+                        _mainModel.UpdateBitmapWithMarkedFace();
+                        NotifyOfPropertyChange(() => ImageWebcam);
+                    }));
         }
 
         #endregion

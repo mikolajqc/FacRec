@@ -1,36 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Timers;
-using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using Client.Utilities;
-using OpenTK.Graphics.ES30;
 
 namespace Client.Models
 {
-    public class MainModel
+    public class MainModel : IDisposable
     {
-        //todo: iscameraavailable itd te flagi wrzucic jako zmienne ladowane na poczatku. i potem tylko z widoku sprawdzane sa za pomoca get
-
+        //todo: ogarnac te toolsy zeby nie bylo nadmiarowych castowan
+        //todo: ogarnac czy wszedzie potrzebne sa asyncs
         #region fields
 
-        ///Sprawdzic czy tutaj musi byc BitmapImage czy moze byc Bitmap
-        private BitmapImage _imageWebcam;
-
-        private BitmapImage _imageSnapshot;
-        private string _nameOfUser;
-        private string _resultOfRecognition;
-        private System.Timers.Timer _timer;
-        private List<BitmapImage> _imagesToAdd = new List<BitmapImage>();
-        private bool _isLdaSet;
-
-        private CameraManager _cameraManager;
-        private FaceDetector _faceDetector;
-        private FaceRecognitionManager _faceRecognitionManager;
+        private readonly FaceDetector _faceDetector;
+        private readonly CameraManager _cameraManager;
+        private readonly FaceRecognitionManager _faceRecognitionManager;
 
         #endregion
 
@@ -39,78 +24,56 @@ namespace Client.Models
             _faceRecognitionManager = new FaceRecognitionManager();
             _faceDetector = new FaceDetector();
             _cameraManager = new CameraManager();
+            ImagesToAdd = new List<BitmapImage>();
         }
 
-        public BitmapImage ImageWebcam
-        {
-            get { return _imageWebcam; }
+        public BitmapImage ImageWebcam { get; set; }
 
-            set { _imageWebcam = value; }
-        }
+        public BitmapImage ImageSnapshot { get; set; }
 
-        public BitmapImage ImageSnapshot
-        {
-            get { return _imageSnapshot; }
+        public string NameOfUser { get; set; }
 
-            set { _imageSnapshot = value; }
-        }
+        public string ResultOfRecognition { get; set; }
 
-        public string NameOfUser
-        {
-            get { return _nameOfUser; }
+        public List<BitmapImage> ImagesToAdd { get; set; }
 
-            set { _nameOfUser = value; }
-        }
+        public bool IsLdaSet { get; set; }
 
-        public string ResultOfRecognition
-        {
-            get { return _resultOfRecognition; }
-
-            set { _resultOfRecognition = value; }
-        }
-
-        public List<BitmapImage> ImagesToAdd
-        {
-            get { return _imagesToAdd; }
-
-            set { _imagesToAdd = value; }
-        }
-
-        public bool IsLdaSet
-        {
-            get { return _isLdaSet; }
-
-            set { _isLdaSet = value; }
-        }
+        public bool IsCameraAvailable => _cameraManager.IsCameraAvailable();
 
         public void ClearImagesToAdd()
         {
-            _imagesToAdd.Clear();
+            ImagesToAdd.Clear();
         }
 
-        public void AddImageToAdd(BitmapImage image)
+        public int AddFaceToAddSet()
         {
-            _imagesToAdd.Add(image);
+            var bitmapWithDetectedFace = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item2;
+            if (bitmapWithDetectedFace == null) return 0;
+            ImagesToAdd.Add(Tools.BitmapToImageSource(bitmapWithDetectedFace));
+            return 1;
         }
 
         public async Task<int> AddPhotosOfFaces()
         {
-            await _faceRecognitionManager.AddFace(_imagesToAdd, _nameOfUser);
-
+            await _faceRecognitionManager.AddFace(ImagesToAdd, NameOfUser);
             return 0;
         }
 
-        public async Task<string> Recognize()
+        public async Task<int> Recognize()
         {
-            return await _faceRecognitionManager.Recognize(_imageSnapshot, _isLdaSet);
+            ResultOfRecognition = await _faceRecognitionManager.Recognize(ImageSnapshot, IsLdaSet);
+            return 0;
         }
 
-        public Bitmap GetBitmapWithDetectedFace()
+        public int UpdateBitmapWithDetectedFace()
         {
-            return _faceDetector.GetBitmapWithDetectedFace(Tools.BitmapImage2Bitmap(_imageWebcam)).Item2;
+            var bitmapWithDetectedFace = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item2;
+            if (bitmapWithDetectedFace == null) return 0;
+            ImageSnapshot = Tools.BitmapToImageSource(bitmapWithDetectedFace);
+            return 1;
         }
 
-        //todo: zmienic tak logike zeby nie pobierac poprzez wolanie facedetectora ale zeby pobierac dana juz zapisana, bo facedetector robi 2 roboty naraz wiec trzeba od razu zapisywac oba obrazy
         public void UpdateBitmapWithMarkedFace()
         {
             var frame = _cameraManager.GetFrame();
@@ -126,30 +89,15 @@ namespace Client.Models
 
         }
 
-        //temporary functions!!!
-        public void CameraStart()
+        public void ActivateCamera()
         {
+            _cameraManager.Init();
             _cameraManager.Start();
         }
 
-        public void CameraInit()
+        public void Dispose()
         {
-            _cameraManager.Init();
-        }
-
-        public void CameraStop()
-        {
-            _cameraManager.Stop();
-        }
-
-        public bool IsCameraAvailable()
-        {
-            return _cameraManager.IsCameraAvailable();
-        }
-
-        public Bitmap GetFrame()
-        {
-            return _cameraManager.GetFrame();
+            _cameraManager?.Dispose();
         }
     }
 }

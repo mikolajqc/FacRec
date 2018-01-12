@@ -1,11 +1,12 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using Accord.Imaging;
 using Accord.Imaging.Filters;
 using AForge.Video.DirectShow;
 
 namespace Client.Models
 {
-    class CameraManager
+    class CameraManager : IDisposable
     {
         private VideoCaptureDevice _videoSource;
         private readonly FilterInfoCollection _videoDevices;
@@ -46,13 +47,12 @@ namespace Client.Models
 
         public bool IsCameraAvailable()
         {
-            if (_videoDevices.Count > 0) return true;
-            return false;
+            return _videoDevices.Count > 0;
         }
 
-        public void Stop()
+        public void Dispose()
         {
-            if(_isStarted) _videoSource.Stop();
+            if (_isStarted) _videoSource.Stop();
             _isStarted = false;
         }
     }
