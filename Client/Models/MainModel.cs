@@ -11,6 +11,7 @@ namespace Client.Models
     {
         //todo: ogarnac te toolsy zeby nie bylo nadmiarowych castowan
         //todo: ogarnac czy wszedzie potrzebne sa asyncs
+
         #region fields
 
         private readonly FaceDetector _faceDetector;
@@ -86,7 +87,6 @@ namespace Client.Models
                     bitmapWithMarkedFace
                 );
             }
-
         }
 
         public void ActivateCamera()

@@ -4,7 +4,7 @@ using Commons.Consts;
 using Emgu.CV;
 using Emgu.CV.Structure;
 
-namespace Client.Models
+namespace Client.Utilities
 {
     //TODO: przenies wszystkie stale do configuracji
     class FaceDetector
@@ -25,15 +25,14 @@ namespace Client.Models
         /// <returns></returns>
         public Tuple<Bitmap, Bitmap> GetBitmapWithDetectedFace(Bitmap sourceBitmap)
         {
-            
             Image<Bgr, byte> imageWithCroppedFace = new Image<Bgr, byte>(sourceBitmap);
             Image<Bgr, byte> imageWithMarkedFace = new Image<Bgr, byte>(sourceBitmap);
             Image<Bgr, byte> imageOriginal = new Image<Bgr, byte>(sourceBitmap);
-            
+
             var grayFrame = imageWithCroppedFace.Convert<Gray, Byte>();
             var faces = _faceClassifier.DetectMultiScale(grayFrame, 1.1, 10, Size.Empty);
             grayFrame.Dispose();
-            
+
             foreach (var face in faces)
                 imageWithMarkedFace.Draw(face, new Bgr(Color.BurlyWood));
 
@@ -41,15 +40,15 @@ namespace Client.Models
             {
                 return new Tuple<Bitmap, Bitmap>(new Bitmap(imageWithMarkedFace.ToBitmap()), null);
             }
-            
+
             imageWithCroppedFace.ROI = faces[0];
             imageWithCroppedFace = imageWithCroppedFace.Copy();
-            
+
             //eyes detection:
             var gray = imageWithCroppedFace.Convert<Gray, Byte>();
             var eyes = _eyesClassifier.DetectMultiScale(gray, 1.1, 10, Size.Empty);
             gray.Dispose();
-            
+
             Rectangle rectangleToCroppFace;
 
             //utworzenie rectangla do wyciecia twarzy
@@ -57,7 +56,7 @@ namespace Client.Models
             {
                 return new Tuple<Bitmap, Bitmap>(new Bitmap(imageWithMarkedFace.ToBitmap()), null);
             }
-            
+
 
             if (eyes[0].Left < eyes[1].Left)
             {
@@ -106,6 +105,5 @@ namespace Client.Models
 
             return new Tuple<Bitmap, Bitmap>(new Bitmap(imageWithMarkedFace.ToBitmap()), croppedBitmap);
         }
-        
     }
 }

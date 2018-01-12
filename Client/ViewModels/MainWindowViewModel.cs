@@ -78,8 +78,8 @@ namespace Client
             get { return _mainModel.IsLdaSet; }
             set
             {
-                _mainModel.IsLdaSet = value; 
-                NotifyOfPropertyChange(()=>IsLdaSet);
+                _mainModel.IsLdaSet = value;
+                NotifyOfPropertyChange(() => IsLdaSet);
             }
         }
 
@@ -112,25 +112,24 @@ namespace Client
                         {
                             NotifyOfPropertyChange(() => ImagesToAdd);
                         }
-                        
                     }));
         }
 
         public void Snapshot()
         {
             Application.Current.Dispatcher.BeginInvoke(
-            new System.Action(
-                () =>
-                {
-                    if (_mainModel.UpdateBitmapWithDetectedFace() == 0)
+                new System.Action(
+                    () =>
                     {
-                        MessageBox.Show("Face is not detected corectly. Try again.");
-                    }
-                    else
-                    {
-                        NotifyOfPropertyChange(() => ImageSnapshot);
-                    }
-                }));
+                        if (_mainModel.UpdateBitmapWithDetectedFace() == 0)
+                        {
+                            MessageBox.Show("Face is not detected corectly. Try again.");
+                        }
+                        else
+                        {
+                            NotifyOfPropertyChange(() => ImageSnapshot);
+                        }
+                    }));
         }
 
         public async void Recognize()
@@ -146,11 +145,12 @@ namespace Client
                 {
                     NotifyOfPropertyChange(() => IsLdaSet);
                     await _mainModel.Recognize();
-                    NotifyOfPropertyChange(()=>ResultOfRecognition);
+                    NotifyOfPropertyChange(() => ResultOfRecognition);
                 }
                 catch (HttpRequestException e)
                 {
-                    MessageBox.Show("Error with connection to server address: " + CommonConsts.Client.ServerAddress + " or server error. Check Internet connection.\nDetails: " + e.Message);
+                    MessageBox.Show("Error with connection to server address: " + CommonConsts.Client.ServerAddress +
+                                    " or server error. Check Internet connection.\nDetails: " + e.Message);
                 }
             }
         }
@@ -161,7 +161,7 @@ namespace Client
             {
                 MessageBox.Show("You need to take a photo of new face first!");
             }
-            else if(string.IsNullOrEmpty(NameOfUser))
+            else if (string.IsNullOrEmpty(NameOfUser))
             {
                 MessageBox.Show("You need to enter username!");
             }
@@ -173,7 +173,8 @@ namespace Client
                 }
                 catch (HttpRequestException e)
                 {
-                    MessageBox.Show("Error with connection to server address: " + CommonConsts.Client.ServerAddress + " or server error. Check Internet connection.\nDetails: " + e.Message);
+                    MessageBox.Show("Error with connection to server address: " + CommonConsts.Client.ServerAddress +
+                                    " or server error. Check Internet connection.\nDetails: " + e.Message);
                 }
 
                 MessageBox.Show("Face Added!");
@@ -212,7 +213,7 @@ namespace Client
         }
 
         #endregion
-        
+
 
         #region privatemethods
 
@@ -228,6 +229,5 @@ namespace Client
         }
 
         #endregion
-
     }
 }
