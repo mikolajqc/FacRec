@@ -10,6 +10,7 @@ namespace Client.Utilities
         {
             using (MemoryStream memory = new MemoryStream())
             {
+                if (bitmap == null) return null;
                 bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
                 memory.Position = 0;
                 BitmapImage bitmapimage = new BitmapImage();
@@ -26,6 +27,7 @@ namespace Client.Utilities
         {
             using (MemoryStream outStream = new MemoryStream())
             {
+                if (bitmapImage == null) return null;
                 BitmapEncoder enc = new BmpBitmapEncoder();
                 enc.Frames.Add(BitmapFrame.Create(bitmapImage));
                 enc.Save(outStream);

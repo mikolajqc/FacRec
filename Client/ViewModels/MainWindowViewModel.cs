@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Caliburn.Micro;
 using Client.Models;
+using Client.Utilities;
 using Commons.Consts;
 
 namespace Client
 {
-    //todo: Zrobic architekture MVVM!!!!
     //todo: Simple IoC Container dla Caliburn.Micro
-    //todo: sprawdz czy po zmianie struktury dzialaja exceptions
     public class MainWindowViewModel : Screen
     {
         #region fields
@@ -34,31 +34,46 @@ namespace Client
 
         public BitmapImage[] ImagesToAdd
         {
-            get { return _mainModel.ImagesToAdd.ToArray(); }
+            get
+            {
+                List<BitmapImage> result = new List<BitmapImage>();
+                foreach (var bitmap in _mainModel.ImagesToAdd)
+                {
+                    result.Add(Tools.BitmapToImageSource(bitmap));
+                }
+
+                return result.ToArray();
+            }
             set
             {
-                _mainModel.ImagesToAdd = new List<BitmapImage>(value);
+                List<Bitmap> result = new List<Bitmap>();
+                foreach (var bitmapImage in value)
+                {
+                    result.Add(Tools.BitmapImage2Bitmap(bitmapImage));
+                }
+
+                _mainModel.ImagesToAdd = result;
                 NotifyOfPropertyChange(() => ImagesToAdd);
             }
         }
 
         public BitmapImage ImageWebcam
         {
-            get { return _mainModel.ImageWebcam; }
+            get { return Tools.BitmapToImageSource(_mainModel.ImageWebcam); }
             set
             {
-                _mainModel.ImageWebcam = value;
+                _mainModel.ImageWebcam = Tools.BitmapImage2Bitmap(value);
                 NotifyOfPropertyChange(() => ImageWebcam);
             }
         }
 
         public BitmapImage ImageSnapshot
         {
-            get { return _mainModel.ImageSnapshot; }
+            get { return Tools.BitmapToImageSource(_mainModel.ImageSnapshot); }
 
             set
             {
-                _mainModel.ImageSnapshot = value;
+                _mainModel.ImageSnapshot = Tools.BitmapImage2Bitmap(value);
                 NotifyOfPropertyChange(() => ImageSnapshot);
             }
         }

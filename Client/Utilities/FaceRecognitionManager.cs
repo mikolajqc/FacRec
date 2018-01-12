@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
@@ -13,16 +14,16 @@ namespace Client.Utilities
             _requestManager = new RequestManager();
         }
 
-        public Task<string> Recognize(BitmapImage bitmapWithCroppedFace, bool isLdaSet)
+        public Task<string> Recognize(Bitmap bitmapWithCroppedFace, bool isLdaSet)
         {
-            return _requestManager.Recognize(Tools.BitmapImage2Bitmap(bitmapWithCroppedFace), isLdaSet);
+            return _requestManager.Recognize(bitmapWithCroppedFace, isLdaSet);
         }
 
-        public async Task<int> AddFace(List<BitmapImage> bitmapWithCroppedFacesToAdd, string nameOfUser)
+        public async Task<int> AddFace(List<Bitmap> bitmapWithCroppedFacesToAdd, string nameOfUser)
         {
             foreach (var bitmap in bitmapWithCroppedFacesToAdd)
             {
-                await _requestManager.AddFace(Tools.BitmapImage2Bitmap(bitmap), nameOfUser);
+                await _requestManager.AddFace(bitmap, nameOfUser);
             }
 
             return 0;

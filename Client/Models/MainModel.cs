@@ -25,18 +25,18 @@ namespace Client.Models
             _faceRecognitionManager = new FaceRecognitionManager();
             _faceDetector = new FaceDetector();
             _cameraManager = new CameraManager();
-            ImagesToAdd = new List<BitmapImage>();
+            ImagesToAdd = new List<Bitmap>();
         }
 
-        public BitmapImage ImageWebcam { get; set; }
+        public Bitmap ImageWebcam { get; set; }
 
-        public BitmapImage ImageSnapshot { get; set; }
+        public Bitmap ImageSnapshot { get; set; }
 
         public string NameOfUser { get; set; }
 
         public string ResultOfRecognition { get; set; }
 
-        public List<BitmapImage> ImagesToAdd { get; set; }
+        public List<Bitmap> ImagesToAdd { get; set; }
 
         public bool IsLdaSet { get; set; }
 
@@ -51,7 +51,7 @@ namespace Client.Models
         {
             var bitmapWithDetectedFace = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item2;
             if (bitmapWithDetectedFace == null) return 0;
-            ImagesToAdd.Add(Tools.BitmapToImageSource(bitmapWithDetectedFace));
+            ImagesToAdd.Add(bitmapWithDetectedFace);
             return 1;
         }
 
@@ -71,7 +71,7 @@ namespace Client.Models
         {
             var bitmapWithDetectedFace = _faceDetector.GetBitmapWithDetectedFace(_cameraManager.GetFrame()).Item2;
             if (bitmapWithDetectedFace == null) return 0;
-            ImageSnapshot = Tools.BitmapToImageSource(bitmapWithDetectedFace);
+            ImageSnapshot = bitmapWithDetectedFace;
             return 1;
         }
 
@@ -83,9 +83,7 @@ namespace Client.Models
                 var bitmapWithMarkedFace =
                     _faceDetector.GetBitmapWithDetectedFace(frame).Item1;
                 bitmapWithMarkedFace.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                ImageWebcam = Tools.BitmapToImageSource(
-                    bitmapWithMarkedFace
-                );
+                ImageWebcam = bitmapWithMarkedFace;
             }
         }
 
