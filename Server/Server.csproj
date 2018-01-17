@@ -133,6 +133,7 @@
       <DependentUpon>FaceRecognitionModel.edmx</DependentUpon>
       <LastGenOutput>FaceRecognitionModel.Context.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\FaceRecognitionModel.edmx.sql" />
     <Content Include="Models\FaceRecognitionModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>FaceRecognitionModel.edmx</DependentUpon>

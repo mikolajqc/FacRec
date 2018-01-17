@@ -4,35 +4,35 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="FaceRecognitionDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="AverageVector">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Value" Type="varchar(max)" Nullable="false" />
-        </EntityType>
-        <EntityType Name="EigenFaces">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Value" Type="varchar(max)" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Wages">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Value" Type="varchar(max)" Nullable="false" />
-        </EntityType>
-        <EntityContainer Name="FaceRecognitionDatabaseModelStoreContainer">
-          <EntitySet Name="AverageVector" EntityType="Self.AverageVector" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EigenFaces" EntityType="Self.EigenFaces" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Wages" EntityType="Self.Wages" Schema="dbo" store:Type="Tables" />
-        </EntityContainer>
-      </Schema></edmx:StorageModels>
+    <Schema Namespace="FaceRecognitionDatabaseModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="FaceRecognitionDatabaseModelStoreContainer">
+    <EntitySet Name="AverageVectors" EntityType="FaceRecognitionDatabaseModel.Store.AverageVectors" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="EigenFaces" EntityType="FaceRecognitionDatabaseModel.Store.EigenFaces" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Wages" EntityType="FaceRecognitionDatabaseModel.Store.Wages" store:Type="Tables" Schema="dbo" />
+  </EntityContainer>
+  <EntityType Name="AverageVectors">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Value" Type="varchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="EigenFaces">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Value" Type="varchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Wages">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="Value" Type="varchar(max)" Nullable="false" />
+  </EntityType>
+</Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="FaceRecognitionDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -67,36 +67,35 @@
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="FaceRecognitionDatabaseModelStoreContainer" CdmEntityContainer="FaceRecognitionDatabaseEntities">
-          <EntitySetMapping Name="AverageVectors">
-            <EntityTypeMapping TypeName="FaceRecognitionDatabaseModel.AverageVector">
-              <MappingFragment StoreEntitySet="AverageVector">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Value" ColumnName="Value" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EigenFaces">
-            <EntityTypeMapping TypeName="FaceRecognitionDatabaseModel.EigenFace">
-              <MappingFragment StoreEntitySet="EigenFaces">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Value" ColumnName="Value" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Wages">
-            <EntityTypeMapping TypeName="FaceRecognitionDatabaseModel.Wage">
-              <MappingFragment StoreEntitySet="Wages">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Value" ColumnName="Value" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-        </EntityContainerMapping>
-      </Mapping>
-    </edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="FaceRecognitionDatabaseModelStoreContainer" CdmEntityContainer="FaceRecognitionDatabaseEntities">
+    <EntitySetMapping Name="AverageVectors">
+      <EntityTypeMapping TypeName="IsTypeOf(FaceRecognitionDatabaseModel.AverageVector)">
+        <MappingFragment StoreEntitySet="AverageVectors">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EigenFaces">
+      <EntityTypeMapping TypeName="IsTypeOf(FaceRecognitionDatabaseModel.EigenFace)">
+        <MappingFragment StoreEntitySet="EigenFaces">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Wages">
+      <EntityTypeMapping TypeName="IsTypeOf(FaceRecognitionDatabaseModel.Wage)">
+        <MappingFragment StoreEntitySet="Wages">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
   <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
@@ -110,7 +109,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="true" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
-        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
       </DesignerInfoPropertySet>
     </Options>
