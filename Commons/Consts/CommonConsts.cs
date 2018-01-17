@@ -17,7 +17,7 @@ namespace Commons.Consts
         {
             public const string PathToConfigOfCascadeForFaces = @"HaarCascadeFiles/haarcascade_frontalface_alt2.xml";
             public const string PathToConfigOfCascadeForEyes = @"HaarCascadeFiles/haarcascade_eye.xml";
-            public const string ServerAddress = "http://25.38.31.26/";
+            public const string ServerAddress = "http://localhost";
             public const string RecognitionActionPath = "/api/FacRec/Recognize";
             public const string AddFaceActionPath = "/api/FacRec/AddFace";
         }
