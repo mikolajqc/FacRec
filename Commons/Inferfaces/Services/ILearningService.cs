@@ -2,6 +2,6 @@
 {
     public interface ILearningService
     {
-        void Learn();
+        void Learn(string pathToLearningPath);
     }
 }

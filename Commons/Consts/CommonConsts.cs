@@ -10,7 +10,7 @@ namespace Commons.Consts
             public const int ErrorToleranceForEigenFaces = int.MaxValue;
             public const int RequiredNumberOfImagesPerPersonForLearning = 10;
             public const int NumberOfKeyEigenFaces = 100;
-            public const string PathToLearningSet = @"D:\Studia\Inzynierka\FaceBase\";
+            public const string PathToLearningSet = @"~\FaceBase";
         }
 
         public static class Client

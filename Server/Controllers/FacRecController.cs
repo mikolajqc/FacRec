@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Commons.Consts;
 using Newtonsoft.Json;
 using Commons.Inferfaces.Services;
 using Commons.Utilities;
@@ -32,7 +33,9 @@ namespace Server.Controllers
         [Route("api/FacRec/Learn")]
         public HttpResponseMessage Learn()
         {
-            _learningService.Learn();
+            var directPathToLearningSet =
+                System.Web.Hosting.HostingEnvironment.MapPath(CommonConsts.Server.PathToLearningSet);
+            _learningService.Learn(directPathToLearningSet);
             return Request.CreateResponse(HttpStatusCode.OK, "Learnt!");
         }
 

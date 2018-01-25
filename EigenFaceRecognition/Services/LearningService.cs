@@ -34,10 +34,10 @@ namespace EigenFaceRecognition.Services
         }
         #endregion
 
-        public void Learn()
+        public void Learn(string directPathToLearningSet)
         {
             ClearDatabase();
-            LoadLearningSet();
+            LoadLearningSet(directPathToLearningSet);
 
             FacesMatrix averageVector = _unprocessedVectors.GetAverageVector(1);
             FacesMatrix differenceVectors = _unprocessedVectors - new FacesMatrix(_unprocessedVectors.X, averageVector);
@@ -104,11 +104,11 @@ namespace EigenFaceRecognition.Services
                 );         
         }
 
-        private void LoadLearningSet()
+        private void LoadLearningSet(string directPathToLearningSet)
         {
             List<List<double>> temporarySetOfLoadedImages = new List<List<double>>();
 
-            foreach (string dir in Directory.GetDirectories(CommonConsts.Server.PathToLearningSet))
+            foreach (string dir in Directory.GetDirectories(directPathToLearningSet))
             {
                 if (Directory.GetFiles(dir).Length == CommonConsts.Server.RequiredNumberOfImagesPerPersonForLearning)
                 {
