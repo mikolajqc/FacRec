@@ -1,6 +1,5 @@
 ﻿using Caliburn.Micro;
 using System.Windows;
-using Client;
 
 namespace Client
 {

@@ -1,6 +1,6 @@
 ﻿namespace Commons.BussinessClasses
 {
-    public class Wage // rename this !!!
+    public class Wage
     {
         private int _id;
         private string _value;
