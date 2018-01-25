@@ -9,7 +9,7 @@ using System.Linq;
 using Commons.Consts;
 using Commons.Inferfaces.Services;
 
-namespace FaceRecognition.Services
+namespace EigenFaceRecognition.Services
 {
     public class EigenFacesRecognitionService : IRecognitonService
     {

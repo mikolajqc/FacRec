@@ -7,8 +7,8 @@
     <ProjectGuid>{8580FDB1-BE35-42F9-93E6-180005CAF906}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FaceRecognition</RootNamespace>
-    <AssemblyName>FaceRecognition</AssemblyName>
+    <RootNamespace>EigenFaceRecognition</RootNamespace>
+    <AssemblyName>EigenFaceRecognition</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -11,7 +11,7 @@ using System.IO;
 using Commons.Consts;
 using Commons.Inferfaces.Services;
 
-namespace FaceRecognition.Services
+namespace EigenFaceRecognition.Services
 {
     public class LearningService : ILearningService
     {

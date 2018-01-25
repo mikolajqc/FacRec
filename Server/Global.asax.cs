@@ -1,11 +1,11 @@
 ﻿using Commons.Inferfaces.DAOs;
-using FaceRecognition.Services;
 using Server.DAO;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
 using SimpleInjector.Lifestyles;
 using System.Web.Http;
 using Commons.Inferfaces.Services;
+using EigenFaceRecognition.Services;
 using FisherFaceRecognition.Services;
 
 namespace Server

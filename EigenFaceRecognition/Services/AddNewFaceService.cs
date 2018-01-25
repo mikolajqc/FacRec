@@ -8,7 +8,7 @@ using Commons.Inferfaces.Services;
 using Newtonsoft.Json;
 using Commons.Utilities;
 
-namespace FaceRecognition.Services
+namespace EigenFaceRecognition.Services
 {
     public class AddNewFaceService : IAddNewFaceService
     {

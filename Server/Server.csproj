@@ -206,8 +206,8 @@
       <Project>{B8F33D83-E16C-4081-B0F7-668936059B54}</Project>
       <Name>Commons</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FaceRecognition\EigenFaceRecognition.csproj">
-      <Project>{8580fdb1-be35-42f9-93e6-180005caf906}</Project>
+    <ProjectReference Include="..\EigenFaceRecognition\EigenFaceRecognition.csproj">
+      <Project>{8580FDB1-BE35-42F9-93E6-180005CAF906}</Project>
       <Name>EigenFaceRecognition</Name>
     </ProjectReference>
     <ProjectReference Include="..\FisherFaceRecognition\FisherFaceRecognition.csproj">
