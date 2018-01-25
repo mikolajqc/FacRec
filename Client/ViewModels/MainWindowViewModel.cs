@@ -10,7 +10,6 @@ using Commons.Consts;
 
 namespace Client
 {
-    //todo: Simple IoC Container dla Caliburn.Micro
     public class MainWindowViewModel : Screen
     {
         #region fields

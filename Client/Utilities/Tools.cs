@@ -8,12 +8,12 @@ namespace Client.Utilities
     {
         public static BitmapImage BitmapToImageSource(Bitmap bitmap)
         {
-            using (MemoryStream memory = new MemoryStream())
+            using (var memory = new MemoryStream())
             {
                 if (bitmap == null) return null;
                 bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
                 memory.Position = 0;
-                BitmapImage bitmapimage = new BitmapImage();
+                var bitmapimage = new BitmapImage();
                 bitmapimage.BeginInit();
                 bitmapimage.StreamSource = memory;
                 bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
@@ -25,7 +25,7 @@ namespace Client.Utilities
 
         public static Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
         {
-            using (MemoryStream outStream = new MemoryStream())
+            using (var outStream = new MemoryStream())
             {
                 if (bitmapImage == null) return null;
                 BitmapEncoder enc = new BmpBitmapEncoder();

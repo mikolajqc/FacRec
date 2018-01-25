@@ -7,7 +7,7 @@ using Emgu.CV.Structure;
 namespace Client.Utilities
 {
     //TODO: przenies wszystkie stale do configuracji
-    class FaceDetector
+    internal class FaceDetector
     {
         private readonly CascadeClassifier _faceClassifier;
         private readonly CascadeClassifier _eyesClassifier;
@@ -29,13 +29,14 @@ namespace Client.Utilities
             Image<Bgr, byte> imageWithMarkedFace = new Image<Bgr, byte>(sourceBitmap);
             Image<Bgr, byte> imageOriginal = new Image<Bgr, byte>(sourceBitmap);
 
-            var grayFrame = imageWithCroppedFace.Convert<Gray, Byte>();
+            var grayFrame = imageWithCroppedFace.Convert<Gray, byte>();
             var faces = _faceClassifier.DetectMultiScale(grayFrame, 1.1, 10, Size.Empty);
             grayFrame.Dispose();
 
             foreach (var face in faces)
                 imageWithMarkedFace.Draw(face, new Bgr(Color.BurlyWood));
 
+            // w przypadku, gdy nie znaleziono twarzy
             if (faces.Length < 1)
             {
                 return new Tuple<Bitmap, Bitmap>(new Bitmap(imageWithMarkedFace.ToBitmap()), null);
@@ -45,13 +46,13 @@ namespace Client.Utilities
             imageWithCroppedFace = imageWithCroppedFace.Copy();
 
             //eyes detection:
-            var gray = imageWithCroppedFace.Convert<Gray, Byte>();
+            var gray = imageWithCroppedFace.Convert<Gray, byte>();
             var eyes = _eyesClassifier.DetectMultiScale(gray, 1.1, 10, Size.Empty);
             gray.Dispose();
 
             Rectangle rectangleToCroppFace;
 
-            //utworzenie rectangla do wyciecia twarzy
+            // w przypadku, gdy nie znaleziono oczu
             if (eyes.Length < 2)
             {
                 return new Tuple<Bitmap, Bitmap>(new Bitmap(imageWithMarkedFace.ToBitmap()), null);

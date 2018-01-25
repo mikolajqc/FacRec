@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using Client.Utilities;
 
 namespace Client.Models
@@ -16,7 +15,6 @@ namespace Client.Models
 
         private readonly FaceDetector _faceDetector;
         private readonly CameraManager _cameraManager;
-        private readonly RequestManager _requestManager;
 
         #endregion
 
@@ -24,7 +22,6 @@ namespace Client.Models
         {
             _faceDetector = new FaceDetector();
             _cameraManager = new CameraManager();
-            _requestManager = new RequestManager();
             ImagesToAdd = new List<Bitmap>();
         }
 
@@ -59,7 +56,7 @@ namespace Client.Models
         {
             foreach (var bitmap in ImagesToAdd)
             {
-                await _requestManager.AddFace(bitmap, NameOfUser);
+                await RequestManager.AddFace(bitmap, NameOfUser);
             }
 
             return 0;
@@ -67,7 +64,7 @@ namespace Client.Models
 
         public async Task<int> Recognize()
         {
-            ResultOfRecognition = await _requestManager.Recognize(ImageSnapshot, IsLdaSet);
+            ResultOfRecognition = await RequestManager.Recognize(ImageSnapshot, IsLdaSet);
             return 0;
         }
 
