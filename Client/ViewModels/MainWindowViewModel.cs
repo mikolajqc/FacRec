@@ -175,6 +175,7 @@ namespace Client
                 {
                     MessageBox.Show("Error with connection to server address: " + CommonConsts.Client.ServerAddress +
                                     " or server error. Check Internet connection.\nDetails: " + e.Message);
+                    return;
                 }
 
                 MessageBox.Show("Face Added!");
