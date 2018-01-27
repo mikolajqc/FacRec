@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Net.Http;
 using System.Windows;
@@ -16,6 +17,7 @@ namespace Client
 
         private System.Timers.Timer _timer;
         private readonly MainModel _mainModel = new MainModel();
+        private readonly object _thisLock = new object();
 
         #endregion
 
@@ -204,7 +206,7 @@ namespace Client
             _timer = new System.Timers.Timer
             {
                 AutoReset = true,
-                Interval = 50
+                Interval = 20
             };
             _timer.Elapsed += (sender, e) => { UpdateImage(); };
             _timer.Start();
@@ -233,13 +235,11 @@ namespace Client
 
         private void UpdateImage()
         {
-            Application.Current.Dispatcher.BeginInvoke(
-                new System.Action(
-                    () =>
-                    {
-                        _mainModel.UpdateBitmapWithMarkedFace();
-                        NotifyOfPropertyChange(() => ImageWebcam);
-                    }));
+            lock (_thisLock)
+            {
+                _mainModel.UpdateBitmapWithMarkedFace();
+                NotifyOfPropertyChange(() => ImageWebcam);
+            }
         }
 
         #endregion
