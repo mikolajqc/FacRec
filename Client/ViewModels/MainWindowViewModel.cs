@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Net.Http;
 using System.Windows;
@@ -17,7 +16,7 @@ namespace Client
 
         private System.Timers.Timer _timer;
         private readonly MainModel _mainModel = new MainModel();
-        private readonly object _thisLock = new object();
+        private readonly object _updateImageLock = new object();
 
         #endregion
 
@@ -105,47 +104,32 @@ namespace Client
 
         public void Clear()
         {
-            Application.Current.Dispatcher.BeginInvoke(
-                new System.Action(
-                    () =>
-                    {
-                        _mainModel.ClearImagesToAdd();
-                        NotifyOfPropertyChange(() => ImagesToAdd);
-                    }));
+            _mainModel.ClearImagesToAdd();
+            NotifyOfPropertyChange(() => ImagesToAdd);
         }
 
         public void PhotoOfNewFace()
         {
-            Application.Current.Dispatcher.BeginInvoke(
-                new System.Action(
-                    () =>
-                    {
-                        if (_mainModel.AddFaceToAddSet() == 0)
-                        {
-                            MessageBox.Show("Face is not detected corectly. Try again.");
-                        }
-                        else
-                        {
-                            NotifyOfPropertyChange(() => ImagesToAdd);
-                        }
-                    }));
+            if (_mainModel.AddFaceToAddSet() == 0)
+            {
+                MessageBox.Show("Face is not detected corectly. Try again.");
+            }
+            else
+            {
+                NotifyOfPropertyChange(() => ImagesToAdd);
+            }
         }
 
         public void Snapshot()
         {
-            Application.Current.Dispatcher.BeginInvoke(
-                new System.Action(
-                    () =>
-                    {
-                        if (_mainModel.UpdateBitmapWithDetectedFace() == 0)
-                        {
-                            MessageBox.Show("Face is not detected corectly. Try again.");
-                        }
-                        else
-                        {
-                            NotifyOfPropertyChange(() => ImageSnapshot);
-                        }
-                    }));
+            if (_mainModel.UpdateBitmapWithDetectedFace() == 0)
+            {
+                MessageBox.Show("Face is not detected corectly. Try again.");
+            }
+            else
+            {
+                NotifyOfPropertyChange(() => ImageSnapshot);
+            }
         }
 
         public async void Recognize()
@@ -235,7 +219,7 @@ namespace Client
 
         private void UpdateImage()
         {
-            lock (_thisLock)
+            lock (_updateImageLock)
             {
                 _mainModel.UpdateBitmapWithMarkedFace();
                 NotifyOfPropertyChange(() => ImageWebcam);
