@@ -31,8 +31,8 @@ namespace Server.DAO
 
         public IEnumerable<Wage> GetOverview()
         {
-            List<Wage> result = new List<Wage>();
-            foreach (Models.Wage wageModel in _guow.Repository<Models.Wage>().GetOverview())
+            var result = new List<Wage>();
+            foreach (var wageModel in _guow.Repository<Models.Wage>().GetOverview())
             {
                 result.Add(
                     new Wage

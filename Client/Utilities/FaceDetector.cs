@@ -6,7 +6,6 @@ using Emgu.CV.Structure;
 
 namespace Client.Utilities
 {
-    //TODO: przenies wszystkie stale do configuracji
     internal class FaceDetector
     {
         private readonly CascadeClassifier _faceClassifier;

@@ -36,11 +36,11 @@ namespace EigenFaceRecognition.Services
 
         #region publicmethods
         /// <summary>
-        /// Temporarily this returns string that is stored in namesOfPeople List
+        /// This method returns string that is stored in _namesOfUsers
         /// </summary>
         /// <param name="bitMapWithFace"></param>
         /// <returns></returns>
-        public string Recognize(Bitmap bitMapWithFace) // temporary: Bitmap zamienic na wlasny typ FaceImage ktory obsluguje pgm itd
+        public string Recognize(Bitmap bitMapWithFace)
         {
             LoadDataFromDatabase();
 
@@ -48,16 +48,16 @@ namespace EigenFaceRecognition.Services
 
             double minEuclideanDistance = double.MaxValue;
             int numberOfString = 0;
-            for (int numberOfKnownImage = 0; numberOfKnownImage < _wages.Y; ++numberOfKnownImage)
+            for (int numberOfKnownImages = 0; numberOfKnownImages < _wages.Y; ++numberOfKnownImages)
             {
-                double[] currentImageWagesInArray = _wages.GetVectorAsArray(numberOfKnownImage, 0);
+                double[] currentImageWagesInArray = _wages.GetVectorAsArray(numberOfKnownImages, 0);
                 double currentEuclideanDistance =
                     Accord.Math.Distance.Euclidean(wagesInArray, currentImageWagesInArray);
 
                 if (minEuclideanDistance > currentEuclideanDistance)
                 {
                     minEuclideanDistance = currentEuclideanDistance;
-                    numberOfString = numberOfKnownImage;
+                    numberOfString = numberOfKnownImages;
                 }
             }
 
@@ -70,9 +70,9 @@ namespace EigenFaceRecognition.Services
 
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
-            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.Server.DefaultWidthOfPicturesOfFace, CommonConsts.Server.DefaultHeightOfPictureOfFace));
-            FacesMatrix vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
-            FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
+            var scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.Server.DefaultWidthOfPicturesOfFace, CommonConsts.Server.DefaultHeightOfPictureOfFace));
+            var vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
+            var diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
             FacesMatrix currentImageWages = diff.Transpose() * _eigenFacesT;
 
             return currentImageWages.GetVectorAsArray(0, 0);
@@ -87,43 +87,45 @@ namespace EigenFaceRecognition.Services
 
         private void LoadAverageVectorFromDatabase()
         {
-            List<AverageVector> listOfAverageVectors = _averageVectorDao.GetOverview() as List<AverageVector>;
-            double[] valueOfAverageVector =
-                (JsonConvert.DeserializeObject(listOfAverageVectors[0].Value, typeof(double[])) as double[]);
+            var listOfAverageVectors = _averageVectorDao.GetOverview() as List<AverageVector>;
+            if (listOfAverageVectors != null)
+            {
+                double[] valueOfAverageVector =
+                    (JsonConvert.DeserializeObject(listOfAverageVectors[0].Value, typeof(double[])) as double[]);
 
-            _averageVector = new FacesMatrix(valueOfAverageVector, 1);
+                _averageVector = new FacesMatrix(valueOfAverageVector, 1);
+            }
         }
 
         private void LoadEigenFacesTFromDatabase()
         {
-            List<EigenFace> listOfEigenFaces = _eigenFaceDao.GetOverview() as List<EigenFace>;
-            List<double[]> valuesOfEigenFaces = new List<double[]>();
+            var listOfEigenFaces = _eigenFaceDao.GetOverview() as List<EigenFace>;
+            var valuesOfEigenFaces = new List<double[]>();
 
-            for (int i = 0; i < listOfEigenFaces.Count; ++i)
-            {
-                valuesOfEigenFaces.Add(JsonConvert.DeserializeObject(listOfEigenFaces[i].Value, typeof(double[])) as double[]);
-            }
+            if (listOfEigenFaces != null)
+                for (int i = 0; i < listOfEigenFaces.Count; ++i)
+                {
+                    valuesOfEigenFaces.Add(
+                        JsonConvert.DeserializeObject(listOfEigenFaces[i].Value, typeof(double[])) as double[]);
+                }
 
-            _eigenFacesT = new FacesMatrix(valuesOfEigenFaces, 1); //orientacja 1 bo tworzymy EigenFacesT czyli gdzie X jest = 400
+            _eigenFacesT = new FacesMatrix(valuesOfEigenFaces, 1);
         }
 
         private void LoadWagesAndNamesOfUsersFromDataBase()
         {
-            List<Wage> listOfWages = _wageDao.GetOverview() as List<Wage>;
-            ///upewnic sie ale z tego co wiem
-            ///zdjecia w matrixie zawierajacym wagi sa trzymane poziomo
-            ///czyli jezeli [x,y] zmieniamy y to zmieniamy eigenface czyli jestesmy na jednej twarzy ale przegladamy jej wagi
-            ///dlatego orientacja 0
-            ///
+            var listOfWages = _wageDao.GetOverview() as List<Wage>;
 
             _namesOfUsers = new List<string>();
 
-            List<double[]> valuesOfWages = new List<double[]>();
-            for (int i = 0; i < listOfWages.Count; ++i)
-            {
-                valuesOfWages.Add(JsonConvert.DeserializeObject(listOfWages[i].Value, typeof(double[])) as double[]);
-                _namesOfUsers.Add(listOfWages[i].Name);
-            }
+            var valuesOfWages = new List<double[]>();
+            if (listOfWages != null)
+                for (int i = 0; i < listOfWages.Count; ++i)
+                {
+                    valuesOfWages.Add(
+                        JsonConvert.DeserializeObject(listOfWages[i].Value, typeof(double[])) as double[]);
+                    _namesOfUsers.Add(listOfWages[i].Name);
+                }
 
             _wages = new FacesMatrix(valuesOfWages, 0);
         }

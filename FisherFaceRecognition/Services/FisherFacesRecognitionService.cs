@@ -45,16 +45,16 @@ namespace FisherFaceRecognition.Services
             double[][] dataAfterPcainArray = dataAfterPca.GetMatrixAsArrayOfArray(1);
             double[] wagesOfImageInEigenFacesSpace = GetWagesOfImageInEigenFacesSpace(bitmapWithFace);
 
-            int[] output = CreateOutputForLda();
+            var output = CreateOutputForLda();
 
             var classifier = lda.Learn(dataAfterPcainArray, output);
-            int result = classifier.Decide(wagesOfImageInEigenFacesSpace);
+            var result = classifier.Decide(wagesOfImageInEigenFacesSpace);
             return _namesAndIndex.FirstOrDefault(x => x.Value == result).Key;
         }
 
         private int[] CreateOutputForLda()
         {
-            int[] result = new int[_namesOfUsers.Count];
+            var result = new int[_namesOfUsers.Count];
 
             for (int i = 0; i < _namesOfUsers.Count; ++i)
             {
@@ -66,9 +66,9 @@ namespace FisherFaceRecognition.Services
 
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
-            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.Server.DefaultWidthOfPicturesOfFace, CommonConsts.Server.DefaultHeightOfPictureOfFace));
-            FacesMatrix vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
-            FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
+            var scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.Server.DefaultWidthOfPicturesOfFace, CommonConsts.Server.DefaultHeightOfPictureOfFace));
+            var vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
+            var diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
             FacesMatrix currentImageWages = diff.Transpose() * _eigenFacesT;
 
             return currentImageWages.GetVectorAsArray(0, 0);
@@ -83,43 +83,50 @@ namespace FisherFaceRecognition.Services
 
         private void LoadAverageVectorFromDatabase()
         {
-            List<AverageVector> listOfAverageVectors = _averageVectorDao.GetOverview() as List<AverageVector>;
-            double[] valueOfAverageVector = JsonConvert.DeserializeObject(listOfAverageVectors[0].Value, typeof(double[])) as double[];
+            var listOfAverageVectors = _averageVectorDao.GetOverview() as List<AverageVector>;
+            if (listOfAverageVectors != null)
+            {
+                var valueOfAverageVector = JsonConvert.DeserializeObject(listOfAverageVectors[0].Value, typeof(double[])) as double[];
 
-            _averageVector = new FacesMatrix(valueOfAverageVector, 1);
+                _averageVector = new FacesMatrix(valueOfAverageVector, 1);
+            }
         }
 
         private void LoadEigenFacesTFromDatabase()
         {
-            List<EigenFace> listOfEigenFaces = _eigenFaceDao.GetOverview() as List<EigenFace>;
-            List<double[]> valuesOfEigenFaces = new List<double[]>();
+            var listOfEigenFaces = _eigenFaceDao.GetOverview() as List<EigenFace>;
+            var valuesOfEigenFaces = new List<double[]>();
 
-            for (int i = 0; i < listOfEigenFaces.Count; ++i)
-            {
-                valuesOfEigenFaces.Add(JsonConvert.DeserializeObject(listOfEigenFaces[i].Value, typeof(double[])) as double[]);
-            }
+            if (listOfEigenFaces != null)
+                for (int i = 0; i < listOfEigenFaces.Count; ++i)
+                {
+                    valuesOfEigenFaces.Add(
+                        JsonConvert.DeserializeObject(listOfEigenFaces[i].Value, typeof(double[])) as double[]);
+                }
 
-            _eigenFacesT = new FacesMatrix(valuesOfEigenFaces, 1); //orientacja 1 bo tworzymy EigenFacesT czyli gdzie X jest = 400
+            _eigenFacesT = new FacesMatrix(valuesOfEigenFaces, 1);
         }
 
         private void LoadWagesAndNamesOfUsersFromDataBase()
         {
-            List<Wage> listOfWages = _wageDao.GetOverview() as List<Wage>;
+            var listOfWages = _wageDao.GetOverview() as List<Wage>;
 
             _namesOfUsers = new List<string>();
             _namesAndIndex = new Dictionary<string, int>();
 
-            List<double[]> valuesOfWages = new List<double[]>();
-            for (int i = 0; i < listOfWages.Count; ++i)
-            {
-                valuesOfWages.Add(JsonConvert.DeserializeObject(listOfWages[i].Value, typeof(double[])) as double[]);
-                _namesOfUsers.Add(listOfWages[i].Name);
-
-                if (!_namesAndIndex.ContainsKey(listOfWages[i].Name)) //jesli slownik nie zawiera juz taka nazwe to:
+            var valuesOfWages = new List<double[]>();
+            if (listOfWages != null)
+                for (int i = 0; i < listOfWages.Count; ++i)
                 {
-                    _namesAndIndex.Add(listOfWages[i].Name,_namesAndIndex.Count);
+                    valuesOfWages.Add(
+                        JsonConvert.DeserializeObject(listOfWages[i].Value, typeof(double[])) as double[]);
+                    _namesOfUsers.Add(listOfWages[i].Name);
+
+                    if (!_namesAndIndex.ContainsKey(listOfWages[i].Name)) //jesli slownik nie zawiera juz taka nazwe to:
+                    {
+                        _namesAndIndex.Add(listOfWages[i].Name, _namesAndIndex.Count);
+                    }
                 }
-            }
 
             _wages = new FacesMatrix(valuesOfWages, 0);
         }

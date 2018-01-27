@@ -106,7 +106,7 @@ namespace EigenFaceRecognition.Services
 
         private void LoadLearningSet(string directPathToLearningSet)
         {
-            List<List<double>> temporarySetOfLoadedImages = new List<List<double>>();
+            var temporarySetOfLoadedImages = new List<List<double>>();
 
             foreach (string dir in Directory.GetDirectories(directPathToLearningSet))
             {
@@ -128,21 +128,21 @@ namespace EigenFaceRecognition.Services
 
         private List<double> GetImageVectorInList(string pathToImage)
         {
-            Bitmap bitmap = ScaleBitmapToRequredSize(AForge.Imaging.Formats.ImageDecoder.DecodeFromFile(pathToImage));
+            var bitmap = ScaleBitmapToRequredSize(AForge.Imaging.Formats.ImageDecoder.DecodeFromFile(pathToImage));
 
-            HistogramEqualization histogramEqualization = new HistogramEqualization();
+            var histogramEqualization = new HistogramEqualization();
             bitmap = histogramEqualization.Apply(bitmap);
 
             int width = bitmap.Size.Width;
             int height = bitmap.Size.Height;
 
-            List<double> resultVector = new List<double>();
+            var resultVector = new List<double>();
 
             for (int y = 0; y < height; ++y)
             {
                 for (int x = 0; x < width; ++x)
                 {
-                    Color color = bitmap.GetPixel(x, y);
+                    var color = bitmap.GetPixel(x, y);
                     double grayscale = (color.R + color.G + color.B) / 3f;
                     resultVector.Add(grayscale);
                 }

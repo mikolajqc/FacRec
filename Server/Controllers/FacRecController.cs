@@ -42,13 +42,13 @@ namespace Server.Controllers
         [Route("api/FacRec/Recognize")]
         public HttpResponseMessage Recognize(ClientRequestData clientRequestData)
         {
-            byte[] bitmapWithFaceInArray = clientRequestData.BitmapInArray;
-            Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
-            string resultOfRecognition = clientRequestData.IsLdaSet
+            var bitmapWithFaceInArray = clientRequestData.BitmapInArray;
+            var bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
+            var resultOfRecognition = clientRequestData.IsLdaSet
                 ? _recognitionServices.ElementAt(1).Recognize(bitmapWithFace)
                 : _recognitionServices.ElementAt(0).Recognize(bitmapWithFace);
 
-            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, "FaceRecognition response");
+            var response = Request.CreateResponse(HttpStatusCode.OK, "FaceRecognition response");
             response.Content = new StringContent(JsonConvert.SerializeObject(resultOfRecognition), Encoding.Unicode);
 
             return response;
@@ -57,8 +57,8 @@ namespace Server.Controllers
         [Route("api/FacRec/AddFace")]
         public HttpResponseMessage AddFace(ClientRequestData clientRequestData)
         {
-            byte[] bitmapWithFaceInArray = clientRequestData.BitmapInArray;
-            Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
+            var bitmapWithFaceInArray = clientRequestData.BitmapInArray;
+            var bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
 
             var directPathToLearningSet =
                 System.Web.Hosting.HostingEnvironment.MapPath(CommonConsts.Server.PathToLearningSet);

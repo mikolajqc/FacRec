@@ -8,9 +8,6 @@ namespace Client.Models
 {
     public class MainModel : IDisposable
     {
-        //todo: ogarnac te toolsy zeby nie bylo nadmiarowych castowan
-        //todo: ogarnac czy wszedzie potrzebne sa asyncs
-
         #region fields
 
         private readonly FaceDetector _faceDetector;
@@ -79,13 +76,11 @@ namespace Client.Models
         public void UpdateBitmapWithMarkedFace()
         {
             var frame = _cameraManager.GetFrame();
-            if (frame != null)
-            {
-                var bitmapWithMarkedFace =
-                    _faceDetector.GetBitmapWithDetectedFace(frame).Item1;
-                bitmapWithMarkedFace.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                ImageWebcam = bitmapWithMarkedFace;
-            }
+            if (frame == null) return;
+            var bitmapWithMarkedFace =
+                _faceDetector.GetBitmapWithDetectedFace(frame).Item1;
+            bitmapWithMarkedFace.RotateFlip(RotateFlipType.RotateNoneFlipX);
+            ImageWebcam = bitmapWithMarkedFace;
         }
 
         public void ActivateCamera()

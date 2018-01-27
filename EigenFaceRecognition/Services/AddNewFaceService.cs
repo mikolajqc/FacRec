@@ -57,9 +57,9 @@ namespace EigenFaceRecognition.Services
 
         private double[] GetWagesOfImageInEigenFacesSpace(Bitmap bitmap)
         {
-            Bitmap scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.Server.DefaultWidthOfPicturesOfFace, CommonConsts.Server.DefaultHeightOfPictureOfFace));
-            FacesMatrix vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
-            FacesMatrix diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
+            var scaledBitmap = new Bitmap(bitmap, new Size(CommonConsts.Server.DefaultWidthOfPicturesOfFace, CommonConsts.Server.DefaultHeightOfPictureOfFace));
+            var vectorOfFaceInMatrix = new FacesMatrix(scaledBitmap);
+            var diff = vectorOfFaceInMatrix - new FacesMatrix(vectorOfFaceInMatrix.X, _averageVector);
             FacesMatrix currentImageWages = diff.Transpose() * _eigenFacesT;
 
             return currentImageWages.GetVectorAsArray(0, 0);
@@ -67,7 +67,7 @@ namespace EigenFaceRecognition.Services
 
         private void LoadAverageVectorFromDatabase()
         {
-            List<AverageVector> listOfAverageVectors = _averageVectorDao.GetOverview() as List<AverageVector>;
+            var listOfAverageVectors = _averageVectorDao.GetOverview() as List<AverageVector>;
             if (listOfAverageVectors != null)
             {
                 double[] valueOfAverageVector = (JsonConvert.DeserializeObject(listOfAverageVectors[0].Value, typeof(double[])) as double[]);
@@ -78,15 +78,17 @@ namespace EigenFaceRecognition.Services
 
         private void LoadEigenFacesTFromDatabase()
         {
-            List<EigenFace> listOfEigenFaces = _eigenFaceDao.GetOverview() as List<EigenFace>;
-            List<double[]> valuesOfEigenFaces = new List<double[]>();
+            var listOfEigenFaces = _eigenFaceDao.GetOverview() as List<EigenFace>;
+            var valuesOfEigenFaces = new List<double[]>();
 
-            for (int i = 0; i < listOfEigenFaces.Count; ++i)
-            {
-                valuesOfEigenFaces.Add(JsonConvert.DeserializeObject(listOfEigenFaces[i].Value, typeof(double[])) as double[]);
-            }
+            if (listOfEigenFaces != null)
+                for (int i = 0; i < listOfEigenFaces.Count; ++i)
+                {
+                    valuesOfEigenFaces.Add(
+                        JsonConvert.DeserializeObject(listOfEigenFaces[i].Value, typeof(double[])) as double[]);
+                }
 
-            _eigenFacesT = new FacesMatrix(valuesOfEigenFaces, 1); //orientacja 1 bo tworzymy EigenFacesT czyli gdzie X jest = 400
+            _eigenFacesT = new FacesMatrix(valuesOfEigenFaces, 1);
         }
 
         private void AddFaceImageToLearningSet(Bitmap bitmapWithFace, string name, string directPathToLearningSet)

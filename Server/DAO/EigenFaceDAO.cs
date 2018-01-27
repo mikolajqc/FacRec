@@ -31,8 +31,8 @@ namespace Server.DAO
 
         public IEnumerable<EigenFace> GetOverview()
         {
-            List<EigenFace> result = new List<EigenFace>();
-            foreach(Models.EigenFace eigenFaceModel in _guow.Repository<Models.EigenFace>().GetOverview())
+            var result = new List<EigenFace>();
+            foreach(var eigenFaceModel in _guow.Repository<Models.EigenFace>().GetOverview())
             {
                 result.Add(
                     new EigenFace

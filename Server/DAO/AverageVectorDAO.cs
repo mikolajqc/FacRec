@@ -1,7 +1,6 @@
 ﻿using Commons.BussinessClasses;
 using Commons.Inferfaces.DAOs;
 using Server.Repositories;
-using System;
 using System.Collections.Generic;
 
 namespace Server.DAO
@@ -29,11 +28,10 @@ namespace Server.DAO
             _guow.SaveChanges();
         }
 
-        //todo: zrob tu rzucanie entity exception gdy baza niedostepna i ogarnij jak to wyslac do klienta zeby pokazal dobry komunikat, bo narazie zwraca 500 error.
         public IEnumerable<AverageVector> GetOverview()
         {
-            List<AverageVector> result = new List<AverageVector>();
-            foreach (Models.AverageVector averageVectorModel in _guow.Repository<Models.AverageVector>().GetOverview())
+            var result = new List<AverageVector>();
+            foreach (var averageVectorModel in _guow.Repository<Models.AverageVector>().GetOverview())
             {
                 result.Add(
                     new AverageVector

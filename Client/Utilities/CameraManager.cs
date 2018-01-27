@@ -6,7 +6,7 @@ using AForge.Video.DirectShow;
 
 namespace Client.Utilities
 {
-    class CameraManager : IDisposable
+    internal class CameraManager : IDisposable
     {
         private VideoCaptureDevice _videoSource;
         private readonly FilterInfoCollection _videoDevices;

@@ -8,7 +8,7 @@ namespace Commons.Utilities
 {
     public class FacesMatrix
     {
-        /// Orientation - 0 wektory polozone poziomo, 1 - wektory polozone pionowo
+        //orientation - 0 wektory polozone poziomo, 1 - wektory polozone pionowo
 
         #region fields
         private double[,] _content;
@@ -22,18 +22,13 @@ namespace Commons.Utilities
             _content = new double[0, 0];
         }
 
-        /// <summary>
-        /// [x,y]
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
         public FacesMatrix(int x, int y)
         {
             _content = new double[x, y];
         }
 
         /// <summary>
-        /// Creates FacesMatrix that consist of copies of given vector
+        /// Contructor creates FacesMatrix that consist of copies of given vector
         /// </summary>
         /// <param name="numberOfCopies"></param>
         /// <param name="vector"></param>
@@ -101,24 +96,24 @@ namespace Commons.Utilities
         }
 
         /// <summary>
-        /// Creates FacesMatrix from bitmap. Icludes histogram equalization. Transforms bitmap into grayscaled image and stores it to FacesMatrix
+        /// Contructor creates FacesMatrix from bitmap. It includes histogram equalization and transforms bitmap into grayscaled image and stores it to FacesMatrix
         /// </summary>
         /// <param name="bitmap"></param>
         public FacesMatrix(Bitmap bitmap)
         {
-            HistogramEqualization histogramEqualization = new HistogramEqualization();
+            var histogramEqualization = new HistogramEqualization();
             bitmap = histogramEqualization.Apply(bitmap);
 
             int width = bitmap.Size.Width;
             int height = bitmap.Size.Height;
 
-            double[,] content = new double[1, width * height];
+            var content = new double[1, width * height];
 
             for (int y = 0; y < height; ++y)
             {
                 for (int x = 0; x < width; ++x)
                 {
-                    Color color = bitmap.GetPixel(x, y);
+                    var color = bitmap.GetPixel(x, y);
                     double grayscale = (color.R + color.G + color.B) / 3f;
                     content[0, y * width + x] = grayscale;
                 }
@@ -207,7 +202,7 @@ namespace Commons.Utilities
                 numberOfVectors = X;
             }
 
-            double[] sumVector = new double[lengthOfVector];
+            var sumVector = new double[lengthOfVector];
 
             for (int j = 0; j < lengthOfVector; ++j)
             {
@@ -227,7 +222,7 @@ namespace Commons.Utilities
 
         public FacesMatrix Transpose()
         {
-            FacesMatrix transposedMatrix = new FacesMatrix(Y, X);
+            var transposedMatrix = new FacesMatrix(Y, X);
 
             for (int i = 0; i < X; ++i)
             {
@@ -250,7 +245,7 @@ namespace Commons.Utilities
         {
             int lengthOfVector = _content.GetLength(orientation);
 
-            double[] result = new double[lengthOfVector];
+            var result = new double[lengthOfVector];
 
             for (int i = 0; i < lengthOfVector; ++i)
             {
@@ -263,7 +258,7 @@ namespace Commons.Utilities
 
         public List<double[]> GetMatrixAsListOfArrays(int orientation)
         {
-            List<double[]> result = new List<double[]>();
+            var result = new List<double[]>();
 
             int numbersOfVectors;
             int lenghtOfVectors;
@@ -281,7 +276,7 @@ namespace Commons.Utilities
 
             for (int i = 0; i < numbersOfVectors; ++i)
             {
-                double[] currentVectorInArray = new double[lenghtOfVectors];
+                var currentVectorInArray = new double[lenghtOfVectors];
                 for (int j = 0; j < lenghtOfVectors; ++j)
                 {
                     if (orientation == 0) currentVectorInArray[j] = _content[j, i];
@@ -339,9 +334,8 @@ namespace Commons.Utilities
 
         public static FacesMatrix operator -(FacesMatrix a, FacesMatrix b)
         {
-            FacesMatrix result = new FacesMatrix(a.X, a.Y);
+            var result = new FacesMatrix(a.X, a.Y);
 
-            //if for DEBUG time only
             if (a.X != b.X || a.Y != b.Y)
             {
                 Console.WriteLine("FacesMatrixes must have the same sizes!");
@@ -361,22 +355,19 @@ namespace Commons.Utilities
 
         public static FacesMatrix operator +(FacesMatrix a, FacesMatrix b)
         {
-            FacesMatrix result = new FacesMatrix(a.X, a.Y);
+            var result = new FacesMatrix(a.X, a.Y);
 
-            //if for DEBUG time only
             if (a.X != b.X || a.Y != b.Y)
             {
                 Console.WriteLine("FacesMatrixes must have the same sizes!");
                 return null;
             }
-            else
+
+            for (int i = 0; i < a.X; ++i)
             {
-                for (int i = 0; i < a.X; ++i)
+                for (int j = 0; j < a.Y; ++j)
                 {
-                    for (int j = 0; j < a.Y; ++j)
-                    {
-                        result._content[i, j] = a._content[i, j] + b._content[i, j];
-                    }
+                    result._content[i, j] = a._content[i, j] + b._content[i, j];
                 }
             }
 
@@ -385,7 +376,6 @@ namespace Commons.Utilities
 
         public static FacesMatrix operator *(FacesMatrix a, FacesMatrix b)
         {
-            //if for DEBUG time only
             if (a.X != b.Y)
             {
                 Console.WriteLine("FaceMatrixes cannot be multiplied!");
