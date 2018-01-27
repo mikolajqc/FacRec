@@ -78,7 +78,7 @@ namespace Client.Models
             var frame = _cameraManager.GetFrame();
             if (frame == null) return;
             var bitmapWithMarkedFace =
-                _faceDetector.GetBitmapWithDetectedFace(frame).Item1;
+                new Bitmap (_faceDetector.GetBitmapWithDetectedFace(frame).Item1);
             bitmapWithMarkedFace.RotateFlip(RotateFlipType.RotateNoneFlipX);
             ImageWebcam = bitmapWithMarkedFace;
         }
