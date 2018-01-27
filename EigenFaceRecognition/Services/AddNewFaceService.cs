@@ -33,7 +33,7 @@ namespace EigenFaceRecognition.Services
         #endregion
 
         #region publicmethods
-        public void AddNewFace(Bitmap bitmapWithFace, string name)
+        public void AddNewFace(Bitmap bitmapWithFace, string name, string directPathToLearningSet)
         {
             LoadDataFromDatabase();
 
@@ -44,7 +44,7 @@ namespace EigenFaceRecognition.Services
                     Value = JsonConvert.SerializeObject(wagesOfNewImage)
                 });
 
-            AddFaceImageToLearningSet(bitmapWithFace, name);
+            AddFaceImageToLearningSet(bitmapWithFace, name, directPathToLearningSet);
         }
         #endregion
 
@@ -89,11 +89,11 @@ namespace EigenFaceRecognition.Services
             _eigenFacesT = new FacesMatrix(valuesOfEigenFaces, 1); //orientacja 1 bo tworzymy EigenFacesT czyli gdzie X jest = 400
         }
 
-        private void AddFaceImageToLearningSet(Bitmap bitmapWithFace, string name)
+        private void AddFaceImageToLearningSet(Bitmap bitmapWithFace, string name, string directPathToLearningSet)
         {
             bitmapWithFace = new Bitmap(bitmapWithFace, new Size(CommonConsts.Server.DefaultWidthOfPicturesOfFace, CommonConsts.Server.DefaultHeightOfPictureOfFace));
 
-            string currentDirectory = Path.Combine(CommonConsts.Server.PathToLearningSet, name);
+            string currentDirectory = Path.Combine(directPathToLearningSet, name);
             string nameOfFile;
 
             if (Directory.Exists(currentDirectory))

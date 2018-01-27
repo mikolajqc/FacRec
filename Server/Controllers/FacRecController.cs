@@ -60,7 +60,10 @@ namespace Server.Controllers
             byte[] bitmapWithFaceInArray = clientRequestData.BitmapInArray;
             Bitmap bitmapWithFace = new Bitmap(Image.FromStream(new MemoryStream(bitmapWithFaceInArray)));
 
-            _addNewFaceService.AddNewFace(bitmapWithFace, clientRequestData.Name);
+            var directPathToLearningSet =
+                System.Web.Hosting.HostingEnvironment.MapPath(CommonConsts.Server.PathToLearningSet);
+
+            _addNewFaceService.AddNewFace(bitmapWithFace, clientRequestData.Name, directPathToLearningSet);
             return Request.CreateResponse(HttpStatusCode.OK, "Face added!");
         }
     }
